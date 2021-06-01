@@ -1,0 +1,2 @@
+rootProject.name = "Musichino"
+include ':app'
