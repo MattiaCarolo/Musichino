@@ -33,4 +33,10 @@ limitations under the License. -->
     <string name="menu_playlist">Playlist</string>
     <string name="menu_search">Search</string>
     <string name="menu_settings">Settings</string>
+
+
+
+
+    <!-- Resources for fragment_home.xml-->
+    <string name="Recently_played">Recently Played</string>
 </resources>

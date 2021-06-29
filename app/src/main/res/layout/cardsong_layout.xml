@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/transparent"
+        android:backgroundTint="@color/purple_dark_gradient"
         app:cardElevation="5dp"
         app:cardCornerRadius="20dp"
         android:layout_margin="2dp"
@@ -21,7 +21,6 @@
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:background="@drawable/card_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -42,10 +41,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/img"
+                android:id="@+id/img_cardalbum"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:contentDescription="@string/app_name"
                 android:elevation="5dp"
                 android:src="@drawable/albumcover"
@@ -53,15 +52,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/txt_cardTitle" />
 
             <com.ultramegasoft.radarchart.RadarView
-                android:id="@+id/radar"
-                android:layout_width="184dp"
-                android:layout_height="139dp"
+                android:id="@+id/rdr_cardradar"
+                android:layout_width="127dp"
+                android:layout_height="117dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="61dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/img" />
+                app:layout_constraintStart_toEndOf="@+id/img_cardalbum"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

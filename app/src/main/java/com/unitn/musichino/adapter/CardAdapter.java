@@ -29,14 +29,11 @@ public class CardAdapter extends RecyclerView.Adapter {
     @NonNull
     private ArrayList<RadarHolder> mData = new ArrayList<RadarHolder>() {
         {
-            add(new RadarHolder("Body", 3));
-            add(new RadarHolder("Charcoal", 4));
-            add(new RadarHolder("Oak", 4));
-            add(new RadarHolder("Leather", 4));
-            add(new RadarHolder("Spice", 2));
-            add(new RadarHolder("Alcohol", 3));
-            add(new RadarHolder("Astringent", 3));
-            add(new RadarHolder("Linger", 4));
+            add(new RadarHolder("Guitar", 3));
+            add(new RadarHolder("Bass", 4));
+            add(new RadarHolder("Drums", 4));
+            add(new RadarHolder("Voice", 4));
+            add(new RadarHolder("SFX", 2));
         }
     };
 
@@ -56,14 +53,12 @@ public class CardAdapter extends RecyclerView.Adapter {
         layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.cardsong_layout,container,false);
 
-        ImageView imageView;
         TextView title;
         RadarView radarView;
-        RadarEditWidget mEditWidget;
-        Animation mEditInAnimation;
-        Animation mEditOutAnimation;
 
-        radarView = view.findViewById(R.id.radar);
+        radarView = view.findViewById(R.id.rdr_cardradar);
+        radarView.setData(mData);
+        radarView.setInteractive(false);
         title = view.findViewById(R.id.txt_cardTitle);
         title.setText(models.get(position).getArtist() + " by " + models.get(position).getArtist());
 
