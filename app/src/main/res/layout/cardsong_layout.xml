@@ -9,60 +9,68 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/purple_dark_gradient"
         app:cardElevation="5dp"
         app:cardCornerRadius="20dp"
         android:layout_margin="2dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/black"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
-        android:background="@drawable/card_background"
+        android:backgroundTint="#6D0D2C"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/card_background"
+            android:backgroundTintMode="src_over"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_cardTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:paddingLeft="10dp"
-                android:text="Typhoons by Royal Blood"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/img_cardalbum"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_marginStart="24dp"
+                android:translationZ="-3dp"
+                android:scaleType="centerCrop"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:contentDescription="@string/app_name"
                 android:elevation="5dp"
-                android:src="@drawable/albumcover"
+                android:foreground="@drawable/song_gradient"
+                android:src="@drawable/royalblood_cover"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_percent="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_cardTitle" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="1" />
+
+            <TextView
+                android:id="@+id/txt_cardTitle"
+                android:layout_width="355dp"
+                android:layout_height="34dp"
+                android:layout_alignParentEnd="true"
+                android:autoSizeMaxTextSize="100sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform"
+                android:paddingLeft="10dp"
+                android:text="Typhoons by Royal Blood"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:translationZ="3dp"
+                app:layout_constraintHeight_percent="0.15"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8" />
 
             <com.ultramegasoft.radarchart.RadarView
                 android:id="@+id/rdr_cardradar"
                 android:layout_width="127dp"
-                android:layout_height="117dp"
+                android:layout_height="115dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginStart="61dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="34dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/img_cardalbum"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/txt_cardTitle" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

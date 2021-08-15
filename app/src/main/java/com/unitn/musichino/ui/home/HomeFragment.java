@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.exoplayer2.C;
 import com.ultramegasoft.radarchart.RadarHolder;
 import com.unitn.musichino.Models.CardModel;
 import com.unitn.musichino.R;
@@ -79,23 +77,35 @@ public class HomeFragment extends Fragment {
             public void onChanged(@Nullable String s) {
             }
         });
+        //Viewpager
+        models = new ArrayList<>();
+        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.royalblood_cover, mData));
+        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.royalblood_cover, mData2));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.albumcover, mData3));
+        pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
-        recyclerView = root.findViewById(R.id.rcv_likedlist);
-        linearLayoutManager =new LinearLayoutManager(root.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        adapter = new RecyclerCardAdapter();
-        recyclerView.setAdapter(adapter);
+        viewPager = root.findViewById(R.id.vp_likedlist);
+        viewPager.setAdapter(pagerCardAdapter);
 
 
         //Viewpager
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.albumcover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.albumcover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.albumcover, mData3));
+        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.royalblood_cover, mData));
+        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.royalblood_cover, mData2));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.royalblood_cover, mData3));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_recentlyplayed);
+        viewPager.setAdapter(pagerCardAdapter);
+
+        //Viewpager
+        models = new ArrayList<>();
+        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.royalblood_cover, mData));
+        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.royalblood_cover, mData2));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.royalblood_cover, mData3));
+        pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
+
+        viewPager = root.findViewById(R.id.vp_recentlyplayed2);
         viewPager.setAdapter(pagerCardAdapter);
 
         return root;

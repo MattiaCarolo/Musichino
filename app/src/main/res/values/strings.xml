@@ -39,4 +39,5 @@ limitations under the License. -->
 
     <!-- Resources for fragment_home.xml-->
     <string name="Recently_played">Recently Played</string>
+    <string name="Liked_Songs">Liked Songs</string>
 </resources>

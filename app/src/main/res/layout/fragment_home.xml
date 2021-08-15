@@ -11,25 +11,51 @@
         android:id="@+id/txt_RecentlyPlayed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/Liked_Songs"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/vp_likedlist"
+        app:layout_constraintTop_toTopOf="@+id/guideline5"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/txt_RecentlyPlayed2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:text="@string/Recently_played"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
+        app:layout_constraintTop_toBottomOf="@+id/vp_likedlist" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_likedlist"
-        android:layout_width="409dp"
+    <TextView
+        android:id="@+id/txt_RecentlyPlayed3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/Recently_played"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/vp_recentlyplayed"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_likedlist"
+        android:layout_width="411dp"
+        android:layout_height="190dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline6"
+        app:layout_constraintHeight_percent="0.26"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_RecentlyPlayed"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintWidth_percent="1" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar4"
@@ -45,9 +71,45 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_recentlyplayed"
+        android:layout_width="412dp"
+        android:layout_height="178dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_RecentlyPlayed2"
+        app:layout_constraintWidth_percent="1" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_recentlyplayed2"
+        android:layout_width="412dp"
+        android:layout_height="178dp"
+        android:layout_marginTop="11dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_RecentlyPlayed3"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rcv_likedlist" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="294dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
