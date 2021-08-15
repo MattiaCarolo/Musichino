@@ -35,9 +35,9 @@ limitations under the License. -->
     <string name="menu_settings">Settings</string>
 
 
-
-
     <!-- Resources for fragment_home.xml-->
     <string name="Recently_played">Recently Played</string>
     <string name="Liked_Songs">Liked Songs</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

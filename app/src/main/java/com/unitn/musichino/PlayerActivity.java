@@ -19,6 +19,10 @@ import android.content.DialogInterface;
 import android.net.sip.SipSession;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.net.Uri;
@@ -73,6 +77,9 @@ public class PlayerActivity extends AppCompatActivity
   private SeekBar volumeSeekBar4;
   private SeekBar volumeSeekBar5;
   private SeekBar volumeSeekBar6;
+  private static final int NUM_PAGES = 5;
+  private ViewPager2 viewPager;
+  private FragmentStateAdapter pagerAdapter;
 
 
 
@@ -82,6 +89,13 @@ public class PlayerActivity extends AppCompatActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_player);
+
+    viewPager = findViewById(R.id.pager);
+    pagerAdapter = new ScreenSlidePagerAdapter(this);
+    viewPager.setAdapter(pagerAdapter);
+
+
+
     playerView = findViewById(R.id.video_view);
     volumeSeekBar = findViewById(R.id.seekBarVol);
     volumeSeekBar2 = findViewById(R.id.seekBarVol2);

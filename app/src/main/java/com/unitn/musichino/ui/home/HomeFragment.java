@@ -18,7 +18,6 @@ import com.ultramegasoft.radarchart.RadarHolder;
 import com.unitn.musichino.Models.CardModel;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PagerCardAdapter;
-import com.unitn.musichino.adapter.RecyclerCardAdapter;
 import com.unitn.musichino.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
