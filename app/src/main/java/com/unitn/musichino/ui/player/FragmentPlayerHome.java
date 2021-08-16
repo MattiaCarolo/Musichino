@@ -10,17 +10,14 @@ import android.view.ViewGroup;
 
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.unitn.musichino.MixMeExoPlayer;
-import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
-import com.unitn.musichino.databinding.FragmentHomeBinding;
-import com.unitn.musichino.ui.home.HomeViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link fragment_player_home#newInstance} factory method to
+ * Use the {@link FragmentPlayerHome#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class fragment_player_home extends Fragment {
+public class FragmentPlayerHome extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +31,7 @@ public class fragment_player_home extends Fragment {
     private PlayerView playerView;
     private MixMeExoPlayer mixMePlayer;
 
-    public fragment_player_home() {
+    public FragmentPlayerHome() {
         // Required empty public constructor
     }
 
@@ -44,11 +41,11 @@ public class fragment_player_home extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_player_home.
+     * @return A new instance of fragment FragmentPlayerHome.
      */
     // TODO: Rename and change types and number of parameters
-    public static fragment_player_home newInstance(String param1, String param2) {
-        fragment_player_home fragment = new fragment_player_home();
+    public static FragmentPlayerHome newInstance(String param1, String param2) {
+        FragmentPlayerHome fragment = new FragmentPlayerHome();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

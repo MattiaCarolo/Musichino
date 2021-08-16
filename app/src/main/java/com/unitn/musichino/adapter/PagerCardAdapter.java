@@ -13,7 +13,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.ultramegasoft.radarchart.RadarView;
 import com.unitn.musichino.Models.CardModel;
-import com.unitn.musichino.PlayerActivity;
+import com.unitn.musichino.ui.player.PlayerActivity;
 import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
