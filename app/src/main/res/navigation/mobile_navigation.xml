@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.unitn.musichino.ui.slideshow.SlideshowFragment"
+        android:name="com.unitn.musichino.ui.search.SearchFragment"
         android:label="@string/menu_search"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_search" />
 </navigation>

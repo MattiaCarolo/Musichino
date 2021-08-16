@@ -8,15 +8,24 @@ import com.ultramegasoft.radarchart.RadarView;
 import java.util.List;
 
 public class CardModel {
-    private String Artist,Track;
+    private String Artist,Track,FileName;
     private int Album_logo;
     private List<RadarHolder> radarHolder;
 
-    public CardModel(String artist, String track, int album_logo, List<RadarHolder> radarHolder) {
+    public CardModel(String artist, String track, String file_name, int album_logo, List<RadarHolder> radarHolder) {
         Artist = artist;
         Track = track;
+        FileName = file_name;
         Album_logo = album_logo;
         this.radarHolder = radarHolder;
+    }
+
+    public String getFileName() {
+        return FileName;
+    }
+
+    public void setFileName(String fileName) {
+        FileName = fileName;
     }
 
     public String getArtist() {

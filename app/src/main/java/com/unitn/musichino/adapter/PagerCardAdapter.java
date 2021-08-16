@@ -13,6 +13,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.ultramegasoft.radarchart.RadarView;
 import com.unitn.musichino.Models.CardModel;
+import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,10 +61,10 @@ public class PagerCardAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(context, DetailActivity.class);
-                //intent.putExtra("param", models.get(position).getTitle());
-                //context.startActivity(intent);
-                // finish();
+                Intent intent = new Intent(context, PlayerActivity.class);
+                intent.putExtra("fileName", models.get(position).getFileName());
+                context.startActivity(intent);
+
             }
         });
 

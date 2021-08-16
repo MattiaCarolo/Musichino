@@ -15,10 +15,20 @@
  */
 package com.unitn.musichino;
 
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.media.audiofx.Equalizer;
 import android.net.sip.SipSession;
+import android.provider.MediaStore;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -38,6 +48,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Renderer;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -50,7 +61,11 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Assertions;
 import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.util.Util;
+import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.ui.equalizer.EqualizerFragment;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,7 +76,7 @@ public class PlayerActivity extends AppCompatActivity
         implements  Player.EventListener {
 
   private PlayerView playerView;
-  private MixMeExoPlayer mixplayer;
+  private MixMeExoPlayer mixMePlayer;
   private List<SeekBar> seekBars;
   private int totalAudioTracks = 6;                     // TODO dynamic audio track count
   private boolean playWhenReady = true;
@@ -80,22 +95,34 @@ public class PlayerActivity extends AppCompatActivity
   private static final int NUM_PAGES = 5;
   private ViewPager2 viewPager;
   private FragmentStateAdapter pagerAdapter;
+  FragmentContainerView equalizerFrame;
+  Button equalizerButton;
+  Context context;
+  Equalizer mEqualizer;
+  String fileName;
 
-
+  public MixMeExoPlayer getMixMePlayer() {
+    return mixMePlayer;
+  }
 
   private ConcatenatingMediaSource concatenatingMediaSource;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Intent intent = getIntent();
+    fileName = "asset:///" + intent.getStringExtra("fileName");
+    Log.d("fileName: ", fileName);
+    context = this;
     setContentView(R.layout.activity_player);
 
     viewPager = findViewById(R.id.pager);
-    pagerAdapter = new ScreenSlidePagerAdapter(this);
-    viewPager.setAdapter(pagerAdapter);
+   // pagerAdapter = new ScreenSlidePagerAdapter(this);
+   // viewPager.setAdapter(pagerAdapter);
 
 
 
+    mixMePlayer = new MixMeExoPlayer( this, 1);
     playerView = findViewById(R.id.video_view);
     volumeSeekBar = findViewById(R.id.seekBarVol);
     volumeSeekBar2 = findViewById(R.id.seekBarVol2);
@@ -103,14 +130,42 @@ public class PlayerActivity extends AppCompatActivity
     volumeSeekBar4 = findViewById(R.id.seekBarVol4);
     volumeSeekBar5 = findViewById(R.id.seekBarVol5);
     volumeSeekBar6 = findViewById(R.id.seekBarVol6);
+    /*
+    equalizerButton = findViewById(R.id.equalizerButton);
+    equalizerButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+
+        if (savedInstanceState == null) {
+          getSupportFragmentManager().beginTransaction()
+                  .setReorderingAllowed(true)
+                  .add(R.id.equalizerFrame, EqualizerFragment.class, null)
+                  .commit();
+        }
+        else{
+          Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.equalizerLayout);
+          getSupportFragmentManager().beginTransaction()
+                  .setReorderingAllowed(true)
+                  .remove(fragment)
+                  .commit();
+        }
+      }
+    });
+
+     */
+    // EQ
+
+
+
+
     volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if(b){
           float value = i / (float)seekBar.getMax();
           //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixplayer.renderers.get(0);
-          mixplayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
+          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(0);
+          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
         }
       }
@@ -131,8 +186,8 @@ public class PlayerActivity extends AppCompatActivity
         if(b){
           float value = i / (float)seekBar.getMax();
           //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixplayer.renderers.get(1);
-          mixplayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
+          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(1);
+          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
         }
       }
@@ -153,8 +208,8 @@ public class PlayerActivity extends AppCompatActivity
         if(b){
           float value = i / (float)seekBar.getMax();
           //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixplayer.renderers.get(2);
-          mixplayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
+          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(2);
+          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
         }
       }
@@ -175,8 +230,8 @@ public class PlayerActivity extends AppCompatActivity
         if(b){
           float value = i / (float)seekBar.getMax();
           //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixplayer.renderers.get(3);
-          mixplayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
+          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(3);
+          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
         }
       }
@@ -197,8 +252,8 @@ public class PlayerActivity extends AppCompatActivity
         if(b){
           float value = i / (float)seekBar.getMax();
           //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixplayer.renderers.get(4);
-          mixplayer.player.createMessage(renderer).setType(Renderer.MSG_SET_VOLUME).setPayload(value).send();
+          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(4);
+          mixMePlayer.player.createMessage(renderer).setType(Renderer.MSG_SET_VOLUME).setPayload(value).send();
 
         }
       }
@@ -219,8 +274,8 @@ public class PlayerActivity extends AppCompatActivity
         if(b){
           float value = i / (float)seekBar.getMax();
           //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixplayer.renderers.get(5);
-          mixplayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
+          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(5);
+          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
         }
       }
@@ -270,20 +325,43 @@ public class PlayerActivity extends AppCompatActivity
   @Override
   public void onStart() {
     super.onStart();
-    mixplayer = new MixMeExoPlayer( this, 1);
-  //  mixplayer2 = new MixMeExoPlayer( this, 2);
-  //  mixplayer3 = new MixMeExoPlayer( this, 3);
-  //  mixplayer4 = new MixMeExoPlayer( this, 4);
-  //  mixplayer5 = new MixMeExoPlayer( this, 5);
- //   mixplayer6 = new MixMeExoPlayer( this, 6);
-    mixplayer.player.seekTo(currentWindow, playbackPosition);
-    playerView.setPlayer(mixplayer.player);
-    mixplayer.startPlaying(Uri.parse("asset:///logan3.mp4"));
-   // mixplayer2.startPlaying(Uri.parse("asset:///logan3.mp4"));
-   // mixplayer3.startPlaying(Uri.parse("asset:///logan3.mp4"));
-   // mixplayer4.startPlaying(Uri.parse("asset:///logan3.mp4"));
-   // mixplayer5.startPlaying(Uri.parse("asset:///logan3.mp4"));
-   // mixplayer6.startPlaying(Uri.parse("asset:///logan3.mp4"));
+    try {
+      mixMePlayer.startPlaying(Uri.parse(fileName));
+    //  mixMePlayer.player.seekTo(currentWindow, playbackPosition);
+      playerView.setPlayer(mixMePlayer.player);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+/*
+    mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
+
+      @Override
+      public void onAudioSessionId(int audioSessionId) {
+        SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
+        mEqualizer = new Equalizer(1000, audioSessionId);
+        mEqualizer.setEnabled(true);
+        //That's it, this will initialize the Equalizer and set it to the //default preset
+        int current = preferences.getInt("position", 0);
+        if (current == 0) {
+          for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
+            int progressBar = preferences.getInt("seek_" + seek_id, 1500);
+            short equalizerBandIndex = (short) (seek_id);
+            final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
+            Log.i("seek_" + seek_id, ":" + progressBar);
+            if (progressBar != 1500) {
+              mEqualizer.setBandLevel(equalizerBandIndex,
+                      (short) (progressBar + lowerEqualizerBandLevel));
+            } else {
+              //First time default 1500Hz
+              mEqualizer.setBandLevel(equalizerBandIndex,
+                      (short) (progressBar + lowerEqualizerBandLevel));
+            }
+          }
+        } else {
+          mEqualizer.usePreset((short) (current - 1));
+        }    }
+    });
+*/
   }
 
   @Override
@@ -304,12 +382,7 @@ public class PlayerActivity extends AppCompatActivity
   @Override
   public void onStop() {
     super.onStop();
-    mixplayer.stopPlaying();
-   // mixplayer2.stopPlaying();
-   // mixplayer3.stopPlaying();
-   // mixplayer4.stopPlaying();
-   // mixplayer5.stopPlaying();
-   // mixplayer6.stopPlaying();
+    mixMePlayer.stopPlaying();
 
   }
 
@@ -324,5 +397,7 @@ public class PlayerActivity extends AppCompatActivity
         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
   }
+
+
 
 }

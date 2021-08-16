@@ -20,10 +20,14 @@ public class MultiTrackRenderersFactory extends DefaultRenderersFactory {
     private int audioTrackCnt;
     private MixMeExoPlayer player;
 
-    public MultiTrackRenderersFactory(int audioTrackCnt, Context context, MixMeExoPlayer player) {
+    public MultiTrackRenderersFactory(int count, Context context, MixMeExoPlayer player) {
         super(context);
-        this.audioTrackCnt = audioTrackCnt;
+        this.audioTrackCnt = count;
         this.player = player;
+    }
+
+    public void setAudioTrackCnt(int audioTrackCnt) {
+        this.audioTrackCnt = audioTrackCnt;
     }
 
     @Override
@@ -32,7 +36,6 @@ public class MultiTrackRenderersFactory extends DefaultRenderersFactory {
             MultiTrackCodecAudioRenderer renderer = new MultiTrackCodecAudioRenderer(context, i, MediaCodecSelector.DEFAULT, eventHandler, eventListener, AudioCapabilities.getCapabilities(context));
             player.addRenderer(renderer);
             out.add(renderer);
-
         }
     }
 }

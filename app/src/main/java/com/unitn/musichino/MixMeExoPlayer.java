@@ -2,8 +2,14 @@ package com.unitn.musichino;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
+import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -32,8 +38,10 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class MixMeExoPlayer
             implements Player.EventListener{
@@ -42,7 +50,6 @@ public class MixMeExoPlayer
 
     private DataSource.Factory dataSourceFactory;
     public SimpleExoPlayer player;
-  //  public DefaultTrackSelector trackSelector;
     public MultiAudioTrackSelector trackSelector;
     private DefaultTrackSelector.Parameters trackSelectorParameters;
     public List<MediaCodecAudioRenderer> renderers;
@@ -55,6 +62,7 @@ public class MixMeExoPlayer
     private int currentMediaPlayerIndex = 0;
     private boolean hasLyrics = false;
     private boolean lyricsOn = false;
+    Equalizer mEqualizer;
 
     public MixMeExoPlayer(Context context, int index) {
         this.context = context;
@@ -62,30 +70,27 @@ public class MixMeExoPlayer
         System.out.println("Created player index: " + index);
         dataSourceFactory = new DefaultDataSourceFactory(context.getApplicationContext());
         renderers = new ArrayList<>();
-        initPlayer();
+       // initPlayer();
+
     }
 
 
-    private void initPlayer() {
+    private void initPlayer(int trackCount) {
         if(player==null) {
-           // trackSelector = new DefaultTrackSelector(context.getApplicationContext());
-           // DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(context.getApplicationContext());
-            //TEST
              trackSelector = new MultiAudioTrackSelector();
-            MultiTrackRenderersFactory renderersFactory = new MultiTrackRenderersFactory(6, context, this);
+            MultiTrackRenderersFactory renderersFactory = new MultiTrackRenderersFactory(trackCount, context, this);
             player = new SimpleExoPlayer.Builder(context.getApplicationContext(), renderersFactory)
                     .setTrackSelector(trackSelector)
                     .build();
             player.setPlayWhenReady(playWhenReady);
-            //player.addAnalyticsListener(new EventLogger(trackSelector));
-            progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
             trackIndex++;
             player.addListener(this);
+
         }
-        else {
-            concatenatingMediaSource = new ConcatenatingMediaSource();
-        }
-        //player.prepare();
+        concatenatingMediaSource = new ConcatenatingMediaSource();
+
+
+
     }
 
     private void releasePlayer() {
@@ -99,12 +104,20 @@ public class MixMeExoPlayer
     }
 
 
-        public void startPlaying(Uri uri) {
-            if (player == null) initPlayer();
+        public void startPlaying(Uri uri) throws IOException {
+            progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
             MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
+            MediaExtractor extractor = new MediaExtractor();
+            final AssetFileDescriptor afd=context.getAssets().openFd(uri.getLastPathSegment());
+            extractor.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+            int numTracks = extractor.getTrackCount();
+            Log.d("extractorNumTrak", ""+numTracks);
+            int numAudioTracks = 0;
+            extractor.release();
+            initPlayer(numTracks);
             player.setMediaSource(mediaSource, true);
-         //   player.setMediaItem(MediaItem.fromUri(uri), true);
             player.prepare();
+            player.getAudioSessionId();
         }
 
 
@@ -157,11 +170,10 @@ public class MixMeExoPlayer
           //  }
         }
 
-    public void toggleLyrics(Context context ){
-    if(lyricsOn){
-        trackSelector = null;
+    public void toggleLyrics(Context context){
+        // TODO find a way to toggle lyrics
     }
-    }
+
 
 
     }

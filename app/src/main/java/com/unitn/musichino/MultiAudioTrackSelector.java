@@ -16,14 +16,29 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectorResult;
 import com.google.android.exoplayer2.util.NonNullApi;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 
 public class MultiAudioTrackSelector extends TrackSelector {
+    public int audioRendererCount;
+    public int textRendererCount;
+    public List<Integer> audioRendererIndexes;
+    public List<Integer> textRendererIndexes;
+
+    public int getAudioRendererCount() {
+        return audioRendererCount;
+    }
+
+    public int getTextRendererCount() {
+        return textRendererCount;
+    }
 
     @Override
     public @NonNull TrackSelectorResult  selectTracks(RendererCapabilities[] rendererCapabilities, @NonNull TrackGroupArray trackGroups,@NonNull MediaSource.MediaPeriodId periodId,@NonNull Timeline timeline) throws ExoPlaybackException {
 
         int rendererCount = rendererCapabilities.length;
+        audioRendererCount = 0;
         TrackSelection[] rendererTrackSelections = new TrackSelection[rendererCount];
         Log.i("SELECTOR", "RendererCount: " + rendererCount + ", TrackGroupsCount: " + trackGroups.length);
         int idx = 1;
@@ -36,6 +51,7 @@ public class MultiAudioTrackSelector extends TrackSelector {
                 Log.i("TRAKTAG", "sample mime: " + trackGroups.get(trackGroup).getFormat(0).sampleMimeType + ", codecs: " + trackGroups.get(trackGroup).getFormat(0).codecs);
                 rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(trackGroup), 0);
                 idx++;
+                audioRendererCount++;
             }
             else if( trackType == C.TRACK_TYPE_TEXT){
                 int textGroup = length - 1;                                                         // TODO search for text group

@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private PagerCardAdapter pagerCardAdapter;
     private ViewPager viewPager;
+    private String CHANGE = "logan3.mp4";
 
     private ArrayList<RadarHolder> mData = new ArrayList<RadarHolder>() {
         {
@@ -78,9 +79,9 @@ public class HomeFragment extends Fragment {
         });
         //Viewpager
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.royalblood_cover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.royalblood_cover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.albumcover, mData3));
+        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover, mData));
+        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover, mData2));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.albumcover, mData3));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_likedlist);
@@ -89,9 +90,9 @@ public class HomeFragment extends Fragment {
 
         //Viewpager
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.royalblood_cover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.royalblood_cover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.royalblood_cover, mData3));
+        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover, mData));
+        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover, mData2));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.royalblood_cover, mData3));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_recentlyplayed);
@@ -99,9 +100,9 @@ public class HomeFragment extends Fragment {
 
         //Viewpager
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", R.drawable.royalblood_cover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", R.drawable.royalblood_cover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", R.drawable.royalblood_cover, mData3));
+        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover, mData));
+        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover, mData2));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.royalblood_cover, mData3));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_recentlyplayed2);
