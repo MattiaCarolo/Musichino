@@ -7,22 +7,11 @@
 
     tools:context=".ui.player.FragmentPlayerHome">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="1" />
-
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toStartOf="@+id/viewPager2"
-        app:layout_constraintTop_toBottomOf="@+id/viewPager2"
         app:layout_constraintWidth_percent="1" />
 
 

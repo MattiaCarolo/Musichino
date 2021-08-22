@@ -52,8 +52,8 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_likedlist"
-        android:layout_width="411dp"
-        android:layout_height="190dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintHeight_percent="0.26"
@@ -74,8 +74,8 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_recentlyplayed"
-        android:layout_width="412dp"
-        android:layout_height="178dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="4dp"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,8 +84,8 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_recentlyplayed2"
-        android:layout_width="412dp"
-        android:layout_height="178dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="11dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.25"
@@ -106,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="294dp" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"

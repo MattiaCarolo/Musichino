@@ -17,17 +17,20 @@ limitations under the License. -->
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="@drawable/splash_screen">
 
   <androidx.viewpager2.widget.ViewPager2
+      android:id="@+id/pgr_MediaPlayer"
       android:layout_width="match_parent"
-      android:layout_height="400dp"
+      android:layout_height="0dp"
+      app:layout_constraintHeight_percent="0.85"
       app:layout_constraintTop_toTopOf="parent" />
 
   <com.google.android.exoplayer2.ui.PlayerView
       android:id="@+id/video_view"
       android:layout_width="411dp"
-      android:layout_height="100dp"
+      android:layout_height="0dp"
+      app:layout_constraintHeight_percent="0.15"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"

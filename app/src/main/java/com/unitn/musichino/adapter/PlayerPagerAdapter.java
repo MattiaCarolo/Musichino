@@ -4,8 +4,10 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.unitn.musichino.ui.player.FragmentPlayerHome;
 import com.unitn.musichino.ui.player.FragmentPlayerLyrics;
@@ -13,33 +15,20 @@ import com.unitn.musichino.ui.player.FragmentPlayerSettings;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerPagerAdapter extends FragmentPagerAdapter {
+import java.util.List;
 
-    private Context context;
+public class PlayerPagerAdapter extends FragmentStateAdapter {
 
-    public PlayerPagerAdapter(FragmentManager fm, Context context) {
-        super(fm);
-        this.context = context;
+    private List<Fragment> mFragments;
+
+    public PlayerPagerAdapter(@NonNull FragmentActivity fragmentActivity, List<Fragment> mFragments) {
+        super(fragmentActivity);
+        this.mFragments = mFragments;
     }
-
-    @Override
-    public Fragment getItem(int position) {
-        Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = Fragment.instantiate(context, FragmentPlayerSettings.class.getName());
-                break;
-            case 1:
-                fragment = Fragment.instantiate(context, FragmentPlayerHome.class.getName());
-                break;
-            case 2:
-                fragment = Fragment.instantiate(context, FragmentPlayerLyrics.class.getName());
-                break;          }
-        return fragment;
+    @NonNull @Override public Fragment createFragment(int position) {
+        return mFragments.get(position);
     }
-
-    @Override
-    public int getCount() {
-        return 0;
+    @Override public int getItemCount() {
+        return mFragments.size();
     }
 }
