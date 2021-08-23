@@ -1,4 +1,4 @@
-package com.unitn.musichino.ui.player.Settings;
+    package com.unitn.musichino.ui.player.Settings;
 
 import android.os.Bundle;
 
@@ -13,10 +13,15 @@ import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.unitn.musichino.R;
+import com.unitn.musichino.uikit.SettingsTransition;
 
-public class VolumeFragment extends Fragment {
+    public class VolumeFragment extends Fragment {
+
+    private Button btn_title;
+    private ConstraintLayout constraintLayout;
 
     public VolumeFragment() {
         // Required empty public constructor
@@ -30,10 +35,8 @@ public class VolumeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Transition transition = new AutoTransition();
-        transition.setDuration(5000);
-        setSharedElementEnterTransition(transition);
-        setSharedElementReturnTransition(transition);
+        setSharedElementEnterTransition(new SettingsTransition());
+        setSharedElementReturnTransition(new SettingsTransition());
     }
 
     @Override
@@ -46,8 +49,11 @@ public class VolumeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
 
-        View lay_volume = view.findViewById(R.id.lay_frag_volume);
-        ViewCompat.setTransitionName(lay_volume, "sfondo");
+        btn_title = view.findViewById(R.id.btn_volumes_title);
+        constraintLayout = view.findViewById(R.id.lay_frag_volume);
+        ViewCompat.setTransitionName(btn_title, "title");
+        ViewCompat.setTransitionName(constraintLayout, "background");
+
         postponeEnterTransition();
         startPostponedEnterTransition();
     }

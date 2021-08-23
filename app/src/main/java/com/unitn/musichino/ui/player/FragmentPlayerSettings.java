@@ -1,43 +1,23 @@
 package com.unitn.musichino.ui.player;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.ChangeBounds;
 
 import android.support.annotation.NonNull;
-import android.transition.ChangeBounds;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.unitn.musichino.R;
 
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.RadarChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.MarkerView;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.RadarData;
-import com.github.mikephil.charting.data.RadarDataSet;
-import com.github.mikephil.charting.data.RadarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.unitn.musichino.ui.player.Settings.VolumeFragment;
-
-import java.util.ArrayList;
+import com.unitn.musichino.uikit.SettingsTransition;
 
 
 /**
@@ -47,7 +27,6 @@ import java.util.ArrayList;
  */
 public class FragmentPlayerSettings extends Fragment implements View.OnClickListener {
 
-    private RadarChart chart;
     private Button btn_volumes;
     private ConstraintLayout lay_container;
 
@@ -58,7 +37,6 @@ public class FragmentPlayerSettings extends Fragment implements View.OnClickList
     // TODO: Rename and change types and number of parameters
     public static FragmentPlayerSettings newInstance(String param1, String param2) {
         FragmentPlayerSettings fragment = new FragmentPlayerSettings();
-
 
         return fragment;
     }
@@ -81,8 +59,10 @@ public class FragmentPlayerSettings extends Fragment implements View.OnClickList
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        lay_container = view.findViewById(R.id.lay_container_volume);
-        ViewCompat.setTransitionName(lay_container, "sfondo");
+        btn_volumes = view.findViewById(R.id.btn_volumes);
+        lay_container = view.findViewById(R.id.lay_btncontainer);
+        ViewCompat.setTransitionName(btn_volumes, "title");
+        ViewCompat.setTransitionName(lay_container, "background");
     }
 
     @Override
@@ -90,15 +70,31 @@ public class FragmentPlayerSettings extends Fragment implements View.OnClickList
         Fragment fragment = null;
         switch (view.getId()) {
             case R.id.btn_volumes:
-                fragment = new VolumeFragment();
-                replaceFragment(fragment);
+                fragment = VolumeFragment.newInstance();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
+                transaction.replace(R.id.lay_settingsContainer, fragment);
+                transaction.addSharedElement(btn_volumes, "title");
+                transaction.addSharedElement(lay_container, "background");
+                transaction.addToBackStack(null);
+                transaction.commit();
                 break;
+                /*
+
+
+
+
+
+
+                 */
         }
     }
 
     public void replaceFragment(Fragment someFragment) {
+
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
         transaction.replace(R.id.lay_settingsContainer, someFragment);
+        transaction.addSharedElement(btn_volumes, "titolo");
         transaction.addSharedElement(lay_container, "sfondo");
         transaction.addToBackStack(null);
         transaction.commit();
