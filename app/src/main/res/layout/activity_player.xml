@@ -129,10 +129,27 @@ limitations under the License. -->
   <com.google.android.exoplayer2.ui.PlayerView
       android:id="@+id/video_view"
       android:layout_width="411dp"
-      android:layout_height="0dp"
+      android:layout_height="300dp"
+      android:visibility="visible"
+      app:default_artwork="@drawable/albumcover"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/volumeContainer"
+      app:resize_mode="fixed_width"
+      app:show_buffering="when_playing"
+      app:use_artwork="true" />
+
+  <com.google.android.exoplayer2.ui.SubtitleView
+      android:id="@+id/exo_subtitles"
+      android:layout_height="100dp"
+      android:background="#FF0000"
+      android:textAlignment="center"
+      android:visibility="visible"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/volumeContainer" />
+      app:layout_constraintTop_toBottomOf="@+id/video_view"
+      android:layout_width="0dp"
+      />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

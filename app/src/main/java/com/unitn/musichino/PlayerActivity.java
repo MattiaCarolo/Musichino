@@ -15,59 +15,38 @@
  */
 package com.unitn.musichino;
 
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.media.audiofx.Equalizer;
-import android.net.sip.SipSession;
-import android.provider.MediaStore;
-import android.widget.Button;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Renderer;
-import com.google.android.exoplayer2.RenderersFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
+import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.ui.DefaultMediaDescriptionAdapter;
+import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Assertions;
-import com.google.android.exoplayer2.util.EventLogger;
-import com.google.android.exoplayer2.util.Util;
-import com.unitn.musichino.Models.AudioModel;
-import com.unitn.musichino.ui.equalizer.EqualizerFragment;
+import com.google.android.exoplayer2.ui.SubtitleView;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 /**
  * A fullscreen activity to play audio or video streams.
@@ -75,7 +54,10 @@ import java.util.Objects;
 public class PlayerActivity extends AppCompatActivity
         implements  Player.EventListener {
 
+  private static final String CHANNEL_ID = "playback_channel";
+  private static final int NOTIFICATION_ID = 1;
   private PlayerView playerView;
+  SubtitleView subtitleView;
   private MixMeExoPlayer mixMePlayer;
   private List<SeekBar> seekBars;
   private int totalAudioTracks = 6;                     // TODO dynamic audio track count
@@ -100,6 +82,7 @@ public class PlayerActivity extends AppCompatActivity
   Context context;
   Equalizer mEqualizer;
   String fileName;
+  PlayerNotificationManager playerNotificationManager;
 
   public MixMeExoPlayer getMixMePlayer() {
     return mixMePlayer;
@@ -124,12 +107,29 @@ public class PlayerActivity extends AppCompatActivity
 
     mixMePlayer = new MixMeExoPlayer( this, 1);
     playerView = findViewById(R.id.video_view);
+    subtitleView = findViewById(R.id.exo_subtitles);
     volumeSeekBar = findViewById(R.id.seekBarVol);
     volumeSeekBar2 = findViewById(R.id.seekBarVol2);
     volumeSeekBar3 = findViewById(R.id.seekBarVol3);
     volumeSeekBar4 = findViewById(R.id.seekBarVol4);
     volumeSeekBar5 = findViewById(R.id.seekBarVol5);
     volumeSeekBar6 = findViewById(R.id.seekBarVol6);
+    DefaultMediaDescriptionAdapter descriptionAdapter =  new DefaultMediaDescriptionAdapter(PendingIntent.getActivity(this, 0, new Intent(this, PlayerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+
+            //SERVICE
+    playerNotificationManager = new PlayerNotificationManager.Builder(
+            this,
+            NOTIFICATION_ID,
+            CHANNEL_ID
+           )
+            .setMediaDescriptionAdapter(descriptionAdapter)
+            .setNotificationListener(new PlayerNotificationManager.NotificationListener() {
+              @Override
+              public void onNotificationPosted(int notificationId, Notification notification, boolean ongoing) {
+                  Log.d("NOTIFICATION", "ID: "+ notificationId + ", notification: " +notification.category);
+              }
+            })
+            .build();
     /*
     equalizerButton = findViewById(R.id.equalizerButton);
     equalizerButton.setOnClickListener(new View.OnClickListener() {
@@ -325,12 +325,34 @@ public class PlayerActivity extends AppCompatActivity
   @Override
   public void onStart() {
     super.onStart();
-    try {
-      mixMePlayer.startPlaying(Uri.parse(fileName));
-    //  mixMePlayer.player.seekTo(currentWindow, playbackPosition);
-      playerView.setPlayer(mixMePlayer.player);
-    } catch (IOException e) {
-      e.printStackTrace();
+    if(mixMePlayer.player == null) {
+      try {
+        mixMePlayer.startPlaying(Uri.parse(fileName));
+        //  mixMePlayer.player.seekTo(currentWindow, playbackPosition);
+        playerView.setPlayer(mixMePlayer.player);
+
+        mixMePlayer.player.addListener(new Player.Listener() {
+            @Override
+            public void onCues(List<Cue> cues) {
+                if (cues.size() > 1) {
+                    Log.d("CUES", "There are more than one cues available.");
+                }
+
+                if (subtitleView != null && !cues.isEmpty()) {
+                    // Since an srt file will only ever have one cue we can afford to get only the first one.
+                    subtitleView.setCues(cues);
+                }
+                else {
+                    Log.d("CUES", "No cues found.");
+                    Log.d("CUES", "size cues: " + cues.size());
+                }
+            }
+
+        });
+        playerNotificationManager.setPlayer(mixMePlayer.player);
+      } catch (IOException | InterruptedException | ExecutionException e) {
+        e.printStackTrace();
+      }
     }
 /*
     mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
@@ -382,11 +404,16 @@ public class PlayerActivity extends AppCompatActivity
   @Override
   public void onStop() {
     super.onStop();
-    mixMePlayer.stopPlaying();
+
 
   }
 
-
+ @Override
+ public void onDestroy(){
+    super.onDestroy();
+    mixMePlayer.player.release();
+   playerNotificationManager.setPlayer(null);
+ }
 
   @SuppressLint("InlinedApi")
   private void hideSystemUi() {

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
+import android.media.MediaMetadataRetriever;
 import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Handler;
@@ -14,40 +15,48 @@ import android.util.Log;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.MediaMetadata;
+import com.google.android.exoplayer2.MetadataRetriever;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Renderer;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
+import com.google.android.exoplayer2.metadata.Metadata;
 import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.TrackGroup;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.TextOutput;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.FixedTrackSelection;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MixMeExoPlayer
             implements Player.EventListener{
     private final Context context;
-
-
     private DataSource.Factory dataSourceFactory;
     public SimpleExoPlayer player;
     public MultiAudioTrackSelector trackSelector;
@@ -75,6 +84,7 @@ public class MixMeExoPlayer
     }
 
 
+
     private void initPlayer(int trackCount) {
         if(player==null) {
              trackSelector = new MultiAudioTrackSelector();
@@ -85,6 +95,12 @@ public class MixMeExoPlayer
             player.setPlayWhenReady(playWhenReady);
             trackIndex++;
             player.addListener(this);
+            player.addListener(new Player.Listener() {
+                @Override
+                public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+                    Log.d("ARTWORK", mediaMetadata.artworkDataType + "");
+                }
+            });
 
         }
         concatenatingMediaSource = new ConcatenatingMediaSource();
@@ -104,20 +120,52 @@ public class MixMeExoPlayer
     }
 
 
-        public void startPlaying(Uri uri) throws IOException {
+        public void startPlaying(Uri uri) throws IOException, ExecutionException, InterruptedException {
             progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
             MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
+            ListenableFuture<TrackGroupArray> trackGroupsFuture =
+                    MetadataRetriever.retrieveMetadata(context, MediaItem.fromUri(uri));
+            Executor executor = new Executor() {
+                @Override
+                public void execute(Runnable runnable) {
+                    Log.d("yea", "yuhu");
+                }
+            };
+            Futures.addCallback(
+                    trackGroupsFuture,
+                    new FutureCallback<TrackGroupArray>() {
+                        @Override
+                        public void onSuccess(TrackGroupArray trackGroups) {
+                            Log.d("META", trackGroups.get(0).getFormat(0).metadata.toString());
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            Log.d("META", "FAIL");
+                        }
+                    },
+                    executor);
+         //   mmr.setDataSource(context, uri);
+         //   String artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
             MediaExtractor extractor = new MediaExtractor();
+            MediaMetadata.Builder builder = new MediaMetadata.Builder();
+            MediaMetadata tmpMeta = builder.setArtist("ARTIST").setTitle("TITLE").setAlbumTitle("ALBUM").build();
+      //      mediaSource = progressiveMediaSourceFactory.createMediaSource(mediaSource.getMediaItem().buildUpon().setMediaMetadata(tmpMeta).build());
             final AssetFileDescriptor afd=context.getAssets().openFd(uri.getLastPathSegment());
             extractor.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
             int numTracks = extractor.getTrackCount();
             Log.d("extractorNumTrak", ""+numTracks);
             int numAudioTracks = 0;
             extractor.release();
-            initPlayer(numTracks);
+            initPlayer(6);
             player.setMediaSource(mediaSource, true);
             player.prepare();
             player.getAudioSessionId();
+            PlayerView  view;
+
+            Log.d("METADATA", "artist: "+ player.getMediaMetadata().artist+ ", album: " + player.getMediaMetadata().albumTitle);
+
+            //    Log.d("DECODERS", "input buffer count: " + player.getAudioDecoderCounters().inputBufferCount);
         }
 
 

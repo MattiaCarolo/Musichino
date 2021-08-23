@@ -9,6 +9,8 @@ import com.google.android.exoplayer2.RendererConfiguration;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.ExoTrackSelection;
 import com.google.android.exoplayer2.trackselection.FixedTrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
@@ -39,24 +41,42 @@ public class MultiAudioTrackSelector extends TrackSelector {
 
         int rendererCount = rendererCapabilities.length;
         audioRendererCount = 0;
-        TrackSelection[] rendererTrackSelections = new TrackSelection[rendererCount];
+        textRendererCount = 0;
+        ExoTrackSelection[] rendererTrackSelections = new ExoTrackSelection[rendererCount];
         Log.i("SELECTOR", "RendererCount: " + rendererCount + ", TrackGroupsCount: " + trackGroups.length);
         int idx = 1;
-        for (int i = 0; i < rendererCount; i++) {
+        for (int i = 0; i < trackGroups.length; i++) {
             int trackType = rendererCapabilities[i].getTrackType();
+            Log.d("TRAKTYPE", trackType+"");
             int length = trackGroups.length;
             if (trackType == C.TRACK_TYPE_AUDIO) {
                // int trackGroup = 2 * idx + 1;
                 int trackGroup = idx - 1;                                                           // TODO search for track group
-                Log.i("TRAKTAG", "sample mime: " + trackGroups.get(trackGroup).getFormat(0).sampleMimeType + ", codecs: " + trackGroups.get(trackGroup).getFormat(0).codecs);
-                rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(trackGroup), 0);
+                if (trackGroups.get(trackGroup).getFormat(0).metadata != null)
+                Log.i("TRAKTAG", "meta: " + trackGroups.get(trackGroup).getFormat(0).metadata.toString() + ", codecs: " + trackGroups.get(trackGroup).getFormat(0).codecs);
+                rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(trackGroup), 0, C.TRACK_TYPE_AUDIO);
                 idx++;
                 audioRendererCount++;
             }
             else if( trackType == C.TRACK_TYPE_TEXT){
-                int textGroup = length - 1;                                                         // TODO search for text group
-                rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(textGroup), 0);
-
+                int textGroup = idx - 1;                                                         // TODO search for text group
+                rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(textGroup), 0, C.TRACK_TYPE_TEXT);
+                textRendererCount++;
+                idx++;
+            }
+            else if(trackType == C.TRACK_TYPE_VIDEO){
+                int trackGroup = idx -1;                                                           // TODO search for track group
+                if (trackGroups.get(trackGroup).getFormat(0).sampleMimeType != null)
+                    Log.i("TRAKVIDIO", "meta: " + trackGroups.get(trackGroup).getFormat(0).containerMimeType+ ", codecs: " + trackGroups.get(trackGroup).getFormat(0).codecs);
+               // rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(trackGroup), 0);
+              //  idx++;
+            }
+            else if(trackType == C.TRACK_TYPE_METADATA){
+                int trackGroup = idx -1;
+                if (trackGroups.get(trackGroup).getFormat(0).sampleMimeType != null)
+                    Log.i("TRAKMETA", "MIME: " + trackGroups.get(trackGroup).getFormat(0).sampleMimeType+ ", codecs: " + trackGroups.get(trackGroup).getFormat(0).codecs);
+                //rendererTrackSelections[i] = new FixedTrackSelection(trackGroups.get(trackGroup), 0);
+                //idx++;
             }
 
         }
@@ -71,4 +91,6 @@ public class MultiAudioTrackSelector extends TrackSelector {
     @Override
     public void onSelectionActivated(Object info) {
     }
+
+
 }
