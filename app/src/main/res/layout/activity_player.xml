@@ -17,7 +17,7 @@ limitations under the License. -->
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_screen">
+    android:background="@color/white">
 
   <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/pgr_MediaPlayer"

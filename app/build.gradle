@@ -39,6 +39,7 @@ repositories {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.squareup.picasso:picasso:2.71828' //da togliere
     implementation 'com.google.android.exoplayer:exoplayer-core:2.15.0'
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.15.0'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.15.0'

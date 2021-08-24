@@ -217,13 +217,14 @@ public class PlayerActivity extends FragmentActivity
     @Override
     public void onStart() {
       super.onStart();
+      /*
       try {
-        mixMePlayer.startPlaying(Uri.parse(fileName));
+        //mixMePlayer.startPlaying(Uri.parse(fileName));
       //  mixMePlayer.player.seekTo(currentWindow, playbackPosition);
-        playerView.setPlayer(mixMePlayer.player);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      //  playerView.setPlayer(mixMePlayer.player);
+      } catch (){//IOException e) {
+       // e.printStackTrace();
+      }*/
   /*
       mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
 
