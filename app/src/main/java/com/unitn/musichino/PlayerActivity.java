@@ -94,7 +94,7 @@ public class PlayerActivity extends AppCompatActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Intent intent = getIntent();
-    fileName = "asset:///" + intent.getStringExtra("fileName");
+    fileName =  intent.getStringExtra("fileName"); //  + "asset:///"
     Log.d("fileName: ", fileName);
     context = this;
     setContentView(R.layout.activity_player);

@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private PagerCardAdapter pagerCardAdapter;
     private ViewPager viewPager;
-    private String CHANGE = "output2.mp4";                                                           // TODO change to dynamic filename
+    private String CHANGE = "asset:///output2.mp4";                                                           // TODO change to dynamic filename
 
     private ArrayList<RadarHolder> mData = new ArrayList<RadarHolder>() {
         {
