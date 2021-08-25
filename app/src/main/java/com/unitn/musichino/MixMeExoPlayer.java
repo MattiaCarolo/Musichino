@@ -45,6 +45,7 @@ import com.google.android.exoplayer2.video.VideoRendererEventListener;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.unitn.musichino.service.AudioService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,12 +84,14 @@ public class MixMeExoPlayer
 
     }
 
-
+    public SimpleExoPlayer getPlayer() {
+        return player;
+    }
 
     private void initPlayer(int trackCount) {
         if(player==null) {
              trackSelector = new MultiAudioTrackSelector();
-            MultiTrackRenderersFactory renderersFactory = new MultiTrackRenderersFactory(trackCount, context, this);
+            MultiTrackRenderersFactory renderersFactory = new MultiTrackRenderersFactory(trackCount, context, new AudioService());
             player = new SimpleExoPlayer.Builder(context.getApplicationContext(), renderersFactory)
                     .setTrackSelector(trackSelector)
                     .build();

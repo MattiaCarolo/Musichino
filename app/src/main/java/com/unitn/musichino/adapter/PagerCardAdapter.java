@@ -2,6 +2,7 @@ package com.unitn.musichino.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.ultramegasoft.radarchart.RadarView;
+import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.CardModel;
 import com.unitn.musichino.ui.player.PlayerActivity;
 import com.unitn.musichino.R;
@@ -62,7 +64,12 @@ public class PagerCardAdapter extends PagerAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlayerActivity.class);
-                intent.putExtra("fileName", models.get(position).getFileName());
+                Bundle b = new Bundle();
+                AudioModel item = new AudioModel();
+                item.setPath(models.get(position).getFileName());
+               // intent.putExtra("fileName", models.get(position).getFileName());
+                b.putParcelable("item", item);
+                intent.putExtra("bundle", b);
                 context.startActivity(intent);
 
             }
