@@ -40,9 +40,11 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import androidx.annotation.Dimension;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -107,7 +109,7 @@ public class PlayerActivity extends AppCompatActivity
 
     mixMePlayer = new MixMeExoPlayer( this, 1);
     playerView = findViewById(R.id.video_view);
-    subtitleView = findViewById(R.id.exo_subtitles);
+    subtitleView = findViewById(R.id.exo_subtitles_view);
     volumeSeekBar = findViewById(R.id.seekBarVol);
     volumeSeekBar2 = findViewById(R.id.seekBarVol2);
     volumeSeekBar3 = findViewById(R.id.seekBarVol3);
@@ -330,6 +332,8 @@ public class PlayerActivity extends AppCompatActivity
         mixMePlayer.startPlaying(Uri.parse(fileName));
         //  mixMePlayer.player.seekTo(currentWindow, playbackPosition);
         playerView.setPlayer(mixMePlayer.player);
+        playerView.getSubtitleView().setVisibility(View.INVISIBLE);
+        subtitleView.setFixedTextSize(Dimension.DP, 69);
 
         mixMePlayer.player.addListener(new Player.Listener() {
             @Override
@@ -341,14 +345,15 @@ public class PlayerActivity extends AppCompatActivity
                 if (subtitleView != null && !cues.isEmpty()) {
                     // Since an srt file will only ever have one cue we can afford to get only the first one.
                     subtitleView.setCues(cues);
+
                 }
                 else {
                     Log.d("CUES", "No cues found.");
-                    Log.d("CUES", "size cues: " + cues.size());
                 }
             }
 
         });
+
         playerNotificationManager.setPlayer(mixMePlayer.player);
       } catch (IOException | InterruptedException | ExecutionException e) {
         e.printStackTrace();
