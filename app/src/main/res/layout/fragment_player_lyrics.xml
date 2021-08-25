@@ -6,10 +6,12 @@
     tools:context=".ui.player.FragmentPlayerLyrics">
 
     <com.google.android.exoplayer2.ui.SubtitleView
+        android:id="@+id/exo_subtitles_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/subtitle"
-        />
-
+        android:layout_marginBottom="24dp"
+        android:background="#00BFA5"
+        android:textAlignment="center"
+        android:visibility="visible" />
 
 </FrameLayout>

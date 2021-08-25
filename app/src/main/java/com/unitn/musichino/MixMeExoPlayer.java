@@ -147,22 +147,20 @@ public class MixMeExoPlayer
                     executor);
          //   mmr.setDataSource(context, uri);
          //   String artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-            MediaExtractor extractor = new MediaExtractor();
-            MediaMetadata.Builder builder = new MediaMetadata.Builder();
-            MediaMetadata tmpMeta = builder.setArtist("ARTIST").setTitle("TITLE").setAlbumTitle("ALBUM").build();
+     //       MediaExtractor extractor = new MediaExtractor();
+     //       MediaMetadata.Builder builder = new MediaMetadata.Builder();
+     //       MediaMetadata tmpMeta = builder.setArtist("ARTIST").setTitle("TITLE").setAlbumTitle("ALBUM").build();
       //      mediaSource = progressiveMediaSourceFactory.createMediaSource(mediaSource.getMediaItem().buildUpon().setMediaMetadata(tmpMeta).build());
-            final AssetFileDescriptor afd=context.getAssets().openFd(uri.getLastPathSegment());
-            extractor.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-            int numTracks = extractor.getTrackCount();
-            Log.d("extractorNumTrak", ""+numTracks);
+//            final AssetFileDescriptor afd=context.getAssets().openFd(uri.getLastPathSegment());
+  //          extractor.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+    //        int numTracks = extractor.getTrackCount();
+    //        Log.d("extractorNumTrak", ""+numTracks);
             int numAudioTracks = 0;
-            extractor.release();
+        //    extractor.release();
             initPlayer(6);
             player.setMediaSource(mediaSource, true);
             player.prepare();
             player.getAudioSessionId();
-            PlayerView  view;
-
             Log.d("METADATA", "artist: "+ player.getMediaMetadata().artist+ ", album: " + player.getMediaMetadata().albumTitle);
 
             //    Log.d("DECODERS", "input buffer count: " + player.getAudioDecoderCounters().inputBufferCount);
