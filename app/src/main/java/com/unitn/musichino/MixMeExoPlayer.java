@@ -84,7 +84,9 @@ public class MixMeExoPlayer
 
     }
 
-
+    public SimpleExoPlayer getPlayer() {
+        return player;
+    }
 
     private void initPlayer(int trackCount) {
         if(player==null) {

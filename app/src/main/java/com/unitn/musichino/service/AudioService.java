@@ -1,6 +1,8 @@
 package com.unitn.musichino.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ClipData;
@@ -9,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -34,6 +37,7 @@ import com.unitn.musichino.MultiTrackRenderersFactory;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -52,11 +56,14 @@ public class AudioService extends Service {
     private final int trackCount = 10;
     private static final String CHANNEL_ID = "playback_channel";
     private static final int NOTIFICATION_ID = 1;
+    public static final int IMPORTANCE_DEFAULT = 3;
 
 
     @Override
     public void onCreate() {
+        Log.d("DEBUG", "calling on create");
         super.onCreate();
+        renderers = new ArrayList<>();
     }
 
     @Override
@@ -92,6 +99,7 @@ public class AudioService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("ITEM", "boiamondo ");
         Bundle b = intent.getBundleExtra("bundle");
         if (b != null) {
             item = b.getParcelable("item");
@@ -137,6 +145,9 @@ public class AudioService extends Service {
                         CHANNEL_ID
                 )
                         .setMediaDescriptionAdapter(descriptionAdapter)
+                        .setChannelDescriptionResourceId(2)
+                        .setChannelImportance(0)
+                        .setChannelNameResourceId(0)
                         .setNotificationListener(new PlayerNotificationManager.NotificationListener() {
 
                             @Override
@@ -152,8 +163,8 @@ public class AudioService extends Service {
                         })
                         .build();
                 playerNotificationManager.setPlayer(player);
+                createNotificationChannel();
             }
-
 
     public void addRenderer(MediaCodecAudioRenderer renderer){
         renderers.add(renderer);
@@ -165,4 +176,22 @@ public class AudioService extends Service {
             return AudioService.this;
         }
     }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "ciao";
+            String description = "Musichino";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+
 }

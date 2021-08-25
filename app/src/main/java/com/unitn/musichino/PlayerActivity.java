@@ -16,6 +16,7 @@
 package com.unitn.musichino;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -136,11 +137,26 @@ public class PlayerActivity extends AppCompatActivity
       Bundle serviceBundle = new Bundle();
       serviceBundle.putParcelable("item", item);
       intent.putExtra("bundle", serviceBundle);
-      Util.startForegroundService(this, intent);
+      try{
+        Util.startForegroundService(this, intent);
+      }catch(Exception ex){
+          Log.d("Exception service", ex.toString());
+      }
       playerView.setUseController(true);
       playerView.showController();
       playerView.setControllerAutoShow(true);
       playerView.setControllerHideOnTouch(false);
+      ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+      List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
+      for (ActivityManager.RunningServiceInfo serviceInfo : services) {
+        ComponentName componentName = serviceInfo.service;
+        String serviceName = componentName.getClassName();
+        Log.d("service active ", serviceName);
+        if (serviceName.equals(AudioService.class)) {
+          Log.d("nice ", mUrl);
+        }
+      }
+      Log.d("boiaputtona: ", mUrl);
     }
 
    // Intent intent = getIntent();
