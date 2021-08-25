@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.text.TextRenderer;
 import com.google.android.exoplayer2.video.DecoderVideoRenderer;
 import com.google.android.exoplayer2.video.MediaCodecVideoRenderer;
 import com.google.android.exoplayer2.video.VideoRendererEventListener;
+import com.unitn.musichino.service.AudioService;
 
 import java.util.ArrayList;
 
@@ -26,10 +27,10 @@ import androidx.annotation.Nullable;
 
 public class MultiTrackRenderersFactory extends DefaultRenderersFactory {
     private int audioTrackCnt;
-    private MixMeExoPlayer player;
+    private AudioService player;
     MediaCodecSelector selector;
 
-    public MultiTrackRenderersFactory(int count, Context context, MixMeExoPlayer player) {
+    public MultiTrackRenderersFactory(int count, Context context, AudioService player) {
         super(context);
         this.audioTrackCnt = count;
         this.player = player;

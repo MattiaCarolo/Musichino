@@ -70,11 +70,6 @@ public class fragment_player_home extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_player_home, container, false);
-        root.findViewById(R.id.player_view);
-        PlayerActivity playerActivity = (PlayerActivity)getActivity();
-        mixMePlayer = playerActivity.getMixMePlayer();
-
-
 
         return root;
     }

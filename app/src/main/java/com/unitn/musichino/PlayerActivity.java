@@ -18,11 +18,14 @@ package com.unitn.musichino;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +34,7 @@ import android.widget.SeekBar;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Renderer;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.text.Cue;
@@ -38,6 +42,9 @@ import com.google.android.exoplayer2.ui.DefaultMediaDescriptionAdapter;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.ui.SubtitleView;
+import com.google.android.exoplayer2.util.Util;
+import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.service.AudioService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,30 +92,68 @@ public class PlayerActivity extends AppCompatActivity
   Equalizer mEqualizer;
   String fileName;
   PlayerNotificationManager playerNotificationManager;
-
-  public MixMeExoPlayer getMixMePlayer() {
-    return mixMePlayer;
-  }
+  private String mUrl, mTitle, mSummary, mImage;
+  private AudioService mService;
+  private Intent intent;
+  private String shareableLink;
+  private boolean mBound = false;
 
   private ConcatenatingMediaSource concatenatingMediaSource;
 
+
+  private ServiceConnection mConnection = new ServiceConnection() {
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+      AudioService.LocalBinder binder = (AudioService.LocalBinder) iBinder;
+      mService = binder.getService();
+      mBound = true;
+      initializePlayer();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+      mBound = false;
+    }
+  };
+
+
+
+  @SuppressLint("MissingSuperCall")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Intent intent = getIntent();
-    fileName =  intent.getStringExtra("fileName"); //  + "asset:///"
-    Log.d("fileName: ", fileName);
-    context = this;
     setContentView(R.layout.activity_player);
+    playerView = findViewById(R.id.video_view);
+    Bundle b = getIntent().getBundleExtra("bundle");
+    if (b != null) {
+      AudioModel item = b.getParcelable("item");
+      shareableLink = b.getString("share_key");
+    //  mImage = item.getImage();
+      mUrl = item.getPath();
+      mTitle = item.getName();
+   //   mSummary = item.getArtist();
+      intent = new Intent(this, AudioService.class);
+      Bundle serviceBundle = new Bundle();
+      serviceBundle.putParcelable("item", item);
+      intent.putExtra("bundle", serviceBundle);
+      Util.startForegroundService(this, intent);
+      playerView.setUseController(true);
+      playerView.showController();
+      playerView.setControllerAutoShow(true);
+      playerView.setControllerHideOnTouch(false);
+    }
 
+   // Intent intent = getIntent();
+  //  fileName =  intent.getStringExtra("fileName"); //  + "asset:///"
+    Log.d("fileName: ", mUrl);
     viewPager = findViewById(R.id.pager);
    // pagerAdapter = new ScreenSlidePagerAdapter(this);
    // viewPager.setAdapter(pagerAdapter);
 
 
 
-    mixMePlayer = new MixMeExoPlayer( this, 1);
-    playerView = findViewById(R.id.video_view);
+  //  mixMePlayer = new MixMeExoPlayer( this, 1);
+  //  playerView = findViewById(R.id.video_view);
     subtitleView = findViewById(R.id.exo_subtitles_view);
     volumeSeekBar = findViewById(R.id.seekBarVol);
     volumeSeekBar2 = findViewById(R.id.seekBarVol2);
@@ -116,22 +161,9 @@ public class PlayerActivity extends AppCompatActivity
     volumeSeekBar4 = findViewById(R.id.seekBarVol4);
     volumeSeekBar5 = findViewById(R.id.seekBarVol5);
     volumeSeekBar6 = findViewById(R.id.seekBarVol6);
-    DefaultMediaDescriptionAdapter descriptionAdapter =  new DefaultMediaDescriptionAdapter(PendingIntent.getActivity(this, 0, new Intent(this, PlayerActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
 
-            //SERVICE
-    playerNotificationManager = new PlayerNotificationManager.Builder(
-            this,
-            NOTIFICATION_ID,
-            CHANNEL_ID
-           )
-            .setMediaDescriptionAdapter(descriptionAdapter)
-            .setNotificationListener(new PlayerNotificationManager.NotificationListener() {
-              @Override
-              public void onNotificationPosted(int notificationId, Notification notification, boolean ongoing) {
-                  Log.d("NOTIFICATION", "ID: "+ notificationId + ", notification: " +notification.category);
-              }
-            })
-            .build();
+
+
     /*
     equalizerButton = findViewById(R.id.equalizerButton);
     equalizerButton.setOnClickListener(new View.OnClickListener() {
@@ -297,6 +329,23 @@ public class PlayerActivity extends AppCompatActivity
 
   }
 
+
+
+  private void initializePlayer() {
+    if (mBound) {
+      SimpleExoPlayer player = mService.getplayerInstance();
+      playerView.setPlayer(player);
+
+    }
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    initializePlayer();
+  //  setUI();
+  }
 /*
   @Override
   public void onClick(View view) {
@@ -323,7 +372,7 @@ public class PlayerActivity extends AppCompatActivity
   }
 
 */
-
+/*
   @Override
   public void onStart() {
     super.onStart();
@@ -359,6 +408,8 @@ public class PlayerActivity extends AppCompatActivity
         e.printStackTrace();
       }
     }
+
+ */
 /*
     mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
 
@@ -388,9 +439,9 @@ public class PlayerActivity extends AppCompatActivity
           mEqualizer.usePreset((short) (current - 1));
         }    }
     });
-*/
-  }
 
+  }
+*/
   @Override
   public void onResume() {
     super.onResume();
@@ -408,9 +459,9 @@ public class PlayerActivity extends AppCompatActivity
 
   @Override
   public void onStop() {
+    unbindService(mConnection);
+    mBound = false;
     super.onStop();
-
-
   }
 
  @Override
@@ -419,17 +470,5 @@ public class PlayerActivity extends AppCompatActivity
     mixMePlayer.player.release();
    playerNotificationManager.setPlayer(null);
  }
-
-  @SuppressLint("InlinedApi")
-  private void hideSystemUi() {
-    playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-        | View.SYSTEM_UI_FLAG_FULLSCREEN
-        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-  }
-
-
 
 }
