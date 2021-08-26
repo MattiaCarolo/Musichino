@@ -1,11 +1,10 @@
-package com.unitn.musichino.ui.player;
+package com.unitn.musichino.ui.player.Settings;
 
 import android.os.Bundle;
 
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -14,9 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.unitn.musichino.R;
+import com.unitn.musichino.ui.player.Settings.FragmentPlayerSettings;
 import com.unitn.musichino.ui.player.Settings.VolumeFragment;
-
-import java.util.ArrayList;
 
 public class SettingsHUDFragment extends Fragment implements View.OnClickListener {
 

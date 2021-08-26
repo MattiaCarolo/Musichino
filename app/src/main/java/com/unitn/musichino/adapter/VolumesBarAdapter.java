@@ -26,15 +26,19 @@ import com.unitn.musichino.PlayerActivity;
 
 public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.ViewHolder>{
 
-    private SimpleExoPlayer player;
+    public static SimpleExoPlayer player;
+    public static List<MediaCodecAudioRenderer> mediaCodecAudioRendererList;
 
-    public VolumesBarAdapter(AudioService service){
-        player = service.getplayerInstance();
+    private static SeekBar seekBar;
+    private static ImageView imageView;
+
+    public VolumesBarAdapter(SimpleExoPlayer player, List<MediaCodecAudioRenderer> mediaCodecAudioRendererList){
+        this.player = player;
+        this.mediaCodecAudioRendererList = mediaCodecAudioRendererList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private SeekBar seekBar;
-        private ImageView imageView;
+
 
         public ViewHolder(View view) {
             super(view);
@@ -42,28 +46,6 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
             int index;
             imageView = (ImageView) view.findViewById(R.id.img_tagtrack);
             seekBar = (SeekBar) view.findViewById(R.id.bar_volumebar);
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    if(b){
-                        float value = i / (float)seekBar.getMax();
-                        //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-                        MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(0);
-                        mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
-
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
         }
     }
 
@@ -84,7 +66,28 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(b){
+                    float value = i / (float)seekBar.getMax();
+                    //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
+                    MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
+                    player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)

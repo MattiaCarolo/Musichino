@@ -1,4 +1,4 @@
-package com.unitn.musichino.ui.player;
+package com.unitn.musichino.ui.player.home;
 
 import android.os.Bundle;
 
