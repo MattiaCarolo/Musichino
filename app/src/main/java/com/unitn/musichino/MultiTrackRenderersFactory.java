@@ -51,10 +51,10 @@ public class MultiTrackRenderersFactory extends DefaultRenderersFactory {
 
     @Override
     protected void buildVideoRenderers(Context context, int extensionRendererMode, MediaCodecSelector mediaCodecSelector, boolean enableDecoderFallback, Handler eventHandler, VideoRendererEventListener eventListener, long allowedVideoJoiningTimeMs, ArrayList<Renderer> out) {
-        //super.buildVideoRenderers(context, extensionRendererMode, mediaCodecSelector, enableDecoderFallback, eventHandler, eventListener, allowedVideoJoiningTimeMs, out);
+        super.buildVideoRenderers(context, extensionRendererMode, mediaCodecSelector, enableDecoderFallback, eventHandler, eventListener, allowedVideoJoiningTimeMs, out);
         //MediaCodecVideoRenderer renderer = new MediaCodecVideoRenderer(context, mediaCodecSelector);
         //out.add(renderer);
-        selector = mediaCodecSelector;
+        //selector = mediaCodecSelector;
     }
 
     @Override
@@ -66,9 +66,9 @@ public class MultiTrackRenderersFactory extends DefaultRenderersFactory {
 
     @Override
     protected void buildMetadataRenderers(Context context, MetadataOutput output, Looper outputLooper, int extensionRendererMode, ArrayList<Renderer> out) {
-       // super.buildMetadataRenderers(context, output, outputLooper, extensionRendererMode, out);
-        MetadataRenderer renderer = new MetadataRenderer(output, outputLooper);
-        out.add(renderer);
+        super.buildMetadataRenderers(context, output, outputLooper, extensionRendererMode, out);
+       // MetadataRenderer renderer = new MetadataRenderer(output, outputLooper);
+       // out.add(renderer);
         //MediaCodecVideoRenderer renderer = new MediaCodecVideoRenderer(context, selector);
         //out.add(renderer);
     }

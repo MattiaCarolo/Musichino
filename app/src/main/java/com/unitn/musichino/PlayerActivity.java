@@ -70,14 +70,6 @@ public class PlayerActivity extends AppCompatActivity
   SubtitleView subtitleView;
   private MixMeExoPlayer mixMePlayer;
   private List<SeekBar> seekBars;
-  private int totalAudioTracks = 6;                     // TODO dynamic audio track count
-  private boolean playWhenReady = true;
-  private int currentWindow = 0;
-  private long playbackPosition = 0;
-  private int trackIndex = 1;
-  private int currentAudioTrack = 0;
-  private Button selectTracksButton;
-  private boolean isShowingTrackSelectionDialog;
   private SeekBar volumeSeekBar;
   private SeekBar volumeSeekBar2;
   private SeekBar volumeSeekBar3;
@@ -158,6 +150,8 @@ public class PlayerActivity extends AppCompatActivity
       }
       Log.d("boiaputtona: ", mUrl);
     }
+
+
 
    // Intent intent = getIntent();
   //  fileName =  intent.getStringExtra("fileName"); //  + "asset:///"
@@ -351,6 +345,19 @@ public class PlayerActivity extends AppCompatActivity
     if (mBound) {
       SimpleExoPlayer player = mService.getplayerInstance();
       playerView.setPlayer(player);
+      player.addListener(new Player.Listener() {
+        @Override
+        public void onCues(List<Cue> cues) {
+          if (cues.size() > 1) {
+            Log.d("CUES", "There are more than one cues available.");
+          }
+          if (subtitleView != null && !cues.isEmpty()) {
+            subtitleView.setCues(cues);
+          }
+        }
+      });
+
+
 
     }
   }
@@ -360,8 +367,12 @@ public class PlayerActivity extends AppCompatActivity
     super.onStart();
     bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     initializePlayer();
+    playerView.getSubtitleView().setVisibility(View.INVISIBLE);
+    subtitleView.setFixedTextSize(Dimension.DP, 69);
   //  setUI();
   }
+
+
 /*
   @Override
   public void onClick(View view) {
@@ -483,8 +494,8 @@ public class PlayerActivity extends AppCompatActivity
  @Override
  public void onDestroy(){
     super.onDestroy();
-    mixMePlayer.player.release();
-   playerNotificationManager.setPlayer(null);
+    mService.getplayerInstance().release();
+    playerNotificationManager.setPlayer(null);
  }
 
 }
