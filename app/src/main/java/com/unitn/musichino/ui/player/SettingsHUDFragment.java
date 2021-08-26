@@ -65,7 +65,7 @@ public class SettingsHUDFragment extends Fragment implements View.OnClickListene
                 FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
                 transaction.replace(R.id.hud_settings, fragment);
                 transaction.addSharedElement(btn_volumes, "titolo");
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("volumi");
                 transaction.commit();
                 break;
 

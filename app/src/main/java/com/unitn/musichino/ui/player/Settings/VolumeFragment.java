@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
 import com.unitn.musichino.R;
 import com.unitn.musichino.uikit.SettingsTransition;
 

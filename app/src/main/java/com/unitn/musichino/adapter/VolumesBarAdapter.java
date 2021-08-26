@@ -1,5 +1,6 @@
 package com.unitn.musichino.adapter;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.unitn.musichino.MixMeExoPlayer;
 import com.unitn.musichino.Models.AudioModel;
@@ -19,32 +21,20 @@ import com.unitn.musichino.R;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import com.unitn.musichino.service.AudioService;
+import com.unitn.musichino.PlayerActivity;
 
 public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.ViewHolder>{
 
+    private SimpleExoPlayer player;
 
-    @NonNull
-    @NotNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return null;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
+    public VolumesBarAdapter(AudioService service){
+        player = service.getplayerInstance();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView imageView;
-        private final SeekBar seekBar;
-        private MixMeExoPlayer mixMePlayer;
-        private List<AudioModel> tracks;
+        private SeekBar seekBar;
+        private ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -75,14 +65,33 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
                 }
             });
         }
+    }
 
-        public ImageView getTextView() {
-            return imageView;
-        }
+    // Create new views (invoked by the layout manager)
+    @NotNull
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        // Create a new view, which defines the UI of the list item
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.volumebar, viewGroup, false);
 
-        public ImageView setTextView() {
-            return imageView;
-        }
+        return new ViewHolder(view);
+    }
+
+    // Replace the contents of a view (invoked by the layout manager)
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+
+        // Get element from your dataset at this position and replace the
+        // contents of the view with that element
 
     }
+
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return player.getAudioDecoderCounters().inputBufferCount;
+    }
+
+
 }

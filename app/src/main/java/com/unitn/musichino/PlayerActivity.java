@@ -45,7 +45,11 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.util.Util;
 import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.adapter.PlayerPagerAdapter;
 import com.unitn.musichino.service.AudioService;
+import com.unitn.musichino.ui.player.FragmentPlayerHome;
+import com.unitn.musichino.ui.player.FragmentPlayerLyrics;
+import com.unitn.musichino.ui.player.FragmentPlayerSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +58,7 @@ import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.Dimension;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -162,162 +167,16 @@ public class PlayerActivity extends AppCompatActivity
    // Intent intent = getIntent();
   //  fileName =  intent.getStringExtra("fileName"); //  + "asset:///"
     Log.d("fileName: ", mUrl);
-    viewPager = findViewById(R.id.pager);
-   // pagerAdapter = new ScreenSlidePagerAdapter(this);
-   // viewPager.setAdapter(pagerAdapter);
+    viewPager = findViewById(R.id.pgr_MediaPlayer);
+    List<Fragment> fragments = new ArrayList<>();
+    fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
+    fragments.add(Fragment.instantiate(this, FragmentPlayerHome.class.getName()));
+    fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
+    pagerAdapter = new PlayerPagerAdapter(this,fragments);
+    viewPager.setAdapter(pagerAdapter);
 
 
-
-  //  mixMePlayer = new MixMeExoPlayer( this, 1);
-  //  playerView = findViewById(R.id.video_view);
-    subtitleView = findViewById(R.id.exo_subtitles_view);
-    volumeSeekBar = findViewById(R.id.seekBarVol);
-    volumeSeekBar2 = findViewById(R.id.seekBarVol2);
-    volumeSeekBar3 = findViewById(R.id.seekBarVol3);
-    volumeSeekBar4 = findViewById(R.id.seekBarVol4);
-    volumeSeekBar5 = findViewById(R.id.seekBarVol5);
-    volumeSeekBar6 = findViewById(R.id.seekBarVol6);
-
-
-
-    /*
-    equalizerButton = findViewById(R.id.equalizerButton);
-    equalizerButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-
-        if (savedInstanceState == null) {
-          getSupportFragmentManager().beginTransaction()
-                  .setReorderingAllowed(true)
-                  .add(R.id.equalizerFrame, EqualizerFragment.class, null)
-                  .commit();
-        }
-        else{
-          Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.equalizerLayout);
-          getSupportFragmentManager().beginTransaction()
-                  .setReorderingAllowed(true)
-                  .remove(fragment)
-                  .commit();
-        }
-      }
-    });
-
-     */
-    // EQ
-
-
-
-
-    volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if(b){
-          float value = i / (float)seekBar.getMax();
-          //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(0);
-          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
-
-        }
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-
-      }
-    });
-    volumeSeekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if(b){
-          float value = i / (float)seekBar.getMax();
-          //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(1);
-          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
-
-        }
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-
-      }
-    });
-    volumeSeekBar3.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if(b){
-          float value = i / (float)seekBar.getMax();
-          //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(2);
-          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
-
-        }
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-
-      }
-    });
-    volumeSeekBar4.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if(b){
-          float value = i / (float)seekBar.getMax();
-          //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(3);
-          mixMePlayer.player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
-
-        }
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-
-      }
-    });
-    volumeSeekBar5.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if(b){
-          float value = i / (float)seekBar.getMax();
-          //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-          MediaCodecAudioRenderer renderer = mixMePlayer.renderers.get(4);
-          mixMePlayer.player.createMessage(renderer).setType(Renderer.MSG_SET_VOLUME).setPayload(value).send();
-
-        }
-      }
-
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-
-      }
-    });
+   /*
     volumeSeekBar6.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -339,9 +198,7 @@ public class PlayerActivity extends AppCompatActivity
       public void onStopTrackingTouch(SeekBar seekBar) {
 
       }
-    });
-    //selectTracksButton = findViewById(R.id.select_tracks_button);
-   // selectTracksButton.setOnClickListener( this);
+    });*/
 
   }
 

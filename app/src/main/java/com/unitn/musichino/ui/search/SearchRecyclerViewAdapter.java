@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
-import com.unitn.musichino.ui.player.PlayerActivity;
+
 
 import org.jetbrains.annotations.NotNull;
 
