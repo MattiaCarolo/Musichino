@@ -19,12 +19,13 @@
 
         <SeekBar
             android:id="@+id/bar_volumebar"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:thumb="@drawable/volume_thumb"
+            android:layout_weight="0.9"
+            android:progress="100"
             android:progressDrawable="@drawable/volume_bar"
-            android:layout_weight="0.9"/>
+            android:thumb="@drawable/volume_thumb" />
 
     </LinearLayout>
 

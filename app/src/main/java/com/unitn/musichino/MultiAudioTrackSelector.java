@@ -44,6 +44,7 @@ public class MultiAudioTrackSelector extends TrackSelector {
         int rendererCount = rendererCapabilities.length;
         audioRendererCount = 0;
         textRendererCount = 0;
+
         ExoTrackSelection[] rendererTrackSelections = new ExoTrackSelection[rendererCount];
         Log.i("SELECTOR", "RendererCount: " + rendererCount + ", TrackGroupsCount: " + trackGroups.length);
         int idx = 0;
@@ -60,6 +61,7 @@ public class MultiAudioTrackSelector extends TrackSelector {
                         rendererTrackSelections[rendererIndex] = new FixedTrackSelection(trackGroup, 0, C.TRACK_TYPE_AUDIO);
                         Log.d("TRACKTYPE", "Audio renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
                         groupIndex++;
+                        audioRendererCount++;
                     }
                     break;
                 case C.TRACK_TYPE_VIDEO:

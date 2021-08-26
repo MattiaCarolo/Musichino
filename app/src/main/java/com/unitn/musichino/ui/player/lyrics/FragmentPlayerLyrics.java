@@ -50,6 +50,7 @@ public class FragmentPlayerLyrics extends Fragment {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_player_lyrics, container, false);
         subtitleView = root.findViewById(R.id.exo_subtitles_view);
+        subtitleView.setFixedTextSize(Dimension.DP, 69);
         return root;
     }
     @Override

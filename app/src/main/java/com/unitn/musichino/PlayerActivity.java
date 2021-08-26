@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.audiofx.Equalizer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -46,6 +47,8 @@ import com.unitn.musichino.ui.player.Settings.FragmentPlayerSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Dimension;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -61,7 +64,6 @@ public class PlayerActivity extends AppCompatActivity
   private static final String CHANNEL_ID = "playback_channel";
   private static final int NOTIFICATION_ID = 1;
   private PlayerView playerView;
-  SubtitleView subtitleView;
   private SimpleExoPlayer player;
   private MixMeExoPlayer mixMePlayer;
   private List<SeekBar> seekBars;
@@ -85,6 +87,7 @@ public class PlayerActivity extends AppCompatActivity
   private Intent intent;
   private String shareableLink;
   private boolean mBound = false;
+  AudioModel item;
 
   private ConcatenatingMediaSource concatenatingMediaSource;
 
@@ -96,6 +99,10 @@ public class PlayerActivity extends AppCompatActivity
       mService = binder.getService();
       mBound = true;
       initializePlayer();
+      if(mService.currentlyPlaying != null){
+        Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
+        mService.changeSong(Uri.parse(item.getPath()));
+      }
     }
 
     @Override
@@ -106,7 +113,6 @@ public class PlayerActivity extends AppCompatActivity
 
 
 
-  @SuppressLint("MissingSuperCall")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -114,42 +120,27 @@ public class PlayerActivity extends AppCompatActivity
     playerView = findViewById(R.id.video_view);
     Bundle b = getIntent().getBundleExtra("bundle");
     if (b != null) {
-      AudioModel item = b.getParcelable("item");
+      item = b.getParcelable("item");
       shareableLink = b.getString("share_key");
-    //  mImage = item.getImage();
       mUrl = item.getPath();
       mTitle = item.getName();
-   //   mSummary = item.getArtist();
       intent = new Intent(this, AudioService.class);
       Bundle serviceBundle = new Bundle();
       serviceBundle.putParcelable("item", item);
       intent.putExtra("bundle", serviceBundle);
+
       try{
         Util.startForegroundService(this, intent);
       }catch(Exception ex){
           Log.d("Exception service", ex.toString());
       }
+
       playerView.setUseController(true);
       playerView.showController();
       playerView.setControllerAutoShow(true);
       playerView.setControllerHideOnTouch(false);
-      ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
-      List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
-      for (ActivityManager.RunningServiceInfo serviceInfo : services) {
-        ComponentName componentName = serviceInfo.service;
-        String serviceName = componentName.getClassName();
-        Log.d("service active ", serviceName);
-        if (serviceName.equals(AudioService.class)) {
-          Log.d("nice ", mUrl);
-        }
-      }
-      Log.d("boiaputtona: ", mUrl);
     }
 
-
-
-   // Intent intent = getIntent();
-  //  fileName =  intent.getStringExtra("fileName"); //  + "asset:///"
     Log.d("fileName: ", mUrl);
     viewPager = findViewById(R.id.pgr_MediaPlayer);
     List<Fragment> fragments = new ArrayList<>();
@@ -158,7 +149,11 @@ public class PlayerActivity extends AppCompatActivity
     fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
     pagerAdapter = new PlayerPagerAdapter(this,fragments);
     viewPager.setAdapter(pagerAdapter);
+    if(mBound){
+      Log.d("BOUND", "bindato");
+    }
   }
+
 
   private void initializePlayer() {
     if (mBound) {
@@ -180,23 +175,54 @@ public class PlayerActivity extends AppCompatActivity
   //  setUI();
   }
 
+  /*
+      mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
+
+        @Override
+        public void onAudioSessionId(int audioSessionId) {
+          SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
+          mEqualizer = new Equalizer(1000, audioSessionId);
+          mEqualizer.setEnabled(true);
+          //That's it, this will initialize the Equalizer and set it to the //default preset
+          int current = preferences.getInt("position", 0);
+          if (current == 0) {
+            for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
+              int progressBar = preferences.getInt("seek_" + seek_id, 1500);
+              short equalizerBandIndex = (short) (seek_id);
+              final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
+              Log.i("seek_" + seek_id, ":" + progressBar);
+              if (progressBar != 1500) {
+                mEqualizer.setBandLevel(equalizerBandIndex,
+                        (short) (progressBar + lowerEqualizerBandLevel));
+              } else {
+                //First time default 1500Hz
+                mEqualizer.setBandLevel(equalizerBandIndex,
+                        (short) (progressBar + lowerEqualizerBandLevel));
+              }
+            }
+          } else {
+            mEqualizer.usePreset((short) (current - 1));
+          }    }
+      });
+
+    }
+  */
   @Override
   public void onResume() {
     super.onResume();
-
   }
+
+
 
   @Override
   public void onPause() {
     super.onPause();
-
-
   }
 
   @Override
   public void onStop() {
-    unbindService(mConnection);
-    mBound = false;
+   // unbindService(mConnection);
+   // mBound = false;
     super.onStop();
   }
 
@@ -205,6 +231,7 @@ public class PlayerActivity extends AppCompatActivity
     super.onDestroy();
     //mService.getplayerInstance().release();
     //playerNotificationManager.setPlayer(null);
+   unbindService(mConnection);
  }
 
 }

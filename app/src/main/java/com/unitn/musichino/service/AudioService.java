@@ -23,7 +23,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DefaultMediaDescriptionAdapter;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -57,6 +59,7 @@ public class AudioService extends Service {
     private static final String CHANNEL_ID = "playback_channel";
     private static final int NOTIFICATION_ID = 1;
     public static final int IMPORTANCE_DEFAULT = 3;
+    public AudioModel currentlyPlaying;
 
 
     @Override
@@ -100,11 +103,9 @@ public class AudioService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("ITEM", "boiamondo ");
         Bundle b = intent.getBundleExtra("bundle");
         if (b != null) {
             item = b.getParcelable("item");
-            Log.d("ITEM", "received path: " + item.getPath());
         }
         if (player == null) {
             startPlayer();
@@ -114,7 +115,6 @@ public class AudioService extends Service {
 
 
     private void startPlayer() {
-        Log.d("STARTEXO", "starting");
         final Context context = this;
         trackSelector = new MultiAudioTrackSelector();
         MultiTrackRenderersFactory renderersFactory = new MultiTrackRenderersFactory(trackCount, context, this);
@@ -134,7 +134,7 @@ public class AudioService extends Service {
         player.setPlayWhenReady(true);
         player.setMediaSource(mediaSource, true);
         player.prepare();
-
+        currentlyPlaying = item;
         DefaultMediaDescriptionAdapter descriptionAdapter =  new DefaultMediaDescriptionAdapter(
                 PendingIntent.getActivity(
                         this,
@@ -166,7 +166,7 @@ public class AudioService extends Service {
                         .build();
                 playerNotificationManager.setPlayer(player);
                 createNotificationChannel();
-            }
+    }
 
     public void addRenderer(MediaCodecAudioRenderer renderer){
         renderers.add(renderer);
@@ -183,7 +183,7 @@ public class AudioService extends Service {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "ciao";
+            CharSequence name = "notification_channel";
             String description = "Musichino";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
@@ -193,6 +193,15 @@ public class AudioService extends Service {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+
+    public void changeSong(Uri uri){
+        progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
+        MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
+        player.setMediaSource(mediaSource);
+        player.prepare();
+        player.setPlayWhenReady(true);
     }
 
 

@@ -12,10 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.PlayerMessage;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.unitn.musichino.MixMeExoPlayer;
 import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.MultiAudioTrackSelector;
 import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +31,8 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
     public static SimpleExoPlayer player;
     public static List<MediaCodecAudioRenderer> mediaCodecAudioRendererList;
 
-    private static SeekBar seekBar;
-    private static ImageView imageView;
+    private SeekBar seekBar;
+    private ImageView imageView;
 
     public VolumesBarAdapter(SimpleExoPlayer player, List<MediaCodecAudioRenderer> mediaCodecAudioRendererList){
         this.player = player;
@@ -42,10 +44,6 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
-            int index;
-            imageView = (ImageView) view.findViewById(R.id.img_tagtrack);
-            seekBar = (SeekBar) view.findViewById(R.id.bar_volumebar);
         }
     }
 
@@ -56,23 +54,21 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.volumebar, viewGroup, false);
-
+        imageView = (ImageView) view.findViewById(R.id.img_tagtrack);
+        seekBar = (SeekBar) view.findViewById(R.id.bar_volumebar);
         return new ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
+    public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
+        Log.d("VOLPOS", "created at pos: "+position);
+        MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if(b){
                     float value = i / (float)seekBar.getMax();
-                    //    System.out.println("total audio decoders? " + mixplayer.player.getAudioDecoderCounters().renderedOutputBufferCount + ", value? " + value);
-                    MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
                     player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
                 }
@@ -93,7 +89,11 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return player.getAudioDecoderCounters().inputBufferCount;
+        MultiAudioTrackSelector selector = (MultiAudioTrackSelector)player.getTrackSelector();
+        if (selector != null)
+            return selector.audioRendererCount;
+        else
+            return 0;
     }
 
 
