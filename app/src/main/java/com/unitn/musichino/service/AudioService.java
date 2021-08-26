@@ -8,7 +8,9 @@ import android.app.Service;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
@@ -20,6 +22,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -60,6 +63,7 @@ public class AudioService extends Service {
     private static final int NOTIFICATION_ID = 1;
     public static final int IMPORTANCE_DEFAULT = 3;
     public AudioModel currentlyPlaying;
+    Equalizer mEqualizer;
 
 
     @Override
@@ -128,12 +132,43 @@ public class AudioService extends Service {
                 Log.d("ARTWORK", mediaMetadata.artworkDataType + "");
             }
         });
+        player.addListener(new Player.Listener() {
+
+
+            @Override
+            public void onAudioSessionIdChanged(int audioSessionId) {
+                Log.d("SESSIONID", "id changed to:" +audioSessionId);
+                SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
+                mEqualizer = new Equalizer(1000, audioSessionId);
+                mEqualizer.setEnabled(true);
+                //That's it, this will initialize the Equalizer and set it to the //default preset
+                int current = preferences.getInt("position", 0);
+                if (current == 0) {
+                    for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
+                        int progressBar = preferences.getInt("seek_" + seek_id, 1500);
+                        short equalizerBandIndex = (short) (seek_id);
+                        final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
+                        Log.d("seek_" + seek_id, ":" + progressBar);
+                        if (progressBar != 1500) {
+                            mEqualizer.setBandLevel(equalizerBandIndex,
+                                    (short) (progressBar + lowerEqualizerBandLevel));
+                        } else {
+                            //First time default 1500Hz
+                            mEqualizer.setBandLevel(equalizerBandIndex,
+                                    (short) (progressBar + lowerEqualizerBandLevel));
+                        }
+                    }
+                } else {
+                    mEqualizer.usePreset((short) (current - 1));
+                }    }
+        });
         progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
         Uri uri = Uri.parse(item.getPath());
         MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
         player.setPlayWhenReady(true);
         player.setMediaSource(mediaSource, true);
         player.prepare();
+      //  player.setAudioSessionId(999);
         currentlyPlaying = item;
         DefaultMediaDescriptionAdapter descriptionAdapter =  new DefaultMediaDescriptionAdapter(
                 PendingIntent.getActivity(
@@ -166,6 +201,10 @@ public class AudioService extends Service {
                         .build();
                 playerNotificationManager.setPlayer(player);
                 createNotificationChannel();
+
+
+
+
     }
 
     public void addRenderer(MediaCodecAudioRenderer renderer){
@@ -197,11 +236,13 @@ public class AudioService extends Service {
 
 
     public void changeSong(Uri uri){
-        progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
-        MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
-        player.setMediaSource(mediaSource);
-        player.prepare();
-        player.setPlayWhenReady(true);
+        if(!uri.equals(Uri.parse(currentlyPlaying.getPath()))) {
+            progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
+            MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
+            player.setMediaSource(mediaSource);
+            player.prepare();
+            player.setPlayWhenReady(true);
+        }
     }
 
 

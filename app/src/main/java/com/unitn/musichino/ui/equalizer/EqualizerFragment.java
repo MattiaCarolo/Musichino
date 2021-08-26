@@ -1,5 +1,6 @@
 package com.unitn.musichino.ui.equalizer;
 
+import androidx.annotation.Dimension;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,14 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.databinding.FragmentSearchBinding;
 import com.unitn.musichino.ui.search.SearchViewModel;
 
 public class EqualizerFragment extends Fragment {
 
-    private EqualizerViewModel equalizerViewModel;
-    private FragmentSearchBinding binding;
     private Equalizer mEqualizer;
     private LinearLayout mLinearLayout;
 
@@ -44,14 +44,10 @@ public class EqualizerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        equalizerViewModel =
-                new ViewModelProvider(this).get(EqualizerViewModel.class);
+        View root = inflater.inflate(R.layout.equalizer_fragment, container, false);
 
-        binding = FragmentSearchBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        mEqualizer = new Equalizer(0, getActivity().getTaskId());
-        Log.i("taskID:", requireActivity().getTaskId()+"");
+        mEqualizer = new Equalizer(0, ((PlayerActivity)requireActivity()).getPlayer().getAudioSessionId());
+        Log.i("taskID:", ((PlayerActivity)requireActivity()).getPlayer().getAudioSessionId()+"");
         mEqualizer.setEnabled(true);// setup FX
         mLinearLayout = (LinearLayout) root.findViewById(R.id.equalizerLayout);
         mLinearLayout.setPadding(0, 0, 0, 20);
@@ -61,9 +57,13 @@ public class EqualizerFragment extends Fragment {
 
 //        get the level ranges to be used in setting the band level
 //        get lower limit of the range in milliBels
+
         final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
 //        get the upper limit of the range in millibels
         final short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
+        Log.d("EQ_BAND_LIMIT", "freqRangeLowerLimit = " +lowerEqualizerBandLevel +
+                " freqRangeUpperLimit = " + upperEqualizerBandLevel + " band range = ");
+
 
 
         // UI
@@ -90,14 +90,16 @@ public class EqualizerFragment extends Fragment {
             lowerEqualizerBandLevelTextview.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
-            lowerEqualizerBandLevelTextview.setText((lowerEqualizerBandLevel / 100) + " dB");
+            lowerEqualizerBandLevelTextview.setText((lowerEqualizerBandLevel/100)  + " dB");
+            lowerEqualizerBandLevelTextview.setTextSize(Dimension.DP, 6);
             lowerEqualizerBandLevelTextview.setRotation(90);
 //            set up upper level textview for this seekBar
             TextView upperEqualizerBandLevelTextview = new TextView(requireContext());
             upperEqualizerBandLevelTextview.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
-            upperEqualizerBandLevelTextview.setText((upperEqualizerBandLevel / 100) + " dB");
+            upperEqualizerBandLevelTextview.setText((upperEqualizerBandLevel/100)  + " dB");
+            upperEqualizerBandLevelTextview.setTextSize(Dimension.DP, 6);
             upperEqualizerBandLevelTextview.setRotation(90);
 
 
@@ -173,6 +175,7 @@ public class EqualizerFragment extends Fragment {
 
             //        show the spinner ??????????
             //equalizeSound();
+          //  ((PlayerActivity)requireActivity()).getPlayer().getAudioSessionId();
         }
         mLinearLayout.setRotation(270);
 
