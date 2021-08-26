@@ -20,6 +20,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        style="@style/Base_ToolbarStyle"
         android:background="@null"
         app:popupTheme="@style/Theme.Musichino.PopupOverlay" />
 
