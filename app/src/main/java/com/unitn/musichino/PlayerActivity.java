@@ -143,12 +143,6 @@ public class PlayerActivity extends AppCompatActivity
 
     Log.d("fileName: ", mUrl);
     viewPager = findViewById(R.id.pgr_MediaPlayer);
-    List<Fragment> fragments = new ArrayList<>();
-    fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
-    fragments.add(Fragment.instantiate(this, FragmentPlayerHome.class.getName()));
-    fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
-    pagerAdapter = new PlayerPagerAdapter(this,fragments);
-    viewPager.setAdapter(pagerAdapter);
     if(mBound){
       Log.d("BOUND", "bindato");
     }
@@ -172,6 +166,12 @@ public class PlayerActivity extends AppCompatActivity
     bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     initializePlayer();
     playerView.getSubtitleView().setVisibility(View.INVISIBLE);
+    List<Fragment> fragments = new ArrayList<>();
+    fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
+    fragments.add(Fragment.instantiate(this, FragmentPlayerHome.class.getName()));
+    fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
+    pagerAdapter = new PlayerPagerAdapter(this,fragments);
+    viewPager.setAdapter(pagerAdapter);
   //  setUI();
   }
 

@@ -9,12 +9,16 @@
             android:icon="@drawable/ic_logo"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/playlist"
+            android:id="@+id/nav_playlist"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_playlist" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/action_settings" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/menu_library" />
     </group>
 </menu>

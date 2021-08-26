@@ -2,27 +2,45 @@ package com.unitn.musichino.ui.player.Settings;
 
 import android.os.Bundle;
 
+import androidx.annotation.Dimension;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
+import com.google.android.exoplayer2.text.Cue;
+import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
+import com.unitn.musichino.adapter.TrackAdapter;
+import com.unitn.musichino.interfaces.ButtonTrackClickListener;
 import com.unitn.musichino.ui.player.Settings.FragmentPlayerSettings;
 import com.unitn.musichino.ui.player.Settings.VolumeFragment;
 
-public class SettingsHUDFragment extends Fragment implements View.OnClickListener {
+import java.util.List;
+
+public class SettingsHUDFragment extends Fragment implements View.OnClickListener, ButtonTrackClickListener {
 
     Button btn_volumes;
+    RecyclerView recyclerView;
+    SimpleExoPlayer simpleExoPlayer;
+    List<MediaCodecAudioRenderer> mediaCodecAudioRendererList;
     
 
-    public SettingsHUDFragment() {
+    public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList) {
         // Required empty public constructor
+        this.simpleExoPlayer = simpleExoPlayer;
+        this.mediaCodecAudioRendererList = mediaCodecAudioRendererList;
     }
 
     // TODO: Rename and change types and number of parameters
@@ -49,9 +67,24 @@ public class SettingsHUDFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        /*
         btn_volumes = view.findViewById(R.id.btn_volumes);
         btn_volumes.setOnClickListener(this);
         ViewCompat.setTransitionName(btn_volumes, "title");
+
+         */
+        recyclerView = (RecyclerView) view.findViewById(R.id.rv_tracks);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        TrackAdapter trackAdapter = new TrackAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(trackAdapter);
     }
 
     @Override
@@ -78,5 +111,13 @@ public class SettingsHUDFragment extends Fragment implements View.OnClickListene
         transaction.commit();
     }
 
-
+    @Override
+    public void onButtonTrackClick(int pos, Button button, MediaCodecAudioRenderer mediaCodecAudioRenderer) {
+        Fragment fragment = new VolumeFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
+        transaction.replace(R.id.hud_settings, fragment);
+        transaction.addSharedElement(button, "titolo");
+        transaction.addToBackStack("volumi");
+        transaction.commit();
+    }
 }
