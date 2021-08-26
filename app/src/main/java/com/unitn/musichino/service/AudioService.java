@@ -63,6 +63,7 @@ public class AudioService extends Service {
     public void onCreate() {
         Log.d("DEBUG", "calling on create");
         super.onCreate();
+        dataSourceFactory = new DefaultDataSourceFactory(getApplicationContext());
         renderers = new ArrayList<>();
     }
 
@@ -128,7 +129,8 @@ public class AudioService extends Service {
             }
         });
         progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
-        MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(item.getPath()));
+        Uri uri = Uri.parse(item.getPath());
+        MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
         player.setPlayWhenReady(true);
         player.setMediaSource(mediaSource, true);
         player.prepare();
