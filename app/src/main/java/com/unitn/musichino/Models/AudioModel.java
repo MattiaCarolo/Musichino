@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class AudioModel implements Parcelable {
     String path;
@@ -26,6 +28,24 @@ public class AudioModel implements Parcelable {
         album = "album";
         artist = "artist";
         format = "format";
+    }
+
+    public AudioModel(JSONObject audioJSON) throws JSONException {
+        path = audioJSON.getString("path");
+        name = audioJSON.getString("name");
+        album = audioJSON.getString("album");
+        artist = audioJSON.getString("artist");
+        format = audioJSON.getString("format");
+    }
+
+    public JSONObject getJSONAudioModel() throws JSONException {
+        JSONObject audioJSON = new JSONObject();
+        audioJSON.put("path", path);
+        audioJSON.put("name", name);
+        audioJSON.put("album", album);
+        audioJSON.put("artist", artist);
+        audioJSON.put("format", format);
+        return audioJSON;
     }
 
     public static final Creator<AudioModel> CREATOR = new Creator<AudioModel>() {
