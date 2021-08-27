@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.support.annotation.NonNull;
@@ -29,9 +30,8 @@ import com.unitn.musichino.ui.player.Settings.VolumeFragment;
 
 import java.util.List;
 
-public class SettingsHUDFragment extends Fragment implements View.OnClickListener, ButtonTrackClickListener {
+public class SettingsHUDFragment extends Fragment implements ButtonTrackClickListener {
 
-    Button btn_volumes;
     RecyclerView recyclerView;
     SimpleExoPlayer simpleExoPlayer;
     List<MediaCodecAudioRenderer> mediaCodecAudioRendererList;
@@ -82,42 +82,19 @@ public class SettingsHUDFragment extends Fragment implements View.OnClickListene
         super.onStart();
 
         TrackAdapter trackAdapter = new TrackAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(trackAdapter);
     }
 
-    @Override
-    public void onClick(View view) {
-        Fragment fragment = null;
-        switch (view.getId()) {
-            case R.id.btn_volumes:
-                fragment = new VolumeFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
-                transaction.replace(R.id.hud_settings, fragment);
-                transaction.addSharedElement(btn_volumes, "titolo");
-                transaction.addToBackStack("volumi");
-                transaction.commit();
-                break;
-
-        }
-    }
-
-    public void replaceFragment(Fragment someFragment) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
-        transaction.replace(R.id.hud_settings, someFragment);
-        transaction.addSharedElement(btn_volumes, "titolo");
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
     @Override
     public void onButtonTrackClick(int pos, Button button, MediaCodecAudioRenderer mediaCodecAudioRenderer) {
-        Fragment fragment = new VolumeFragment();
+        Fragment fragment = new VolumeFragment(pos);
         FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
         transaction.replace(R.id.hud_settings, fragment);
         transaction.addSharedElement(button, "titolo");
-        transaction.addToBackStack("volumi");
+        transaction.addToBackStack(null);
         transaction.commit();
+
     }
 }

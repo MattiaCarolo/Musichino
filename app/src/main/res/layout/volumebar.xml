@@ -24,6 +24,7 @@
             android:layout_margin="10dp"
             android:layout_weight="0.9"
             android:progress="100"
+
             android:progressDrawable="@drawable/volume_bar"
             android:thumb="@drawable/volume_thumb" />
 

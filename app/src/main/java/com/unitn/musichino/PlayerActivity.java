@@ -137,6 +137,7 @@ public class PlayerActivity extends AppCompatActivity
 
       playerView.setUseController(true);
       playerView.showController();
+      playerView.setUseArtwork(false);
       playerView.setControllerAutoShow(true);
       playerView.setControllerHideOnTouch(false);
     }

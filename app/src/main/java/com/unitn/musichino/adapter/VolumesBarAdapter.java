@@ -1,6 +1,8 @@
 package com.unitn.musichino.adapter;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.audiofx.Equalizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
 
     private SeekBar seekBar;
     private ImageView imageView;
+
 
     public VolumesBarAdapter(SimpleExoPlayer player, List<MediaCodecAudioRenderer> mediaCodecAudioRendererList){
         this.player = player;

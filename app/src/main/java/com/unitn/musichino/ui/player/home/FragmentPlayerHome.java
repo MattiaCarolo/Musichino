@@ -1,16 +1,27 @@
 package com.unitn.musichino.ui.player.home;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.util.Util;
 import com.unitn.musichino.MixMeExoPlayer;
+import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
+import com.unitn.musichino.service.AudioService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,21 +30,35 @@ import com.unitn.musichino.R;
  */
 public class FragmentPlayerHome extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private PlayerView playerView;
-    private MixMeExoPlayer mixMePlayer;
+    private SimpleExoPlayer simpleExoPlayer;
+    public AudioService mService;
+    private boolean mBound = false;
+    AudioModel item;
 
     public FragmentPlayerHome() {
         // Required empty public constructor
     }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            AudioService.LocalBinder binder = (AudioService.LocalBinder) iBinder;
+            mService = binder.getService();
+            mBound = true;
+            initializePlayer();
+            if(mService.currentlyPlaying != null){
+                Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
+                mService.changeSong(Uri.parse(item.getPath()));
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBound = false;
+        }
+    };
 
     /**
      * Use this factory method to create a new instance of
@@ -46,20 +71,14 @@ public class FragmentPlayerHome extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static FragmentPlayerHome newInstance(String param1, String param2) {
         FragmentPlayerHome fragment = new FragmentPlayerHome();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -68,6 +87,19 @@ public class FragmentPlayerHome extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_player_home, container, false);
 
+        playerView = root.findViewById(R.id.video_view);
         return root;
+    }
+
+    private void initializePlayer() {
+        if (mBound) {
+            simpleExoPlayer = mService.getplayerInstance();
+            playerView.setPlayer(simpleExoPlayer);
+            playerView.setUseController(true);
+            playerView.showController();
+            playerView.setUseArtwork(false);
+            playerView.setControllerAutoShow(true);
+            playerView.setControllerHideOnTouch(false);
+        }
     }
 }

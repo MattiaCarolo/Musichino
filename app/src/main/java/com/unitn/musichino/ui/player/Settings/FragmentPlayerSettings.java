@@ -39,6 +39,8 @@ public class FragmentPlayerSettings extends Fragment {
                 simpleExoPlayer = ((PlayerActivity) getActivity()).getPlayer();
                 mediaCodecAudioRendererList = ((PlayerActivity) getActivity()).mService.renderers;
 
+                button.setVisibility(View.GONE);
+
                 SettingsHUDFragment settingsHUDFragment = new SettingsHUDFragment(simpleExoPlayer,mediaCodecAudioRendererList);
                 FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.hud_settings, settingsHUDFragment, settingsHUDFragment.getClass().getName());
