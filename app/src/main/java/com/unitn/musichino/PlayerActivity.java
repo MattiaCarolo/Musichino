@@ -25,6 +25,7 @@ import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -120,13 +121,15 @@ public class PlayerActivity extends AppCompatActivity
     playerView = findViewById(R.id.video_view);
     Bundle b = getIntent().getBundleExtra("bundle");
     if (b != null) {
-      item = b.getParcelable("item");
+      List<AudioModel> items = new ArrayList<>();
+      items =  b.getParcelableArrayList("items");
+      item = items.get(0);
       shareableLink = b.getString("share_key");
       mUrl = item.getPath();
       mTitle = item.getName();
       intent = new Intent(this, AudioService.class);
       Bundle serviceBundle = new Bundle();
-      serviceBundle.putParcelable("item", item);
+      serviceBundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
       intent.putExtra("bundle", serviceBundle);
 
       try{
@@ -144,7 +147,6 @@ public class PlayerActivity extends AppCompatActivity
       playerView.setControllerShowTimeoutMs(0);
     }
 
-    Log.d("fileName: ", mUrl);
     viewPager = findViewById(R.id.pgr_MediaPlayer);
     if(mBound){
       Log.d("BOUND", "bindato");

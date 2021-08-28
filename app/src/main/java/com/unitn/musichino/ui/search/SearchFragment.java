@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.databinding.FragmentSearchBinding;
+import com.unitn.musichino.util.C;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +48,11 @@ public class SearchFragment extends Fragment {
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         searchRecycler = binding.searchRecycler;
-        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(tracks);
+        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(getActivity(), tracks);
         searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         searchRecycler.setAdapter(adapter);
         final Button searchButton = binding.searchButton;
+       // getContext().getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, 0).edit().remove("playlists").remove("playlist_names").commit();
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,9 +65,9 @@ public class SearchFragment extends Fragment {
                             1);
                 } else {
                     tracks = getAllAudioFromDevice(requireContext());
-                    SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(tracks);
+                    SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(getActivity(), tracks);
                     searchRecycler.swapAdapter(adapter, true);
-                    Log.d("UPD", searchRecycler.getAdapter().getItemCount()+"");
+                    Log.d("SEARCH", searchRecycler.getAdapter().getItemCount()+" items created.");
                 }
 
 
@@ -92,7 +94,7 @@ public class SearchFragment extends Fragment {
 
         Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
        // requireActivity().grantUriPermission("com.unitn.musichino", uri, );
-        String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM, MediaStore.Audio.ArtistColumns.ARTIST,};
+        String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM, MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns.TITLE};
         Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
 
         if (c != null) {
@@ -102,13 +104,20 @@ public class SearchFragment extends Fragment {
                 String path = c.getString(0);
                 String album = c.getString(1);
                 String artist = c.getString(2);
+                String title = c.getString(3);
 
                 String name = path.substring(path.lastIndexOf("/") + 1);
-
-                audioModel.setName(name);
-                audioModel.setAlbum(album);
-                audioModel.setArtist(artist);
+                String format = name.substring(name.lastIndexOf(".") + 1);
+                if(title != null)
+                    audioModel.setName(title);
+                else
+                    audioModel.setName(name);
+                if(album != null)
+                    audioModel.setAlbum(album);
+                if(artist != null)
+                    audioModel.setArtist(artist);
                 audioModel.setPath(path);
+                audioModel.setFormat(format);
 
                 Log.d("Name :" + name, " Album :" + album);
                 Log.d("Path :" + path, " Artist :" + artist);
