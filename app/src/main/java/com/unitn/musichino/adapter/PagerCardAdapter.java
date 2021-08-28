@@ -3,6 +3,8 @@ package com.unitn.musichino.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PagerCardAdapter extends PagerAdapter {
@@ -67,8 +70,10 @@ public class PagerCardAdapter extends PagerAdapter {
                 Bundle b = new Bundle();
                 AudioModel item = new AudioModel();
                 item.setPath(models.get(position).getFileName());
+                List<AudioModel> items = new ArrayList<>();
+                items.add(item);
                // intent.putExtra("fileName", models.get(position).getFileName());
-                b.putParcelable("item", item);
+                b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
                 intent.putExtra("bundle", b);
                 context.startActivity(intent);
 

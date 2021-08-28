@@ -36,6 +36,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.common.collect.ImmutableList;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.MultiAudioTrackSelector;
 import com.unitn.musichino.MultiTrackRenderersFactory;
@@ -52,7 +53,7 @@ public class AudioService extends Service {
 
     private final IBinder mBinder = new LocalBinder();
     private SimpleExoPlayer player;
-    private AudioModel item;
+    private List<AudioModel> items;
     private PlayerNotificationManager playerNotificationManager;
     private MultiAudioTrackSelector trackSelector;
     private DataSource.Factory dataSourceFactory;
@@ -93,7 +94,7 @@ public class AudioService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.d("PLAYER", "binding, intent: " +intent.getBundleExtra("bundle").getParcelable("item").toString());
+//        Log.d("PLAYER", "binding, intent: " +intent.getBundleExtra("bundle").getParcelable("item").toString());
         return mBinder;
     }
 
@@ -109,7 +110,7 @@ public class AudioService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = intent.getBundleExtra("bundle");
         if (b != null) {
-            item = b.getParcelable("item");
+            items = b.getParcelableArrayList("items");
         }
         if (player == null) {
             startPlayer();
@@ -130,6 +131,11 @@ public class AudioService extends Service {
             @Override
             public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
                 Log.d("ARTWORK", mediaMetadata.artworkDataType + "");
+            }
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                currentlyPlaying = items.get(player.getCurrentPeriodIndex());
             }
         });
         player.addListener(new Player.Listener() {
@@ -163,13 +169,21 @@ public class AudioService extends Service {
                 }    }
         });
         progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
-        Uri uri = Uri.parse(item.getPath());
-        MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
-        player.setPlayWhenReady(true);
-        player.setMediaSource(mediaSource, true);
+        List<MediaItem> mediaItems = new ArrayList<>();
+        for(AudioModel item : items) {
+            Uri uri = Uri.parse(item.getPath());
+            mediaItems.add(MediaItem.fromUri(uri));
+        }
+        Log.d("ITEMS", "Total items: " + items.toString());
+        //MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
+
+        player.setMediaItems(mediaItems, true);
+        //player.setMediaSource(mediaSource, true);
         player.prepare();
-      //  player.setAudioSessionId(999);
-        currentlyPlaying = item;
+        player.setPlayWhenReady(true);
+        Log.d("QUEUE", "period index" + player.getCurrentPeriodIndex());
+        //player.setAudioSessionId(999);
+        //currentlyPlaying = items.get(0);
         DefaultMediaDescriptionAdapter descriptionAdapter =  new DefaultMediaDescriptionAdapter(
                 PendingIntent.getActivity(
                         this,
@@ -239,7 +253,7 @@ public class AudioService extends Service {
         if(!uri.equals(Uri.parse(currentlyPlaying.getPath()))) {
             progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
             MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
-            player.setMediaSource(mediaSource);
+            player.setMediaSource(mediaSource, true);
             player.prepare();
             player.setPlayWhenReady(true);
         }

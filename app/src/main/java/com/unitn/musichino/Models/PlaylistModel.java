@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+
 public class PlaylistModel {
     private static final String PLAYLIST = "playlist";
     private static final String PLAYLIST_NAME = "name";
@@ -182,7 +184,7 @@ public class PlaylistModel {
     public List<PlaylistModel> getPlaylistModelsFromSharedPreferences(Context context) throws  JSONException{
         SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
         if(sharedPlaylists != null){
-            JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+            JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
             List<PlaylistModel> playlistModels = new ArrayList<>();
             for(int i = 0; i < playlistModelsJSON.length(); i++){
                 playlistModels.add(new PlaylistModel(playlistModelsJSON.getJSONObject(i)));
@@ -192,4 +194,10 @@ public class PlaylistModel {
         return null;
     }
 
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Name: " + this.name + ", Size: " +this.playlist.size()+ ", Items: " + this.playlist.toString();
+    }
 }

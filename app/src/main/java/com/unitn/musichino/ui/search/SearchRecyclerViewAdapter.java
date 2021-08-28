@@ -4,6 +4,7 @@ package com.unitn.musichino.ui.search;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.DialogFragment;
@@ -90,8 +92,9 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), PlayerActivity.class);
                 Bundle bundle = new Bundle();
-                AudioModel item = tracks.get(position);
-                bundle.putParcelable("item", item);
+                List<AudioModel> items = new ArrayList<>();
+                items.add(tracks.get(position));
+                bundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
                 intent.putExtra("bundle", bundle);
                 view.getContext().startActivity(intent);
             }
