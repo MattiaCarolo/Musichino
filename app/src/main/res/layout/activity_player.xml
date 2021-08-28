@@ -19,27 +19,41 @@ limitations under the License. -->
     android:layout_height="match_parent"
     android:background="@drawable/splash_screen">
 
+  <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar4"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/colorPrimary"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="?attr/actionBarTheme"
+      android:visibility="invisible"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
   <androidx.viewpager2.widget.ViewPager2
       android:id="@+id/pgr_MediaPlayer"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       app:layout_constraintBottom_toTopOf="@+id/video_view"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHeight_percent="0.88"
+      app:layout_constraintHeight_percent="0.82"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.829" />
 
   <com.google.android.exoplayer2.ui.PlayerView
       android:id="@+id/video_view"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      app:layout_constraintHeight_percent="0.12"
-      app:layout_constraintWidth_percent="1"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHeight_percent="0.08"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="1.0" />
+      app:layout_constraintVertical_bias="0.983"
+      app:layout_constraintWidth_percent="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

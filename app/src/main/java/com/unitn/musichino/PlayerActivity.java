@@ -135,11 +135,13 @@ public class PlayerActivity extends AppCompatActivity
           Log.d("Exception service", ex.toString());
       }
 
+
       playerView.setUseController(true);
       playerView.showController();
       playerView.setUseArtwork(false);
       playerView.setControllerAutoShow(true);
       playerView.setControllerHideOnTouch(false);
+      playerView.setControllerShowTimeoutMs(0);
     }
 
     Log.d("fileName: ", mUrl);

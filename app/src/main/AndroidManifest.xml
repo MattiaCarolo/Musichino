@@ -26,7 +26,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlayerActivity">
+        <activity android:name=".PlayerActivity"
+                    android:theme="@style/Theme.Musichino.NoActionBar">
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
 
 
         </activity>
