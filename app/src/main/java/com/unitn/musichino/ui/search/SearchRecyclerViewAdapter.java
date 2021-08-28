@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.unitn.musichino.Models.AudioModel;
@@ -26,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
@@ -34,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder> {
 
     private List<AudioModel> tracks;
+    private List<AudioModel> backup;
     private FragmentActivity fragment;
 
     /**
@@ -58,14 +62,17 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         public Button getButton(){return button;}
     }
 
+
+
     /**
      * Initialize the dataset of the Adapter.
      *
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public SearchRecyclerViewAdapter(FragmentActivity fragment, List<AudioModel> dataSet) {
+    public SearchRecyclerViewAdapter(FragmentActivity fragment, List<AudioModel> dataSet, List<AudioModel> backup) {
         tracks = dataSet;
+        this.backup = backup;
         this.fragment = fragment;
     }
 
@@ -117,6 +124,20 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         return tracks.size();
     }
 
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        tracks.clear();
+        if (charText.length() == 0) {
+            tracks.addAll(backup);
+        } else {
+            for (AudioModel audio : backup) {
+                if (audio.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    tracks.add(audio);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
 
 }
 
