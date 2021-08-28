@@ -46,7 +46,7 @@ public class MultiAudioTrackSelector extends TrackSelector {
         textRendererCount = 0;
 
         ExoTrackSelection[] rendererTrackSelections = new ExoTrackSelection[rendererCount];
-        Log.i("SELECTOR", "RendererCount: " + rendererCount + ", TrackGroupsCount: " + trackGroups.length);
+       // Log.i("SELECTOR", "RendererCount: " + rendererCount + ", TrackGroupsCount: " + trackGroups.length);
         int idx = 0;
         int groupIndex = 0;
         for(int rendererIndex = 0; rendererIndex < rendererCount && groupIndex < trackGroups.length; rendererIndex++){
@@ -56,35 +56,35 @@ public class MultiAudioTrackSelector extends TrackSelector {
             int trackType = MimeTypes.getTrackType(trackMime);
             switch (rendererType){
                 case C.TRACK_TYPE_AUDIO:
-                    Log.d("TRACKTYPE", "Audio renderer found.");
+                   // Log.d("TRACKTYPE", "Audio renderer found.");
                     if(trackType == rendererType){
                         rendererTrackSelections[rendererIndex] = new FixedTrackSelection(trackGroup, 0, C.TRACK_TYPE_AUDIO);
-                        Log.d("TRACKTYPE", "Audio renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
+                       // Log.d("TRACKTYPE", "Audio renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
                         groupIndex++;
                         audioRendererCount++;
                     }
                     break;
                 case C.TRACK_TYPE_VIDEO:
-                    Log.d("TRACKTYPE", "Video renderer found.");
+                   // Log.d("TRACKTYPE", "Video renderer found.");
                     if(trackType == rendererType){
                         rendererTrackSelections[rendererIndex] = new FixedTrackSelection(trackGroup, 0, C.TRACK_TYPE_VIDEO);
-                        Log.d("TRACKTYPE", "Video renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
+                       // Log.d("TRACKTYPE", "Video renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
                         groupIndex++;
                     }
                     break;
                 case C.TRACK_TYPE_TEXT:
-                    Log.d("TRACKTYPE", "Text renderer found.");
+                  //  Log.d("TRACKTYPE", "Text renderer found.");
                     if(trackType == rendererType){
                         rendererTrackSelections[rendererIndex] = new FixedTrackSelection(trackGroup, 0, C.TRACK_TYPE_TEXT);
-                        Log.d("TRACKTYPE", "Text renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
+                       // Log.d("TRACKTYPE", "Text renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
                         groupIndex++;
                     }
                     break;
                 case C.TRACK_TYPE_METADATA:
-                    Log.d("TRACKTYPE", "Metadata renderer found.");
+                    //Log.d("TRACKTYPE", "Metadata renderer found.");
                     if(trackType == rendererType){
                         rendererTrackSelections[rendererIndex] = new FixedTrackSelection(trackGroup, 0, C.TRACK_TYPE_METADATA);
-                        Log.d("TRACKTYPE", "Metadata renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
+                        //Log.d("TRACKTYPE", "Metadata renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
                         groupIndex++;
                     }
                     break;

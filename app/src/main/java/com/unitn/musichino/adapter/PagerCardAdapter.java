@@ -72,7 +72,6 @@ public class PagerCardAdapter extends PagerAdapter {
                 item.setPath(models.get(position).getFileName());
                 List<AudioModel> items = new ArrayList<>();
                 items.add(item);
-               // intent.putExtra("fileName", models.get(position).getFileName());
                 b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
                 intent.putExtra("bundle", b);
                 context.startActivity(intent);

@@ -101,7 +101,7 @@ public class PlayerActivity extends AppCompatActivity
       mBound = true;
       initializePlayer();
       if(mService.currentlyPlaying != null){
-        Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
+        //Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
         mService.changeSong(Uri.parse(item.getPath()));
       }
     }
@@ -148,9 +148,6 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     viewPager = findViewById(R.id.pgr_MediaPlayer);
-    if(mBound){
-      Log.d("BOUND", "bindato");
-    }
   }
 
 
@@ -180,38 +177,6 @@ public class PlayerActivity extends AppCompatActivity
   //  setUI();
   }
 
-  /*
-      mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
-
-        @Override
-        public void onAudioSessionId(int audioSessionId) {
-          SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
-          mEqualizer = new Equalizer(1000, audioSessionId);
-          mEqualizer.setEnabled(true);
-          //That's it, this will initialize the Equalizer and set it to the //default preset
-          int current = preferences.getInt("position", 0);
-          if (current == 0) {
-            for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
-              int progressBar = preferences.getInt("seek_" + seek_id, 1500);
-              short equalizerBandIndex = (short) (seek_id);
-              final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
-              Log.i("seek_" + seek_id, ":" + progressBar);
-              if (progressBar != 1500) {
-                mEqualizer.setBandLevel(equalizerBandIndex,
-                        (short) (progressBar + lowerEqualizerBandLevel));
-              } else {
-                //First time default 1500Hz
-                mEqualizer.setBandLevel(equalizerBandIndex,
-                        (short) (progressBar + lowerEqualizerBandLevel));
-              }
-            }
-          } else {
-            mEqualizer.usePreset((short) (current - 1));
-          }    }
-      });
-
-    }
-  */
   @Override
   public void onResume() {
     super.onResume();

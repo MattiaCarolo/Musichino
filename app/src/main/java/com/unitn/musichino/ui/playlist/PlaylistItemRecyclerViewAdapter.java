@@ -3,6 +3,7 @@ package com.unitn.musichino.ui.playlist;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -42,13 +43,13 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
         holder.playlistModel = playlistModels.get(position);
         holder.mIdView.setText(""+position);
         holder.mContentView.setText(playlistModels.get(position).toString());
+        holder.mContentView.setTextColor(Color.BLACK);
         holder.mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<AudioModel> items = holder.playlistModel.getPlaylist();
                 Intent intent = new Intent(holder.mView.getContext(), PlayerActivity.class);
                 Bundle b = new Bundle();
-                Log.d("PLAYLIST", "Passing items from playlist: " +items.toString());
                 b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
                 intent.putExtra("bundle", b);
                 holder.mView.getContext().startActivity(intent);

@@ -5,11 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Binder;
@@ -22,26 +20,19 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.audio.AudioRendererEventListener;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DefaultMediaDescriptionAdapter;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
-import com.google.common.collect.ImmutableList;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.MultiAudioTrackSelector;
 import com.unitn.musichino.MultiTrackRenderersFactory;
 import com.unitn.musichino.PlayerActivity;
-import com.unitn.musichino.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +60,6 @@ public class AudioService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d("DEBUG", "calling on create");
         super.onCreate();
         dataSourceFactory = new DefaultDataSourceFactory(getApplicationContext());
         renderers = new ArrayList<>();
@@ -100,7 +90,6 @@ public class AudioService extends Service {
 
     public SimpleExoPlayer getplayerInstance() {
         if (player == null) {
-            Log.d("PLAYER", "creating new instance");
             startPlayer();
         }
         return player;
@@ -143,11 +132,10 @@ public class AudioService extends Service {
 
             @Override
             public void onAudioSessionIdChanged(int audioSessionId) {
-                Log.d("SESSIONID", "id changed to:" +audioSessionId);
+               // Log.d("SESSIONID", "id changed to:" +audioSessionId);
                 SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
                 mEqualizer = new Equalizer(1000, audioSessionId);
                 mEqualizer.setEnabled(true);
-                //That's it, this will initialize the Equalizer and set it to the //default preset
                 int current = preferences.getInt("position", 0);
                 if (current == 0) {
                     for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
@@ -174,16 +162,9 @@ public class AudioService extends Service {
             Uri uri = Uri.parse(item.getPath());
             mediaItems.add(MediaItem.fromUri(uri));
         }
-        Log.d("ITEMS", "Total items: " + items.toString());
-        //MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
-
         player.setMediaItems(mediaItems, true);
-        //player.setMediaSource(mediaSource, true);
         player.prepare();
         player.setPlayWhenReady(true);
-        Log.d("QUEUE", "period index" + player.getCurrentPeriodIndex());
-        //player.setAudioSessionId(999);
-        //currentlyPlaying = items.get(0);
         DefaultMediaDescriptionAdapter descriptionAdapter =  new DefaultMediaDescriptionAdapter(
                 PendingIntent.getActivity(
                         this,
@@ -209,7 +190,7 @@ public class AudioService extends Service {
                             @Override
                             public void onNotificationPosted(int notificationId, Notification notification, boolean ongoing) {
                                 startForeground(notificationId, notification);
-                                Log.d("NOTIFICATION", "ID: "+ notificationId + ", notification: " +notification.category);
+                               // Log.d("NOTIFICATION", "ID: "+ notificationId + ", notification: " +notification.category);
                             }
                         })
                         .build();
