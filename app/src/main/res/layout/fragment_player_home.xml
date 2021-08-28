@@ -8,6 +8,21 @@
     tools:context=".ui.player.home.FragmentPlayerHome">
 
 
+    <ImageButton
+        android:id="@+id/btn_Liked"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/pause"
+        android:src="@drawable/exo_controls_pause"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.089"
+        app:layout_constraintWidth_percent="0.2" />
+
     <ImageView
         android:id="@+id/iv_album"
         android:layout_width="0dp"
@@ -18,11 +33,11 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_play_pause"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.628"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintVertical_bias="0.582"
+        app:layout_constraintWidth_percent="0.7" />
 
     <ImageButton
         android:id="@+id/btn_play_pause"
@@ -36,7 +51,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.798"
+        app:layout_constraintVertical_bias="0.919"
         app:layout_constraintWidth_percent="0.2" />
 
     <ImageButton
