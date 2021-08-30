@@ -194,6 +194,41 @@ public class PlaylistModel {
         return null;
     }
 
+    public void removePlaylistModelFromSharedPreferences(Context context, String name) throws JSONException {
+        SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
+        JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
+        JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+        List<PlaylistModel> playlistModels = new ArrayList<>();
+        for (int i = 0; i < playlistNamesJSON.length(); i++) {
+            if (playlistNamesJSON.getString(i).equals(name)) {
+                Log.d("REMOVE", "Found name at index: " +i);
+                playlistNamesJSON.remove(i);
+                playlistModelsJSON.remove(i);
+            }
+        }
+        sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS, playlistModelsJSON.toString()).apply();
+        sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS_NAMES, playlistNamesJSON.toString()).apply();
+    }
+
+    public void removeAudioFromPlaylist(Context context, String name) throws JSONException {
+        SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
+        JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
+        JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+        for (int i = 0; i < playlistNamesJSON.length(); i++) {
+            if (playlistNamesJSON.getString(i).equals(name)) {
+                Log.d("REMOVE", "Found name at index: " +i);
+                JSONArray playlistItemsJSON = new JSONArray(playlistModelsJSON.getJSONObject(i).getJSONArray("playlist"));
+                for(int j = 0; i < playlistItemsJSON.length(); i++){
+                    if(playlistItemsJSON.getJSONObject(i).getString("name").equals(name)){
+                        playlistItemsJSON.remove(i);
+                    }
+                }
+                playlistModelsJSON.put(i, playlistItemsJSON);
+            }
+        }
+        sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS_NAMES, playlistModelsJSON.toString()).apply();
+    }
+
 
     @NonNull
     @Override
