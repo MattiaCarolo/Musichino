@@ -6,14 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".ui.player.Settings.FragmentPlayerSettings">
 
+        <Button
+            android:id="@+id/volumePresetListButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Presets"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_tracks"
+            android:id="@+id/rv_volumes"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/eqPresetListButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintTop_toBottomOf="@+id/volumePresetListButton"
+            app:layout_constraintVertical_bias="0.51"
+            app:layout_constraintWidth_percent="0.8">
 
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/eqPresetListButton"
+            android:layout_width="187dp"
+            android:layout_height="43dp"
+            android:text="ROBBE"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.65999997" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_eq"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/eqPresetListButton"
+            app:layout_constraintVertical_bias="0.53" />
 </androidx.constraintlayout.widget.ConstraintLayout>

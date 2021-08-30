@@ -75,7 +75,7 @@ public class VolumeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_volume, container, false);
         seekBar = root.findViewById(R.id.bar_volumebar);
         mEqualizer = new Equalizer(0, ((PlayerActivity)requireActivity()).getPlayer().getAudioSessionId());
-        mEqualizer.setEnabled(true);// setup FX++-+--666++++
+        mEqualizer.setEnabled(true);
         recyclerView = root.findViewById(R.id.rv_equalizer);
         barEqualizerAdapter = new BarEqualizerAdapter(getContext(),mEqualizer);
         LinearLayoutManager layoutManager
@@ -105,12 +105,12 @@ public class VolumeFragment extends Fragment {
         MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(pos);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(b){
+            public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
+              //  if(fromUser){
                     float value = i / (float)seekBar.getMax();
                     simpleExoPlayer.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
-                }
+               // }
             }
 
             @Override
@@ -123,5 +123,7 @@ public class VolumeFragment extends Fragment {
 
             }
         });
+
+
     }
 }

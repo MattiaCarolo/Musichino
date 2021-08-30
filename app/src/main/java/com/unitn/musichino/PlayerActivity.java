@@ -25,6 +25,7 @@ import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -100,9 +101,10 @@ public class PlayerActivity extends AppCompatActivity
       mBound = true;
       initializePlayer();
       if(mService.currentlyPlaying != null){
-        Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
+        //Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
         mService.changeSong(Uri.parse(item.getPath()));
       }
+      setUI();
     }
 
     @Override
@@ -120,13 +122,15 @@ public class PlayerActivity extends AppCompatActivity
     playerView = findViewById(R.id.video_view);
     Bundle b = getIntent().getBundleExtra("bundle");
     if (b != null) {
-      item = b.getParcelable("item");
+      List<AudioModel> items = new ArrayList<>();
+      items =  b.getParcelableArrayList("items");
+      item = items.get(0);
       shareableLink = b.getString("share_key");
       mUrl = item.getPath();
       mTitle = item.getName();
       intent = new Intent(this, AudioService.class);
       Bundle serviceBundle = new Bundle();
-      serviceBundle.putParcelable("item", item);
+      serviceBundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
       intent.putExtra("bundle", serviceBundle);
 
       try{
@@ -135,23 +139,16 @@ public class PlayerActivity extends AppCompatActivity
           Log.d("Exception service", ex.toString());
       }
 
+
       playerView.setUseController(true);
       playerView.showController();
+      playerView.setUseArtwork(false);
       playerView.setControllerAutoShow(true);
       playerView.setControllerHideOnTouch(false);
+      playerView.setControllerShowTimeoutMs(0);
     }
 
-    Log.d("fileName: ", mUrl);
     viewPager = findViewById(R.id.pgr_MediaPlayer);
-    List<Fragment> fragments = new ArrayList<>();
-    fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
-    fragments.add(Fragment.instantiate(this, FragmentPlayerHome.class.getName()));
-    fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
-    pagerAdapter = new PlayerPagerAdapter(this,fragments);
-    viewPager.setAdapter(pagerAdapter);
-    if(mBound){
-      Log.d("BOUND", "bindato");
-    }
   }
 
 
@@ -171,42 +168,21 @@ public class PlayerActivity extends AppCompatActivity
     super.onStart();
     bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     initializePlayer();
-    playerView.getSubtitleView().setVisibility(View.INVISIBLE);
+
   //  setUI();
   }
 
-  /*
-      mixMePlayer.player.setAudioDebugListener(new AudioRendererEventListener() {
+  public void setUI(){
+    playerView.getSubtitleView().setVisibility(View.INVISIBLE);
+    List<Fragment> fragments = new ArrayList<>();
+    fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
+    fragments.add(Fragment.instantiate(this, FragmentPlayerHome.class.getName()));
+    fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
+    pagerAdapter = new PlayerPagerAdapter(this,fragments);
+    viewPager.setAdapter(pagerAdapter);
+    viewPager.setCurrentItem(1);
+  }
 
-        @Override
-        public void onAudioSessionId(int audioSessionId) {
-          SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
-          mEqualizer = new Equalizer(1000, audioSessionId);
-          mEqualizer.setEnabled(true);
-          //That's it, this will initialize the Equalizer and set it to the //default preset
-          int current = preferences.getInt("position", 0);
-          if (current == 0) {
-            for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
-              int progressBar = preferences.getInt("seek_" + seek_id, 1500);
-              short equalizerBandIndex = (short) (seek_id);
-              final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
-              Log.i("seek_" + seek_id, ":" + progressBar);
-              if (progressBar != 1500) {
-                mEqualizer.setBandLevel(equalizerBandIndex,
-                        (short) (progressBar + lowerEqualizerBandLevel));
-              } else {
-                //First time default 1500Hz
-                mEqualizer.setBandLevel(equalizerBandIndex,
-                        (short) (progressBar + lowerEqualizerBandLevel));
-              }
-            }
-          } else {
-            mEqualizer.usePreset((short) (current - 1));
-          }    }
-      });
-
-    }
-  */
   @Override
   public void onResume() {
     super.onResume();
