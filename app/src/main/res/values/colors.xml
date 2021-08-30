@@ -13,6 +13,7 @@
 
 
     <color name="purple_light_gradient">#FF0054</color>
+    <color name="purple_mid_gradient">#CE205A</color>
     <color name="purple_dark_gradient">#7D032B</color>
     <color name="black_MixMe">#000000</color>
     <color name="pink_MixMe">#FF276F</color>

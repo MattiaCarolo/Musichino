@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
-import com.unitn.musichino.databinding.FragmentPlaylistListBinding;
-import com.unitn.musichino.databinding.FragmentSearchBinding;
-import com.unitn.musichino.ui.search.SearchViewModel;
+import com.unitn.musichino.adapter.PlaylistItemRecyclerViewAdapter;
+import com.unitn.musichino.adapter.SingleTrackAdapter;
+import com.unitn.musichino.interfaces.PlaylistToFragment;
 
 import org.json.JSONException;
 
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,12 +25,13 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * A fragment representing a list of Items.
  */
-public class PlaylistFragment extends Fragment {
+public class PlaylistFragment extends Fragment implements PlaylistToFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -70,14 +70,20 @@ public class PlaylistFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(playlistModels));
+            recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(playlistModels, this));
         }
         return view;
+    }
+
+    @Override
+    public void onClickChange(PlaylistModel playListModel) {
+        SingleTrackAdapter singleTrackAdapter = new SingleTrackAdapter(requireActivity(),playListModel.getPlaylist(),playListModel.getPlaylist());
+        recyclerView.setAdapter(singleTrackAdapter);
     }
 }

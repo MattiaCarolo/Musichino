@@ -5,13 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.SeekBar;
 
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.unitn.musichino.MultiAudioTrackSelector;
@@ -22,14 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
+public class TrackSettingAdapter extends RecyclerView.Adapter<TrackSettingAdapter.ViewHolder>{
     public static SimpleExoPlayer simpleExoPlayer;
     public static List<MediaCodecAudioRenderer> mediaCodecAudioRendererList;
     public static ButtonTrackClickListener buttonTrackClickListener;
 
     private static Button button;
 
-    public TrackAdapter (SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList, ButtonTrackClickListener buttonTrackClickListener){
+    public TrackSettingAdapter(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList, ButtonTrackClickListener buttonTrackClickListener){
         this.simpleExoPlayer = simpleExoPlayer;
         this.mediaCodecAudioRendererList = mediaCodecAudioRendererList;
         this.buttonTrackClickListener = buttonTrackClickListener;
@@ -48,17 +45,17 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder>{
     // Create new views (invoked by the layout manager)
     @NotNull
     @Override
-    public TrackAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public TrackSettingAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_btn_track, viewGroup, false);
         button = (Button) view.findViewById(R.id.btn_track);
-        return new TrackAdapter.ViewHolder(view);
+        return new TrackSettingAdapter.ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NotNull TrackAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NotNull TrackSettingAdapter.ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
         MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
         button.setText("Traccia N. " + position);

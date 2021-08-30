@@ -2,31 +2,22 @@ package com.unitn.musichino.ui.player.Settings;
 
 import android.os.Bundle;
 
-import androidx.annotation.Dimension;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
-import com.google.android.exoplayer2.text.Cue;
-import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
-import com.unitn.musichino.adapter.TrackAdapter;
+import com.unitn.musichino.adapter.TrackSettingAdapter;
 import com.unitn.musichino.interfaces.ButtonTrackClickListener;
-import com.unitn.musichino.ui.player.Settings.FragmentPlayerSettings;
-import com.unitn.musichino.ui.player.Settings.VolumeFragment;
 
 import java.util.List;
 
@@ -81,9 +72,9 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
     public void onStart() {
         super.onStart();
 
-        TrackAdapter trackAdapter = new TrackAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
+        TrackSettingAdapter trackSettingAdapter = new TrackSettingAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(trackAdapter);
+        recyclerView.setAdapter(trackSettingAdapter);
     }
 
 

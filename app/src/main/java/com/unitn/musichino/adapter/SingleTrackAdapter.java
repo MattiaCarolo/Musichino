@@ -1,28 +1,20 @@
-package com.unitn.musichino.ui.search;
+package com.unitn.musichino.adapter;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
-import com.unitn.musichino.databinding.FragmentPlaylistSelectionDialogBinding;
 import com.unitn.musichino.ui.playlist.PlaylistSelectionDialog;
 
-
-import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +26,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder> {
+public class SingleTrackAdapter extends RecyclerView.Adapter<SingleTrackAdapter.ViewHolder> {
 
     private List<AudioModel> tracks;
     private List<AudioModel> backup;
@@ -46,20 +38,20 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private final Button button;
+        private final ImageButton button;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
             int index;
-            textView = (TextView) view.findViewById(R.id.textView);
-            button = (Button) view.findViewById(R.id.addToPlaylistButton);
+            textView = (TextView) view.findViewById(R.id.txt_playlist_name);
+            button = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
         }
 
         public TextView getTextView() {
             return textView;
         }
-        public Button getButton(){return button;}
+        public ImageButton getButton(){return button;}
     }
 
 
@@ -70,7 +62,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public SearchRecyclerViewAdapter(FragmentActivity fragment, List<AudioModel> dataSet, List<AudioModel> backup) {
+    public SingleTrackAdapter(FragmentActivity fragment, List<AudioModel> dataSet, List<AudioModel> backup) {
         tracks = dataSet;
         this.backup = backup;
         this.fragment = fragment;
