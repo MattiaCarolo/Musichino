@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.unitn.musichino.Models.AudioModel;
-import com.unitn.musichino.adapter.SingleTrackAdapter;
+import com.unitn.musichino.adapter.SearchTrackAdapter;
 import com.unitn.musichino.databinding.FragmentSearchBinding;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private SearchView searchView;
     public static List<AudioModel> tracks = new ArrayList<>();
     RecyclerView searchRecycler;
-    SingleTrackAdapter adapter;
+    SearchTrackAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchRecycler = binding.searchRecycler;
         searchView = binding.searchView;
         searchView.setOnQueryTextListener(this);
-        adapter = new SingleTrackAdapter(getActivity(), tracks, null,0);
+        adapter = new SearchTrackAdapter(getActivity(), tracks, null,0);
         searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         searchRecycler.setAdapter(adapter);
         final Button searchButton = binding.btnSearch;
@@ -70,7 +70,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                     tracks = getAllAudioFromDevice(requireContext());
                     ArrayList<AudioModel> backup = new ArrayList<>();
                     backup.addAll(tracks);
-                    adapter = new SingleTrackAdapter(getActivity(), tracks, backup, 0);
+                    adapter = new SearchTrackAdapter(getActivity(), tracks, backup, 0);
                     searchRecycler.swapAdapter(adapter, true);
                     Log.d("SEARCH", searchRecycler.getAdapter().getItemCount()+" items created.");
                 }
