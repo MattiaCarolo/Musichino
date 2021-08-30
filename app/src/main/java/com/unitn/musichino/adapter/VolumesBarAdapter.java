@@ -64,15 +64,16 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.volumebar, viewGroup, false);
-
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+        childViews.add(viewHolder);
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
-        childViews.add(viewHolder);
+
         MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
         viewHolder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -126,9 +127,18 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
 
 
     public void setVolumePreset(List<Integer> values){
-        for(int i = 0; i < getItemCount(); i++){
-            player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload(values.get(i)).send();
+        Log.d("SETVOL", "Chiild size: " +childViews.size()+", values size: " +values.size()+", media codec size: " +mediaCodecAudioRendererList.size());
+        for(int i = 0; i < childViews.size(); i++){
+            player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload((float)values.get(i)).send();
             childViews.get(i).seekBar.setProgress(values.get(i));
         }
+    }
+
+    public List<Integer> getVolumePreset(){
+        List<Integer> values = new ArrayList<>();
+        for(int i = 0; i < childViews.size(); i++){
+            values.add(childViews.get(i).seekBar.getProgress());
+        }
+        return values;
     }
 }

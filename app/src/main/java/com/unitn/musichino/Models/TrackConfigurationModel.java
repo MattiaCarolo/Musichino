@@ -69,6 +69,14 @@ public class TrackConfigurationModel {
         this.volumePresetModels = volumePresetModels;
     }
 
+    public void addVolumePresetModel(PresetModel volumePreset){
+        this.volumePresetModels.add(volumePreset);
+    }
+
+    public void addEqPresetModel(PresetModel eqPreset){
+        this.eqPresetModels.add((eqPreset));
+    }
+
     public List<PresetModel> getEqPresetModels() {
         return eqPresetModels;
     }
