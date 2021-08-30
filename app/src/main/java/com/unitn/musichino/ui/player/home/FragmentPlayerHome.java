@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.os.IBinder;
@@ -16,9 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -29,6 +35,7 @@ import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.service.AudioService;
+import com.unitn.musichino.ui.playlist.PlaylistSelectionDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,10 +50,11 @@ public class FragmentPlayerHome extends Fragment {
     private AudioService mService;
     private boolean mBound = false;
     private Button button;
-    private Boolean _isPlaying;
+    private Boolean _isPlaying = true;
     private ImageButton btn_play_pause, btn_previous, btn_next, btn_shuffle, btn_addPlaylist;
     private DefaultTimeBar defaultTimeBar;
     AudioModel item;
+    TextView txt_trackname, txt_artist;
 
     public FragmentPlayerHome() {
         // Required empty public constructor
@@ -69,8 +77,8 @@ public class FragmentPlayerHome extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mService = ((PlayerActivity) getActivity()).mService;
-
+        mService = ((PlayerActivity) requireActivity()).mService;
+        simpleExoPlayer = mService.getplayerInstance();
     }
 
     @Override
@@ -79,10 +87,30 @@ public class FragmentPlayerHome extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_player_home, container, false);
         btn_next = root.findViewById(R.id.btn_next);
-        btn_addPlaylist = root.findViewById(R.id.btn_addplaylist);
+        btn_addPlaylist = root.findViewById(R.id.btn_addToPlaylist);
         btn_play_pause = root.findViewById(R.id.btn_play_pause);
         btn_previous = root.findViewById(R.id.btn_prev);
         btn_shuffle = root.findViewById(R.id.btn_shuffle);
+
+        txt_artist = root.findViewById(R.id.txt_ArtistName);
+        txt_trackname = root.findViewById(R.id.txt_TrackName);
+
+        item = mService.currentlyPlaying;
+
+        txt_trackname.setText(item.getName());
+        txt_artist.setText(item.getArtist());
+
+        simpleExoPlayer.addListener(new Player.Listener() {
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                item = mService.currentlyPlaying;
+
+                txt_trackname.setText(item.getName());
+                txt_artist.setText(item.getArtist());
+            }
+        });
+
         return root;
     }
     @Override
@@ -92,48 +120,51 @@ public class FragmentPlayerHome extends Fragment {
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("stop", "pppppa");
-                if (simpleExoPlayer == null) {
-                    simpleExoPlayer = mService.getplayerInstance();
-                    _isPlaying = true;
-                    btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
-                }
                 if(_isPlaying) {
-                    try {
-                        if (simpleExoPlayer != null) {
-                            simpleExoPlayer.setPlayWhenReady(false);
-                            _isPlaying = false;
-                        }
-                    } catch (NullPointerException e) {
-                        simpleExoPlayer = mService.getplayerInstance();
-                        playerView.setPlayer(simpleExoPlayer);
-                    }
-                    Log.d("HElloooo", "00000000000000");
+                    simpleExoPlayer.setPlayWhenReady(false);
+                    _isPlaying = !_isPlaying;
+                    btn_play_pause.setImageResource(R.drawable.exo_controls_play);
+                    Log.d("HElloooo", "pause");
                 }else{
-                    try {
-                        if (simpleExoPlayer != null) {
-                            simpleExoPlayer.setPlayWhenReady(true);
-                            _isPlaying = true;
-                        }
-                    } catch (NullPointerException e) {
-                        simpleExoPlayer = mService.getplayerInstance();
-                        playerView.setPlayer(simpleExoPlayer);
-                    }
-                    Log.d("HElloooo", "00000000000000");
+                    simpleExoPlayer.setPlayWhenReady(true);
+                    _isPlaying = !_isPlaying;
+                    btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
+                    Log.d("HElloooo", "play");
                 }
             }
         });
-    }
 
-    public void startPlayerMethods(SimpleExoPlayer simpleExoPlayer) {
-        playerView.setPlayer(simpleExoPlayer);
-    }
+        btn_previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()){
+                    simpleExoPlayer.seekToPreviousWindow();
+                }
+            }
+        });
 
-    private void initializePlayer() {
-        if (mBound) {
-            Log.d("ciao","ciao");
-            simpleExoPlayer = mService.getplayerInstance();
-            playerView.setPlayer(simpleExoPlayer);
-        }
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()){
+                    simpleExoPlayer.seekToNextWindow();
+                }
+            }
+        });
+
+        btn_addPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mService.currentlyPlaying != null ){
+                    AudioModel audioModel = mService.currentlyPlaying;
+                    DialogFragment newFragment = new PlaylistSelectionDialog();
+                    Bundle b = new Bundle();
+                    b.putParcelable("item", audioModel);
+                    newFragment.setArguments(b);
+                    newFragment.show(getParentFragmentManager(), "playlist_selection");
+                }
+            }
+        });
+
     }
 }

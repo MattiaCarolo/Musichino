@@ -1,4 +1,4 @@
-package com.unitn.musichino.ui.playlist;
+package com.unitn.musichino.adapter;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -6,16 +6,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
+import com.unitn.musichino.interfaces.PlaylistToFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,9 +27,11 @@ import java.util.List;
 public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<PlaylistItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<PlaylistModel> playlistModels;
+    private final PlaylistToFragment playlistToFragment;
 
-    public PlaylistItemRecyclerViewAdapter(List<PlaylistModel> items) {
+    public PlaylistItemRecyclerViewAdapter(List<PlaylistModel> items, PlaylistToFragment playlistToFragment) {
         playlistModels = items;
+        this.playlistToFragment = playlistToFragment;
     }
 
     @NotNull
@@ -41,10 +45,24 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.playlistModel = playlistModels.get(position);
-        holder.mIdView.setText(""+position);
-        holder.mContentView.setText(playlistModels.get(position).toString());
-        holder.mContentView.setTextColor(Color.BLACK);
+        holder.mContentView.setText(playlistModels.get(position).getName());
         holder.mContentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<AudioModel> items = holder.playlistModel.getPlaylist();
+                /*
+                Intent intent = new Intent(holder.mView.getContext(), PlayerActivity.class);
+                Bundle b = new Bundle();
+                b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
+                intent.putExtra("bundle", b);
+                //holder.mView.getContext().startActivity(intent);
+                */
+                PlaylistModel playlistModel = playlistModels.get(position);
+                playlistToFragment.onClickChange(playlistModel);
+
+            }
+        });
+        holder.btn_play.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 List<AudioModel> items = holder.playlistModel.getPlaylist();
@@ -53,6 +71,7 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
                 b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
                 intent.putExtra("bundle", b);
                 holder.mView.getContext().startActivity(intent);
+
             }
         });
     }
@@ -64,15 +83,18 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
         public PlaylistModel playlistModel;
+        public ImageView imageView;
+        public ImageButton btn_add, btn_play;
+
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.playlist_item_number);
-            mContentView = (TextView) view.findViewById(R.id.playlist_content);
+            imageView = (ImageView) view.findViewById(R.id.iv_playlist_image);
+            mContentView = (TextView) view.findViewById(R.id.txt_playlist_name);
+            btn_play = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
         }
 
         @Override

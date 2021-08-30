@@ -41,6 +41,7 @@ import com.unitn.musichino.Models.PresetModel;
 import com.unitn.musichino.Models.TrackConfigurationModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
+import com.unitn.musichino.adapter.TrackSettingAdapter;
 import com.unitn.musichino.adapter.BarEqualizerAdapter;
 import com.unitn.musichino.adapter.VolumesBarAdapter;
 import com.unitn.musichino.interfaces.ButtonTrackClickListener;
@@ -62,7 +63,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
     TrackConfigurationModel trackConfigurationModel;
     VolumesBarAdapter volumesBarAdapter;
     Equalizer mEqualizer;
-    
+
 
     public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList) {
         // Required empty public constructor

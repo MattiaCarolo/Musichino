@@ -160,7 +160,10 @@ public class AudioService extends Service {
         List<MediaItem> mediaItems = new ArrayList<>();
         for(AudioModel item : items) {
             Uri uri = Uri.parse(item.getPath());
-            mediaItems.add(MediaItem.fromUri(uri));
+            MediaItem mediaItem = new MediaItem.Builder()
+                    .setUri(uri)
+                    .build();
+            mediaItems.add(mediaItem);
         }
         player.setMediaItems(mediaItems, true);
         player.prepare();

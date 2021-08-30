@@ -4,25 +4,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/transparent"
     tools:context=".ui.player.home.FragmentPlayerHome">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdl_help_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="59dp" />
+
+
+    <ImageButton
+        android:id="@+id/btn_shuffle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/icn_button"
+        android:src="@drawable/icon_shuffle"
+        app:layout_constraintBottom_toTopOf="@+id/gdl_help_btn"
+        app:layout_constraintStart_toStartOf="@+id/iv_album"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_likeSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/icn_button"
+        android:src="@drawable/icon_liked"
+        app:layout_constraintBottom_toTopOf="@+id/gdl_help_btn"
+        app:layout_constraintEnd_toStartOf="@+id/btn_addToPlaylist"
+        app:layout_constraintStart_toEndOf="@+id/btn_shuffle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_addToPlaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/icn_button"
+        android:src="@drawable/icon_outline_menu"
+        app:layout_constraintBottom_toTopOf="@+id/gdl_help_btn"
+        app:layout_constraintEnd_toEndOf="@+id/iv_album"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_album"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/purple_light_gradient"
+        android:background="@drawable/img_album_container"
         android:padding="5dp"
-        android:src="@drawable/ic_logo"
+        android:src="@drawable/albumcover"
         app:layout_constraintBottom_toTopOf="@+id/btn_play_pause"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.628"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintVertical_bias="0.317"
+        app:layout_constraintWidth_percent="0.7" />
+
+    <TextView
+        android:id="@+id/txt_ArtistName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ArtistName"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_TrackName"
+        app:layout_constraintVertical_bias="0.15" />
+
+    <TextView
+        android:id="@+id/txt_TrackName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TrackName"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.615" />
 
     <ImageButton
         android:id="@+id/btn_play_pause"
@@ -36,35 +101,20 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.798"
+        app:layout_constraintVertical_bias="0.919"
         app:layout_constraintWidth_percent="0.2" />
+
 
     <ImageButton
         android:id="@+id/btn_prev"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/pause"
+        android:background="@color/transparent"
         android:src="@drawable/exo_controls_previous"
         app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@+id/btn_play_pause"
-        app:layout_constraintHorizontal_bias="0.815"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_play_pause"
-        app:layout_constraintVertical_bias="0.468"
-        app:layout_constraintWidth_percent="0.12" />
-
-
-    <ImageButton
-        android:id="@+id/btn_addplaylist"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/pause"
-        android:src="@drawable/exo_controls_fullscreen_exit"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_play_pause"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/btn_play_pause"
-        app:layout_constraintHorizontal_bias="0.263"
+        app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_play_pause"
         app:layout_constraintVertical_bias="0.468"
@@ -74,31 +124,15 @@
         android:id="@+id/btn_next"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/pause"
+        android:background="@color/transparent"
         android:src="@drawable/exo_controls_next"
         app:layout_constraintBottom_toBottomOf="@+id/btn_prev"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.189"
+        app:layout_constraintHorizontal_bias="0.469"
         app:layout_constraintStart_toEndOf="@+id/btn_play_pause"
         app:layout_constraintTop_toTopOf="@+id/btn_prev"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintWidth_percent="0.12" />
-
-
-    <ImageButton
-        android:id="@+id/btn_shuffle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/pause"
-        android:src="@drawable/exo_controls_shuffle_off"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_prev"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.73"
-        app:layout_constraintStart_toEndOf="@+id/btn_play_pause"
-        app:layout_constraintTop_toTopOf="@+id/btn_prev"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintWidth_percent="0.12" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,16 +5,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.net.sip.SipSession;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,8 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.adapter.SingleTrackAdapter;
 import com.unitn.musichino.databinding.FragmentSearchBinding;
-import com.unitn.musichino.util.C;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +39,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private SearchView searchView;
     public static List<AudioModel> tracks = new ArrayList<>();
     RecyclerView searchRecycler;
-    SearchRecyclerViewAdapter adapter;
+    SingleTrackAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,10 +51,10 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchRecycler = binding.searchRecycler;
         searchView = binding.searchView;
         searchView.setOnQueryTextListener(this);
-        adapter = new SearchRecyclerViewAdapter(getActivity(), tracks, null);
+        adapter = new SingleTrackAdapter(getActivity(), tracks, null);
         searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         searchRecycler.setAdapter(adapter);
-        final Button searchButton = binding.searchButton;
+        final Button searchButton = binding.btnSearch;
        // getContext().getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, 0).edit().remove("playlists").remove("playlist_names").commit();
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +70,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                     tracks = getAllAudioFromDevice(requireContext());
                     ArrayList<AudioModel> backup = new ArrayList<>();
                     backup.addAll(tracks);
-                    adapter = new SearchRecyclerViewAdapter(getActivity(), tracks, backup);
+                    adapter = new SingleTrackAdapter(getActivity(), tracks, backup);
                     searchRecycler.swapAdapter(adapter, true);
                     Log.d("SEARCH", searchRecycler.getAdapter().getItemCount()+" items created.");
                 }
