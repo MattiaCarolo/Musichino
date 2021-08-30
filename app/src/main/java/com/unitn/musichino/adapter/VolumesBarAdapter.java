@@ -24,6 +24,7 @@ import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.unitn.musichino.service.AudioService;
 import com.unitn.musichino.PlayerActivity;
@@ -32,21 +33,27 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
 
     public static SimpleExoPlayer player;
     public static List<MediaCodecAudioRenderer> mediaCodecAudioRendererList;
+    public static List<VolumesBarAdapter.ViewHolder> childViews;
 
-    private SeekBar seekBar;
-    private ImageView imageView;
+
 
 
     public VolumesBarAdapter(SimpleExoPlayer player, List<MediaCodecAudioRenderer> mediaCodecAudioRendererList){
         this.player = player;
         this.mediaCodecAudioRendererList = mediaCodecAudioRendererList;
+        this.childViews = new ArrayList<>();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
+        private boolean isMuted = false;
+        private float backupVolume = 100;
+        SeekBar seekBar;
+        ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
+            imageView = (ImageView) view.findViewById(R.id.img_tagtrack);
+            seekBar = (SeekBar) view.findViewById(R.id.bar_volumebar);
         }
     }
 
@@ -57,8 +64,7 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.volumebar, viewGroup, false);
-        imageView = (ImageView) view.findViewById(R.id.img_tagtrack);
-        seekBar = (SeekBar) view.findViewById(R.id.bar_volumebar);
+
         return new ViewHolder(view);
     }
 
@@ -66,16 +72,18 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
     @Override
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
+        childViews.add(viewHolder);
         MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        viewHolder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(b){
+      //          if(b){
                     float value = i / (float)seekBar.getMax();
                     player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
-                }
+          //      }
             }
+
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -85,6 +93,23 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(viewHolder.isMuted) {
+                    player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload((float)viewHolder.backupVolume).send();
+                    viewHolder.seekBar.setProgress((int)viewHolder.backupVolume);
+
+                }
+                else{
+                    viewHolder.backupVolume = (float)viewHolder.seekBar.getProgress();
+                    player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload((float)0).send();
+                    viewHolder.seekBar.setProgress(0);
+
+                }
+                viewHolder.isMuted = !viewHolder.isMuted;
             }
         });
     }
@@ -100,4 +125,10 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
     }
 
 
+    public void setVolumePreset(List<Integer> values){
+        for(int i = 0; i < getItemCount(); i++){
+            player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload(values.get(i)).send();
+            childViews.get(i).seekBar.setProgress(values.get(i));
+        }
+    }
 }

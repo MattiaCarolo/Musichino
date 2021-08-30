@@ -104,6 +104,7 @@ public class PlayerActivity extends AppCompatActivity
         //Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
         mService.changeSong(Uri.parse(item.getPath()));
       }
+      setUI();
     }
 
     @Override
@@ -167,6 +168,11 @@ public class PlayerActivity extends AppCompatActivity
     super.onStart();
     bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     initializePlayer();
+
+  //  setUI();
+  }
+
+  public void setUI(){
     playerView.getSubtitleView().setVisibility(View.INVISIBLE);
     List<Fragment> fragments = new ArrayList<>();
     fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
@@ -174,7 +180,7 @@ public class PlayerActivity extends AppCompatActivity
     fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
     pagerAdapter = new PlayerPagerAdapter(this,fragments);
     viewPager.setAdapter(pagerAdapter);
-  //  setUI();
+    viewPager.setCurrentItem(1);
   }
 
   @Override

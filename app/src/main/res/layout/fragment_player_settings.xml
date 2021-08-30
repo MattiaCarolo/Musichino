@@ -16,14 +16,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.95" >
-
-                <Button
-                    android:id="@+id/buttone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:text="Analyze track" />
         </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

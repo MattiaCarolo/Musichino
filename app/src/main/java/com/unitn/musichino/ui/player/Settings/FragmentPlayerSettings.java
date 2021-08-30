@@ -12,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class FragmentPlayerSettings extends Fragment {
@@ -32,21 +34,12 @@ public class FragmentPlayerSettings extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button button = view.findViewById(R.id.buttone);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                simpleExoPlayer = ((PlayerActivity) getActivity()).getPlayer();
-                mediaCodecAudioRendererList = ((PlayerActivity) getActivity()).mService.renderers;
-
-                button.setVisibility(View.GONE);
-
-                SettingsHUDFragment settingsHUDFragment = new SettingsHUDFragment(simpleExoPlayer,mediaCodecAudioRendererList);
-                FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.hud_settings, settingsHUDFragment, settingsHUDFragment.getClass().getName());
-                fragmentTransaction.commit();
-            }
-        });
+        simpleExoPlayer = ((PlayerActivity) requireActivity()).getPlayer();
+        mediaCodecAudioRendererList = ((PlayerActivity) requireActivity()).mService.renderers;
+        SettingsHUDFragment settingsHUDFragment = new SettingsHUDFragment(simpleExoPlayer,mediaCodecAudioRendererList);
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.hud_settings, settingsHUDFragment, settingsHUDFragment.getClass().getName());
+        fragmentTransaction.commit();
 
     }
 }
