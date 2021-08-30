@@ -15,11 +15,13 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.ui.playlist.PlaylistSelectionDialog;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,8 @@ import java.util.Locale;
 public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdapter.ViewHolder> {
 
     private List<AudioModel> tracks;
-    private List<AudioModel> backup;
     private FragmentActivity fragment;
+    private PlaylistModel playlistModel;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -61,10 +63,10 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public PlaylistTrackAdapter(FragmentActivity fragment, List<AudioModel> dataSet, List<AudioModel> backup, int _toggler) {
+    public PlaylistTrackAdapter(FragmentActivity fragment, List<AudioModel> dataSet, PlaylistModel playlistModel) {
         tracks = dataSet;
-        this.backup = backup;
         this.fragment = fragment;
+        this.playlistModel = playlistModel;
     }
 
     // Create new views (invoked by the layout manager)
@@ -99,12 +101,13 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
         viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment newFragment = new PlaylistSelectionDialog();
-                Bundle b = new Bundle();
-                b.putParcelable("item", tracks.get(position));
-                newFragment.setArguments(b);
-                newFragment.show(fragment.getSupportFragmentManager(), "playlist_selection");
-
+                try {
+                    playlistModel.removeAudioFromPlaylist(fragment,tracks.get(position).getName());
+                    tracks.remove(position);
+                    notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -115,20 +118,6 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
         return tracks.size();
     }
 
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        tracks.clear();
-        if (charText.length() == 0) {
-            tracks.addAll(backup);
-        } else {
-            for (AudioModel audio : backup) {
-                if (audio.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    tracks.add(audio);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
 
 }
 

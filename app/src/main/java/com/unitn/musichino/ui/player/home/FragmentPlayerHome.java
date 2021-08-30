@@ -3,6 +3,8 @@ package com.unitn.musichino.ui.player.home;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -52,6 +56,7 @@ public class FragmentPlayerHome extends Fragment {
     private Button button;
     private Boolean _isPlaying = true;
     private ImageButton btn_play_pause, btn_previous, btn_next, btn_shuffle, btn_addPlaylist;
+    private ImageView artworkView;
     private DefaultTimeBar defaultTimeBar;
     AudioModel item;
     TextView txt_trackname, txt_artist;
@@ -91,7 +96,7 @@ public class FragmentPlayerHome extends Fragment {
         btn_play_pause = root.findViewById(R.id.btn_play_pause);
         btn_previous = root.findViewById(R.id.btn_prev);
         btn_shuffle = root.findViewById(R.id.btn_shuffle);
-
+        artworkView = root.findViewById(R.id.iv_album);
         txt_artist = root.findViewById(R.id.txt_ArtistName);
         txt_trackname = root.findViewById(R.id.txt_TrackName);
 
@@ -105,11 +110,22 @@ public class FragmentPlayerHome extends Fragment {
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
                 item = mService.currentlyPlaying;
-
                 txt_trackname.setText(item.getName());
                 txt_artist.setText(item.getArtist());
             }
+
+            @Override
+            public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+                if(mediaMetadata.artworkData != null) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(mediaMetadata.artworkData, 0, mediaMetadata.artworkData.length);
+                    artworkView.setImageBitmap(bitmap);
+                }
+                else{
+                    artworkView.setImageResource(R.drawable.albumcover);
+                }
+            }
         });
+
 
         return root;
     }
