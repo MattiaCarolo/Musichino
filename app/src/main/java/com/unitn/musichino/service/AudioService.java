@@ -110,6 +110,7 @@ public class AudioService extends Service {
 
     private void startPlayer() {
         final Context context = this;
+        currentlyPlaying = items.get(0);
         trackSelector = new MultiAudioTrackSelector();
         MultiTrackRenderersFactory renderersFactory = new MultiTrackRenderersFactory(trackCount, context, this);
         player = new SimpleExoPlayer.Builder(context.getApplicationContext(), renderersFactory)
