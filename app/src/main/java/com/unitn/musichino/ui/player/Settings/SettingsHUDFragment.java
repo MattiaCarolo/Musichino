@@ -92,12 +92,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
         volumePresetButton = view.findViewById(R.id.volumePresetListButton);
         eqPresetButton = view.findViewById(R.id.eqPresetListButton);
 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
         simpleExoPlayer.addListener(new Player.Listener() {
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
@@ -127,7 +121,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                     PresetModel defaultEqPreset = new PresetModel("default", eqBarAdapter.getItemCount(), false);
                     trackConfigurationModel.getVolumePresetModels().add(defaultVolumePreset);
                     trackConfigurationModel.getEqPresetModels().add(defaultEqPreset);
-                    trackConfigurationModel.setTrackReference(currentlyPlaying.getPath());
+                    trackConfigurationModel.setTrackReference(currentlyPlaying.getName());
                     try {
                         trackConfigurationModel.saveToSharedPreferences(requireContext());
                     } catch (JSONException e) {
@@ -148,6 +142,12 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
 
             }
         });
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
     }
 

@@ -24,6 +24,7 @@ public class PresetModel {
 
     public PresetModel(String name, int size, boolean isVolume){
         this.name = name;
+        this.values = new ArrayList<>();
         for(int i = 0; i < size; i++){
             if(isVolume)
                 values.add(100);
