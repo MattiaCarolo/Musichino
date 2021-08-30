@@ -97,8 +97,8 @@ public class FragmentPlayerHome extends Fragment {
 
         item = mService.currentlyPlaying;
 
-        txt_trackname.setText(item.getName());
-        txt_artist.setText(item.getArtist());
+     //   txt_trackname.setText(item.getName());
+     //   txt_artist.setText(item.getArtist());
 
         simpleExoPlayer.addListener(new Player.Listener() {
 

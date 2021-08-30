@@ -88,7 +88,7 @@ public class PlayerActivity extends AppCompatActivity
   private Intent intent;
   private String shareableLink;
   private boolean mBound = false;
-  AudioModel item;
+  List<AudioModel> items;
 
   private ConcatenatingMediaSource concatenatingMediaSource;
 
@@ -102,7 +102,7 @@ public class PlayerActivity extends AppCompatActivity
       initializePlayer();
       if(mService.currentlyPlaying != null){
         //Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
-        mService.changeSong(Uri.parse(item.getPath()));
+        mService.changeSong(items);;
       }
       setUI();
     }
@@ -122,12 +122,9 @@ public class PlayerActivity extends AppCompatActivity
     playerView = findViewById(R.id.video_view);
     Bundle b = getIntent().getBundleExtra("bundle");
     if (b != null) {
-      List<AudioModel> items = new ArrayList<>();
+      items = new ArrayList<>();
       items =  b.getParcelableArrayList("items");
-      item = items.get(0);
       shareableLink = b.getString("share_key");
-      mUrl = item.getPath();
-      mTitle = item.getName();
       intent = new Intent(this, AudioService.class);
       Bundle serviceBundle = new Bundle();
       serviceBundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);

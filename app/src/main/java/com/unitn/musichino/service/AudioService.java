@@ -165,6 +165,7 @@ public class AudioService extends Service {
                     .build();
             mediaItems.add(mediaItem);
         }
+        Log.d("MEDIAITEMS", "set media items size: "+mediaItems.size());
         player.setMediaItems(mediaItems, true);
         player.prepare();
         player.setPlayWhenReady(true);
@@ -229,14 +230,19 @@ public class AudioService extends Service {
     }
 
 
-    public void changeSong(Uri uri){
-        if(!uri.equals(Uri.parse(currentlyPlaying.getPath()))) {
-            progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
-            MediaSource mediaSource = progressiveMediaSourceFactory.createMediaSource(MediaItem.fromUri(uri));
-            player.setMediaSource(mediaSource, true);
+    public void changeSong(List<AudioModel> items){
+            List<MediaItem> mediaItems = new ArrayList<>();
+            for(AudioModel item : items) {
+                Uri uri = Uri.parse(item.getPath());
+                MediaItem mediaItem = new MediaItem.Builder()
+                        .setUri(uri)
+                        .build();
+                mediaItems.add(mediaItem);
+            }
+            Log.d("MEDIAITEMS", "set media items size: "+mediaItems.size());
+            player.setMediaItems(mediaItems, true);
             player.prepare();
             player.setPlayWhenReady(true);
-        }
     }
 
 }
