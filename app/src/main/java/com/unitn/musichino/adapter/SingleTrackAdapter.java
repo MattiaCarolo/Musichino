@@ -31,6 +31,7 @@ public class SingleTrackAdapter extends RecyclerView.Adapter<SingleTrackAdapter.
     private List<AudioModel> tracks;
     private List<AudioModel> backup;
     private FragmentActivity fragment;
+    private int _toggler; // 0 = add item to playlist  1 = remove item from playlist
 
     /**
      * Provide a reference to the type of views that you are using
@@ -62,10 +63,11 @@ public class SingleTrackAdapter extends RecyclerView.Adapter<SingleTrackAdapter.
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public SingleTrackAdapter(FragmentActivity fragment, List<AudioModel> dataSet, List<AudioModel> backup) {
+    public SingleTrackAdapter(FragmentActivity fragment, List<AudioModel> dataSet, List<AudioModel> backup, int _toggler) {
         tracks = dataSet;
         this.backup = backup;
         this.fragment = fragment;
+        this._toggler = _toggler;
     }
 
     // Create new views (invoked by the layout manager)
@@ -75,7 +77,6 @@ public class SingleTrackAdapter extends RecyclerView.Adapter<SingleTrackAdapter.
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.single_track_item, viewGroup, false);
-
         return new ViewHolder(view);
     }
 
@@ -101,13 +102,22 @@ public class SingleTrackAdapter extends RecyclerView.Adapter<SingleTrackAdapter.
         viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment newFragment = new PlaylistSelectionDialog();
-                Bundle b = new Bundle();
-                b.putParcelable("item", tracks.get(position));
-                newFragment.setArguments(b);
-                newFragment.show(fragment.getSupportFragmentManager(), "playlist_selection");
+                if(_toggler == 0) {
+                    DialogFragment newFragment = new PlaylistSelectionDialog();
+                    Bundle b = new Bundle();
+                    b.putParcelable("item", tracks.get(position));
+                    newFragment.setArguments(b);
+                    newFragment.show(fragment.getSupportFragmentManager(), "playlist_selection");
+                }else{
+
+                }
             }
         });
+        if(_toggler == 0){
+            viewHolder.getButton().setImageResource(R.drawable.icon___add___filled);
+        }else{
+            viewHolder.getButton().setImageResource(R.drawable.icon_remove);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

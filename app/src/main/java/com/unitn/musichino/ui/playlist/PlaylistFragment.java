@@ -83,7 +83,7 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
 
     @Override
     public void onClickChange(PlaylistModel playListModel) {
-        SingleTrackAdapter singleTrackAdapter = new SingleTrackAdapter(requireActivity(),playListModel.getPlaylist(),playListModel.getPlaylist());
+        SingleTrackAdapter singleTrackAdapter = new SingleTrackAdapter(requireActivity(),playListModel.getPlaylist(),playListModel.getPlaylist(), 1);
         recyclerView.setAdapter(singleTrackAdapter);
     }
 }

@@ -25,7 +25,6 @@ import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -136,13 +135,10 @@ public class PlayerActivity extends AppCompatActivity
           Log.d("Exception service", ex.toString());
       }
 
-
       playerView.setUseController(true);
       playerView.showController();
-      playerView.setUseArtwork(false);
       playerView.setControllerAutoShow(true);
       playerView.setControllerHideOnTouch(false);
-      playerView.setControllerShowTimeoutMs(0);
     }
 
     viewPager = findViewById(R.id.pgr_MediaPlayer);
@@ -184,6 +180,7 @@ public class PlayerActivity extends AppCompatActivity
   public void onResume() {
     super.onResume();
   }
+
 
 
   @Override
