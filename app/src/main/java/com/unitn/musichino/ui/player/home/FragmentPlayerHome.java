@@ -17,9 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
@@ -49,6 +54,7 @@ public class FragmentPlayerHome extends Fragment {
     private ImageButton btn_play_pause, btn_previous, btn_next, btn_shuffle, btn_addPlaylist;
     private DefaultTimeBar defaultTimeBar;
     AudioModel item;
+    TextView txt_trackname, txt_artist;
 
     public FragmentPlayerHome() {
         // Required empty public constructor
@@ -71,8 +77,8 @@ public class FragmentPlayerHome extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mService = ((PlayerActivity) getActivity()).mService;
-
+        mService = ((PlayerActivity) requireActivity()).mService;
+        simpleExoPlayer = mService.getplayerInstance();
     }
 
     @Override
@@ -85,6 +91,26 @@ public class FragmentPlayerHome extends Fragment {
         btn_play_pause = root.findViewById(R.id.btn_play_pause);
         btn_previous = root.findViewById(R.id.btn_prev);
         btn_shuffle = root.findViewById(R.id.btn_shuffle);
+
+        txt_artist = root.findViewById(R.id.txt_ArtistName);
+        txt_trackname = root.findViewById(R.id.txt_TrackName);
+
+        item = mService.currentlyPlaying;
+
+        txt_trackname.setText(item.getName());
+        txt_artist.setText(item.getArtist());
+
+        simpleExoPlayer.addListener(new Player.Listener() {
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                item = mService.currentlyPlaying;
+
+                txt_trackname.setText(item.getName());
+                txt_artist.setText(item.getArtist());
+            }
+        });
+
         return root;
     }
     @Override
@@ -95,37 +121,22 @@ public class FragmentPlayerHome extends Fragment {
             @Override
             public void onClick(View v) {
                 if(_isPlaying) {
-                    try {
-                        if (simpleExoPlayer != null) {
-                            simpleExoPlayer.setPlayWhenReady(false);
-                            _isPlaying = false;
-                            btn_play_pause.setImageResource(R.drawable.exo_controls_play);
-                        }
-                    } catch (NullPointerException e) {
-                        simpleExoPlayer = mService.getplayerInstance();
-                        playerView.setPlayer(simpleExoPlayer);
-                    }
+                    simpleExoPlayer.setPlayWhenReady(false);
+                    _isPlaying = !_isPlaying;
+                    btn_play_pause.setImageResource(R.drawable.exo_controls_play);
                     Log.d("HElloooo", "pause");
                 }else{
-                    try {
-                        if (simpleExoPlayer != null) {
-                            simpleExoPlayer.setPlayWhenReady(true);
-                            _isPlaying = true;
-                            btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
-                        }
-                    } catch (NullPointerException e) {
-                        simpleExoPlayer = mService.getplayerInstance();
-                        playerView.setPlayer(simpleExoPlayer);
-                    }
+                    simpleExoPlayer.setPlayWhenReady(true);
+                    _isPlaying = !_isPlaying;
+                    btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
                     Log.d("HElloooo", "play");
                 }
             }
         });
 
-        btn_next.setOnClickListener(new View.OnClickListener() {
+        btn_previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                simpleExoPlayer = mService.getplayerInstance();
                 if(simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()){
                     simpleExoPlayer.seekToPreviousWindow();
                 }
@@ -135,7 +146,6 @@ public class FragmentPlayerHome extends Fragment {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                simpleExoPlayer = mService.getplayerInstance();
                 if(simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()){
                     simpleExoPlayer.seekToNextWindow();
                 }

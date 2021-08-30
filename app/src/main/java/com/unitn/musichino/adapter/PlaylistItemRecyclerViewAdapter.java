@@ -62,6 +62,18 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
 
             }
         });
+        holder.btn_play.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                List<AudioModel> items = holder.playlistModel.getPlaylist();
+                Intent intent = new Intent(holder.mView.getContext(), PlayerActivity.class);
+                Bundle b = new Bundle();
+                b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
+                intent.putExtra("bundle", b);
+                holder.mView.getContext().startActivity(intent);
+
+            }
+        });
     }
 
     @Override
@@ -74,7 +86,7 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
         public final TextView mContentView;
         public PlaylistModel playlistModel;
         public ImageView imageView;
-        public ImageButton btn_add, btn_settings;
+        public ImageButton btn_add, btn_play;
 
 
         public ViewHolder(View view) {
@@ -82,8 +94,7 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
             mView = view;
             imageView = (ImageView) view.findViewById(R.id.iv_playlist_image);
             mContentView = (TextView) view.findViewById(R.id.txt_playlist_name);
-            btn_add = (ImageButton) view.findViewById(R.id.btn_addQueue);
-            btn_settings = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
+            btn_play = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
         }
 
         @Override

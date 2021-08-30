@@ -58,12 +58,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        /*
-        btn_volumes = view.findViewById(R.id.btn_volumes);
-        btn_volumes.setOnClickListener(this);
-        ViewCompat.setTransitionName(btn_volumes, "title");
-
-         */
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_tracks);
 
     }
