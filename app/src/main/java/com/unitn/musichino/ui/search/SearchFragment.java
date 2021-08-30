@@ -51,7 +51,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchRecycler = binding.searchRecycler;
         searchView = binding.searchView;
         searchView.setOnQueryTextListener(this);
-        adapter = new SingleTrackAdapter(getActivity(), tracks, null);
+        adapter = new SingleTrackAdapter(getActivity(), tracks, null,0);
         searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         searchRecycler.setAdapter(adapter);
         final Button searchButton = binding.btnSearch;
@@ -70,7 +70,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                     tracks = getAllAudioFromDevice(requireContext());
                     ArrayList<AudioModel> backup = new ArrayList<>();
                     backup.addAll(tracks);
-                    adapter = new SingleTrackAdapter(getActivity(), tracks, backup);
+                    adapter = new SingleTrackAdapter(getActivity(), tracks, backup, 0);
                     searchRecycler.swapAdapter(adapter, true);
                     Log.d("SEARCH", searchRecycler.getAdapter().getItemCount()+" items created.");
                 }
