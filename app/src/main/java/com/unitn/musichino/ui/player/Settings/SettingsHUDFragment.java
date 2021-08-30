@@ -11,8 +11,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -118,9 +121,22 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                 volumesBarAdapter = new VolumesBarAdapter(simpleExoPlayer,  mediaCodecAudioRendererList);
                 BarEqualizerAdapter eqBarAdapter = new BarEqualizerAdapter(context, mEqualizer);
                 //TrackAdapter trackAdapter = new TrackAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
+
+                DividerItemDecoration itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+                itemDecorator.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.rv_separator));
+                recyclerView.addItemDecoration(itemDecorator);
+
+                SnapHelper helper = new LinearSnapHelper();
+                helper.attachToRecyclerView(recyclerView);
+
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 recyclerView.setAdapter(volumesBarAdapter);
                 eqRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+
+                //itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+                //itemDecorator.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.rv_separator));
+                eqRecyclerView.addItemDecoration(itemDecorator);
+
 
                 eqRecyclerView.setAdapter(eqBarAdapter);
                 currentlyPlaying = ((PlayerActivity) context).mService.currentlyPlaying;

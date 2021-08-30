@@ -6,14 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".ui.player.Settings.FragmentPlayerSettings">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/volumePresetListButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Presets"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/title_shape"
+            android:backgroundTint="@color/purple_mid_gradient"
+            android:drawableStart="@drawable/icon_arrow_drop_down_filled"
+            android:paddingLeft="10dip"
+            android:paddingRight="26dip"
+            android:text="Volume Preset"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.045"
+            app:layout_constraintHorizontal_bias="0.07"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.55" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_volumes"
@@ -21,6 +31,10 @@
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/rv_border"
+            android:padding="12dp"
+            app:layout_constraintHeight_percent="0.55"
+            app:layout_constraintWidth_percent="0.95"
             app:layout_constraintBottom_toTopOf="@+id/eqPresetListButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,17 +42,25 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/eqPresetListButton"
-            android:layout_width="187dp"
-            android:layout_height="43dp"
-            android:text="ROBBE"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/title_shape"
+            android:backgroundTint="@color/purple_mid_gradient"
+            android:text="Equalizer preset"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:drawableStart="@drawable/icon_arrow_drop_down_filled"
+            android:paddingLeft="10dip"
+            android:paddingRight="26dip"
+            app:layout_constraintWidth_percent="0.55"
+            app:layout_constraintHeight_percent="0.045"
+            app:layout_constraintBottom_toTopOf="@+id/rv_eq"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.093"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.65999997" />
+            app:layout_constraintVertical_bias="0.984" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_eq"
@@ -46,9 +68,16 @@
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            app:layout_constraintWidth_percent="0.95"
+            android:background="@drawable/rv_border"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            app:layout_constraintHeight_percent="0.3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/eqPresetListButton"
             app:layout_constraintVertical_bias="0.53" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
