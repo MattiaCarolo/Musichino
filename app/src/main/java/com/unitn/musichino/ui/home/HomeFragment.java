@@ -167,7 +167,12 @@ public class HomeFragment extends Fragment {
             picture = null;
         }
 
-        return new CardModel(title,artist,artist,picture);
+        return new CardModel(title,artist,path,picture);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

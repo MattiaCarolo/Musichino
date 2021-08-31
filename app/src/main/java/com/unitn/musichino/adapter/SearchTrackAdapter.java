@@ -39,7 +39,7 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private final ImageButton button;
+        private final ImageButton button, btn_add;
 
         public ViewHolder(View view) {
             super(view);
@@ -47,6 +47,7 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
             int index;
             textView = (TextView) view.findViewById(R.id.txt_playlist_name);
             button = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
+            btn_add = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
         }
 
         public TextView getTextView() {

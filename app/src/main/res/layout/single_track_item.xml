@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:background="@drawable/icn_button"
-        android:src="@drawable/exo_controls_play"
+        android:src="@drawable/icon___add___filled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_managePlaylist"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:background="@drawable/icn_button"
-        android:src="@drawable/exo_controls_play"
+        android:src="@drawable/icon_add_playlist"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

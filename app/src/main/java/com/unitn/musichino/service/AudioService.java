@@ -95,6 +95,10 @@ public class AudioService extends Service {
         return player;
     }
 
+    public SimpleExoPlayer getplayer() {
+        return player;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle b = intent.getBundleExtra("bundle");

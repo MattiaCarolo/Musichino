@@ -1,5 +1,8 @@
 package com.unitn.musichino;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -13,7 +16,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.MediaMetadata;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.service.AudioService;
@@ -29,7 +37,7 @@ public class BottomPlayerFragment extends Fragment {
     TextView textView;
     AudioModel item;
     private Boolean _isPlaying = true;
-
+    MediaMetadata metadata;
 
     public BottomPlayerFragment() {
         // Required empty public constructor
@@ -56,6 +64,11 @@ public class BottomPlayerFragment extends Fragment {
         btn_previous = root.findViewById(R.id.btn_prev);
         imageView = root.findViewById(R.id.iv_album);
         textView = root.findViewById(R.id.txt_info);
+        playerView = root.findViewById(R.id.video_view);
+        playerView.setControllerShowTimeoutMs(-1);
+        playerView.setControllerAutoShow(true);
+        playerView.setControllerHideOnTouch(false);
+        playerView.showController();
 
         if(mService != null) {
             item = mService.currentlyPlaying;
@@ -108,5 +121,82 @@ public class BottomPlayerFragment extends Fragment {
             });
         }
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mService = ((Home) getActivity()).mService;
+
+        if(mService != null) {
+            item = mService.currentlyPlaying;
+            simpleExoPlayer = mService.getplayer();
+        }
+
+        if(simpleExoPlayer != null){
+            playerView.setPlayer(simpleExoPlayer);
+            metadata = simpleExoPlayer.getMediaMetadata();
+            textView.setText(metadata.title + " - " + metadata.albumArtist);
+            btn_play_pause.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(_isPlaying) {
+                        simpleExoPlayer.setPlayWhenReady(false);
+                        _isPlaying = !_isPlaying;
+                        btn_play_pause.setImageResource(R.drawable.exo_controls_play);
+                    }else{
+                        simpleExoPlayer.setPlayWhenReady(true);
+                        _isPlaying = !_isPlaying;
+                        btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
+                    }
+                }
+            });
+
+            btn_previous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()){
+                        simpleExoPlayer.seekToPreviousWindow();
+                    }
+                }
+            });
+
+            btn_next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()){
+                        simpleExoPlayer.seekToNextWindow();
+                    }
+                }
+            });
+            if(metadata.artworkData != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
+                imageView.setImageBitmap(bitmap);
+            }
+            else{
+                imageView.setImageResource(R.drawable.albumcover);
+            }
+
+            simpleExoPlayer.addListener(new Player.Listener() {
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                    item = mService.currentlyPlaying;
+                    textView.setText(metadata.title + " - " + metadata.albumArtist);
+                }
+
+                @Override
+                public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+                    if(metadata.artworkData != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    else{
+                        imageView.setImageResource(R.drawable.albumcover);
+                    }
+                }
+            });
+        }
     }
 }

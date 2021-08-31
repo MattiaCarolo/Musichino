@@ -89,6 +89,7 @@ public class PlayerActivity extends AppCompatActivity
   private String shareableLink;
   private boolean mBound = false;
   List<AudioModel> items;
+  private Bundle b;
 
   private ConcatenatingMediaSource concatenatingMediaSource;
 
@@ -120,7 +121,7 @@ public class PlayerActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_player);
     playerView = findViewById(R.id.video_view);
-    Bundle b = getIntent().getBundleExtra("bundle");
+    b = getIntent().getBundleExtra("bundle");
     if (b != null) {
       items = new ArrayList<>();
       items =  b.getParcelableArrayList("items");
@@ -167,10 +168,17 @@ public class PlayerActivity extends AppCompatActivity
   }
 
   public void setUI(){
+
+    if(b.getBoolean("pld_Playlist_item")){
+      int pos = b.getInt("pld_Position");
+      player.seekTo(pos,0);
+    }
+
     playerView.getSubtitleView().setVisibility(View.INVISIBLE);
     List<Fragment> fragments = new ArrayList<>();
+    Bundle b = getIntent().getBundleExtra("bundle");
     fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));
-    fragments.add(Fragment.instantiate(this, FragmentPlayerHome.class.getName()));
+    fragments.add(new FragmentPlayerHome(b));
     fragments.add(Fragment.instantiate(this, FragmentPlayerLyrics.class.getName()));
     pagerAdapter = new PlayerPagerAdapter(this,fragments);
     viewPager.setAdapter(pagerAdapter);
