@@ -38,20 +38,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/vp_likedlist" />
 
-    <TextView
-        android:id="@+id/txt_RecentlyPlayed3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/Recently_played"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vp_recentlyplayed" />
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vp_likedlist"
         android:layout_width="0dp"
@@ -84,17 +70,14 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_RecentlyPlayed2"
         app:layout_constraintWidth_percent="1" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vp_recentlyplayed2"
+
+    <FrameLayout
+        android:id="@+id/play_mini"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="11dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_RecentlyPlayed3"
-        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintWidth_percent="1" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -117,53 +100,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.7" />
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/player_menu"
-        fab:menu_animationDelayPerItem="0"
-        fab:menu_colorNormal="@color/purple_mid_gradient"
-        fab:menu_colorPressed="@color/purple_dark_gradient"
-        fab:menu_colorRipple="@color/purple_light_gradient"
-        fab:menu_labels_hideAnimation="@anim/jump_to_down"
-        fab:menu_labels_showAnimation="@anim/jump_from_down"
-        fab:menu_labels_style="@style/MenuLabelsStyle"
-        fab:menu_shadowColor="#444"
-        fab:menu_icon="@drawable/fab_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab1"
-            style="@style/MenuButtonsStyle"
-            fab:fab_label="Menu item 1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/exo_controls_play" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab2"
-            style="@style/MenuButtonsStyle"
-            fab:fab_label="Menu item 2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/exo_controls_next" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab3"
-            style="@style/MenuButtonsStyle"
-            fab:fab_label="tua madre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/exo_controls_previous" />
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

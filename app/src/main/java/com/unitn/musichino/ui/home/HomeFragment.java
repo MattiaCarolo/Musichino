@@ -1,8 +1,5 @@
 package com.unitn.musichino.ui.home;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.ServiceConnection;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -10,18 +7,15 @@ import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,11 +26,9 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.ultramegasoft.radarchart.RadarHolder;
+import com.unitn.musichino.BottomPlayerFragment;
 import com.unitn.musichino.Home;
-import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.CardModel;
-import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PagerCardAdapter;
 import com.unitn.musichino.databinding.FragmentHomeBinding;
@@ -130,25 +122,10 @@ public class HomeFragment extends Fragment {
         viewPager = root.findViewById(R.id.vp_recentlyplayed);
         viewPager.setAdapter(pagerCardAdapter);
 
-
-
-
-        if(metadata.artworkData != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
-            models = new ArrayList<>();
-            models.add(new CardModel("Royal Blood", "Typhoon", CHANGE,bitmap));
-            models.add(new CardModel("Enrico Papi", "La mamma", CHANGE,bitmap));
-            models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE,bitmap));
-            pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
-        }
-        viewPager = root.findViewById(R.id.vp_recentlyplayed);
-        viewPager.setAdapter(pagerCardAdapter);
-
-
-        player_menu = root.findViewById(R.id.player_menu);
-        fab1 = (FloatingActionButton) root.findViewById(R.id.fab1);
-        fab2 = (FloatingActionButton) root.findViewById(R.id.fab2);
-        fab3 = (FloatingActionButton) root.findViewById(R.id.fab3);
+        Fragment fragment = new BottomPlayerFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
+        transaction.replace(R.id.play_mini, fragment);
+        transaction.commit();
 
         return root;
     }
@@ -204,32 +181,4 @@ public class HomeFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        fab1.setOnClickListener(clickListener);
-        fab2.setOnClickListener(clickListener);
-        fab3.setOnClickListener(clickListener);
-        if(mService != null){
-            mService = ((Home) requireActivity()).mService;
-        }
-
-    }
-
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.fab1:
-
-                    break;
-                case R.id.fab2:
-                    fab2.setVisibility(View.GONE);
-                    break;
-                case R.id.fab3:
-                    fab2.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
-    };
 }

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".BottomPlayer">
+    tools:context=".BottomPlayerFragment">
 
     <ImageView
         android:id="@+id/iv_album"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_width="414dp"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:foreground="@drawable/song_gradient"
         android:padding="5dp"
