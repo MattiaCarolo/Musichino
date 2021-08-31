@@ -1,7 +1,9 @@
 package com.unitn.musichino.ui.home;
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.exoplayer2.MediaItem;
 import com.ultramegasoft.radarchart.RadarHolder;
 import com.unitn.musichino.Models.CardModel;
 import com.unitn.musichino.R;
@@ -34,35 +37,11 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private PagerCardAdapter pagerCardAdapter;
     private ViewPager viewPager;
-    private String CHANGE = "asset:///output2.mp4";                                                           // TODO change to dynamic filename
-
-    private ArrayList<RadarHolder> mData = new ArrayList<RadarHolder>() {
-        {
-            add(new RadarHolder("Guitar", 3));
-            add(new RadarHolder("Bass", 4));
-            add(new RadarHolder("Drums", 4));
-            add(new RadarHolder("Voice", 4));
-            add(new RadarHolder("SFX", 2));
-        }
-    };
-    private ArrayList<RadarHolder> mData2 = new ArrayList<RadarHolder>() {
-        {
-            add(new RadarHolder("Guitar", 3));
-            add(new RadarHolder("Bass", 4));
-            add(new RadarHolder("Drums", 4));
-            add(new RadarHolder("Voice", 4));
-            add(new RadarHolder("SFX", 2));
-        }
-    };
-    private ArrayList<RadarHolder> mData3 = new ArrayList<RadarHolder>() {
-        {
-            add(new RadarHolder("Guitar", 3));
-            add(new RadarHolder("Bass", 4));
-            add(new RadarHolder("Drums", 4));
-            add(new RadarHolder("Voice", 4));
-            add(new RadarHolder("SFX", 2));
-        }
-    };
+    private String CHANGE = "asset:///output2.mp4";
+    private String CHANGE1 = "asset:///Example_Electro.m4a";
+    private String CHANGE2 = "asset:///Example_Logan.m4a";
+    private String CHANGE3 = "asset:///Example_Rock.m4a";
+    private String CHANGE4 = "asset:///relaxingMusic.mp4";
 
     private List<CardModel> models;
 
@@ -100,11 +79,14 @@ public class HomeFragment extends Fragment {
             public void onChanged(@Nullable String s) {
             }
         });
-        //Viewpager
+        //Viewpager Default
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.albumcover, mData3));
+
+        MediaItem mediaItem = MediaItem.fromUri(CHANGE1);
+
+        models.add(new CardModel("" + mediaItem.mediaMetadata.albumArtist, "" + mediaItem.mediaMetadata.title, CHANGE, Bitmap.createBitmap()mediaItem.mediaMetadata.artworkData));
+        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.albumcover));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_likedlist);
@@ -113,9 +95,9 @@ public class HomeFragment extends Fragment {
 
         //Viewpager
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.royalblood_cover, mData3));
+        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover));
+        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.royalblood_cover));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_recentlyplayed);
@@ -123,9 +105,9 @@ public class HomeFragment extends Fragment {
 
         //Viewpager
         models = new ArrayList<>();
-        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover, mData));
-        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover, mData2));
-        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.royalblood_cover, mData3));
+        models.add(new CardModel("Royal Blood", "Typhoon", CHANGE, R.drawable.royalblood_cover));
+        models.add(new CardModel("Enrico Papi", "La mamma", CHANGE, R.drawable.royalblood_cover));
+        models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE, R.drawable.royalblood_cover));
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
         viewPager = root.findViewById(R.id.vp_recentlyplayed2);

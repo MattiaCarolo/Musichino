@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Home">
 
@@ -57,20 +57,9 @@
                 android:textStyle="bold"
                 android:translationZ="3dp"
                 app:layout_constraintHeight_percent="0.15"
-
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent="0.8" />
-
-            <com.ultramegasoft.radarchart.RadarView
-                android:id="@+id/rdr_cardradar"
-                android:layout_width="127dp"
-                android:layout_height="115dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="34dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/txt_cardTitle" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
