@@ -7,6 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+    Classe che incapsula le informazioni riguardanti i file audio,
+    usati per popolare i metadati e salvare/caricare i percorsi.
+*/
+
+
 public class AudioModel implements Parcelable {
     String path;
     String name;
@@ -14,6 +20,10 @@ public class AudioModel implements Parcelable {
     String artist;
     String format;
 
+    /*
+        Costruttore Parcelable per facilitare le transizioni con gli Intent
+        tramite Intent.putParcelable()
+    */
     protected AudioModel(Parcel in) {
         path = in.readString();
         name = in.readString();
@@ -22,7 +32,10 @@ public class AudioModel implements Parcelable {
         format = in.readString();
     }
 
-    public AudioModel(){
+    /*
+        Costruttore di default
+    */
+    public AudioModel() {
         path = "path";
         name = "name";
         album = "album";
@@ -30,6 +43,10 @@ public class AudioModel implements Parcelable {
         format = "format";
     }
 
+    /*
+        Costruttore tramite JSON usato per mantenere una consistenza dei dati
+        nel salvataggio e caricamento delle informazioni nelle SharedPreferences
+    */
     public AudioModel(JSONObject audioJSON) throws JSONException {
         path = audioJSON.getString("path");
         name = audioJSON.getString("name");
@@ -38,6 +55,9 @@ public class AudioModel implements Parcelable {
         format = audioJSON.getString("format");
     }
 
+    /*
+        Metodo per convertire AudioModel in oggetto JSON
+    */
     public JSONObject getJSONAudioModel() throws JSONException {
         JSONObject audioJSON = new JSONObject();
         audioJSON.put("path", path);
@@ -48,6 +68,9 @@ public class AudioModel implements Parcelable {
         return audioJSON;
     }
 
+    /*
+        Creator e metodi override obbligatori per implementare Parcelable
+    */
     public static final Creator<AudioModel> CREATOR = new Creator<AudioModel>() {
         @Override
         public AudioModel createFromParcel(Parcel in) {
@@ -102,8 +125,8 @@ public class AudioModel implements Parcelable {
 
     @NotNull
     @Override
-    public String toString(){
-        return("Name:" +getName()+", Artist: " +getArtist()+", Album: "+getAlbum());
+    public String toString() {
+        return ("Name:" + getName() + ", Artist: " + getArtist() + ", Album: " + getAlbum());
     }
 
     @Override
@@ -111,6 +134,9 @@ public class AudioModel implements Parcelable {
         return 0;
     }
 
+    /*
+        Metodo override obbligatorio per popolare la classe da un Parcelable
+    */
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(path);

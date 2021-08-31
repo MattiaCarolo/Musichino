@@ -1,4 +1,4 @@
-package com.unitn.musichino.ui.playlist;
+package com.unitn.musichino.ui.search;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -38,15 +38,11 @@ public class PlaylistSelectionDialog extends DialogFragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View rootView =
-            inflater.inflate(
-                    R.layout.fragment_playlist_selection_dialog, container, /* attachToRoot= */ false);
+                inflater.inflate(
+                        R.layout.fragment_playlist_selection_dialog, container, /* attachToRoot= */ false);
         RecyclerView playlistRecyclerView = rootView.findViewById(R.id.playlistDialogRecyclerView);
 
         return rootView;
-    }
-
-    public void halo(){
-
     }
 
 
@@ -122,7 +118,6 @@ public class PlaylistSelectionDialog extends DialogFragment {
                                 @Override
                                 public void afterTextChanged(Editable editable) {
                                     String newPlaylistName = editText.getText().toString();
-                                    Log.d("ONKEY", "Listener activated: " +newPlaylistName);
                                     try {
                                         PlaylistModel model = playlistModel.loadFromSharedPreferencesByName(builder.getContext(), newPlaylistName);
                                         AlertDialog dialog = alertDialog;
@@ -147,6 +142,7 @@ public class PlaylistSelectionDialog extends DialogFragment {
         // Create the AlertDialog object and return it
         return builder.create();
     }
+
 
 
 }

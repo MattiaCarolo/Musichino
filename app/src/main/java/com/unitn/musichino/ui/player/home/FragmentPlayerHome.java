@@ -1,18 +1,13 @@
 package com.unitn.musichino.ui.player.home;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,25 +16,19 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.TimeBar;
-import com.google.android.exoplayer2.util.Util;
-import com.unitn.musichino.MixMeExoPlayer;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.service.AudioService;
-import com.unitn.musichino.ui.playlist.PlaylistSelectionDialog;
+import com.unitn.musichino.ui.search.PlaylistSelectionDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,7 +72,7 @@ public class FragmentPlayerHome extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mService = ((PlayerActivity) requireActivity()).mService;
-        simpleExoPlayer = mService.getplayerInstance();
+        simpleExoPlayer = mService.getPlayerInstance();
     }
 
     @Override

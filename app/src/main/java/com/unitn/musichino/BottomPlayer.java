@@ -3,7 +3,6 @@ package com.unitn.musichino;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -18,7 +17,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.service.AudioService;
-import com.unitn.musichino.ui.playlist.PlaylistSelectionDialog;
 
 
 public class BottomPlayer extends Fragment {
@@ -46,7 +44,7 @@ public class BottomPlayer extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mService = ((PlayerActivity) requireActivity()).mService;
-        simpleExoPlayer = mService.getplayerInstance();
+        simpleExoPlayer = mService.getPlayerInstance();
     }
 
     @Override
@@ -65,7 +63,7 @@ public class BottomPlayer extends Fragment {
 
         textView.setText(item.getName() + " - " + item.getArtist());
 
-        simpleExoPlayer = mService.getplayerInstance();
+        simpleExoPlayer = mService.getPlayerInstance();
         playerView.setPlayer(simpleExoPlayer);
 
         return root;

@@ -132,4 +132,7 @@ limitations under the License. -->
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="dialog_select_playlist">Add to playlist:</string>
+    <string name="popup_select_name">Select preset:</string>
+    <string name="popup_create">Create</string>
+    <string name="popup_add_new">Add new</string>
 </resources>

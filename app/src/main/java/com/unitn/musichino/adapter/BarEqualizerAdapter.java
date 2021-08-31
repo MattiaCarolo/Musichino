@@ -1,35 +1,23 @@
 package com.unitn.musichino.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.audiofx.Equalizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.PlayerMessage;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
-import com.unitn.musichino.MixMeExoPlayer;
-import com.unitn.musichino.Models.AudioModel;
-import com.unitn.musichino.MultiAudioTrackSelector;
 import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.unitn.musichino.service.AudioService;
-import com.unitn.musichino.PlayerActivity;
 
 public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapter.ViewHolder>{
 
@@ -51,6 +39,8 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
         lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
 //        get the upper limit of the range in millibels
         upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
+
+        mEqualizer.setEnabled(false);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -81,12 +71,11 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
         viewHolder.seekBar.setMax(upperEqualizerBandLevel - lowerEqualizerBandLevel);
-        mEqualizer.setEnabled(true);
-        //viewHolder.seekBar.setMin(lowerEqualizerBandLevel);
         SharedPreferences properties = context.getSharedPreferences("equalizer", 0);
         viewHolder.textView.setText((mEqualizer.getCenterFreq((short)position) / 1000) + " Hz");
         mEqualizer.setBandLevel((short)position,
                 (short) upperEqualizerBandLevel);
+        viewHolder.seekBar.setProgress(upperEqualizerBandLevel);
         viewHolder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -123,6 +112,14 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
             values.add(childViews.get(i).seekBar.getProgress());
         }
         return values;
+    }
+
+    public void setAllBandsToNeutral(){
+        short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
+        for(int i= 0; i < childViews.size(); i++){
+            childViews.get(i).seekBar.setProgress(upperEqualizerBandLevel);
+            mEqualizer.setBandLevel((short)i, (short)upperEqualizerBandLevel);
+        }
     }
 
 
