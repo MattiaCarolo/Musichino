@@ -98,6 +98,16 @@ public class FragmentPlayerHome extends Fragment {
         txt_artist = root.findViewById(R.id.txt_ArtistName);
         txt_trackname = root.findViewById(R.id.txt_TrackName);
 
+        if(simpleExoPlayer != null){
+            if(simpleExoPlayer.getShuffleModeEnabled()) {
+                btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_on);
+            }else{
+                btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_off);
+            }
+        }
+
+
+
         barVisualizer = root.findViewById(R.id.bar);
 
         item = mService.currentlyPlaying;
