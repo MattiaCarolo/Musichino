@@ -3,6 +3,7 @@ package com.unitn.musichino.Models;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.google.android.exoplayer2.MediaItem;
@@ -74,6 +75,14 @@ public class PlaylistModel {
 
     public void setPlaylist(List<AudioModel> playlist) {
         this.playlist = playlist;
+    }
+
+    public void setPlaylist(JSONArray playlistJSON) throws JSONException {
+        List<AudioModel> newPlaylist = new ArrayList<>();
+        for(int i = 0; i < playlistJSON.length(); i++){
+            newPlaylist.add(new AudioModel(playlistJSON.getJSONObject(i)));
+        }
+        this.playlist = newPlaylist;
     }
 
     public String getName() {
@@ -214,19 +223,25 @@ public class PlaylistModel {
         SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
         JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
         JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+        Log.d("REMOVE", "comparing name:" + name+ ", with .this: "+this.name);
         for (int i = 0; i < playlistNamesJSON.length(); i++) {
-            if (playlistNamesJSON.getString(i).equals(name)) {
+            if (playlistNamesJSON.getString(i).equals(this.name)) {
                 Log.d("REMOVE", "Found name at index: " +i);
-                JSONArray playlistItemsJSON = new JSONArray(playlistModelsJSON.getJSONObject(i).getJSONArray("playlist"));
-                for(int j = 0; i < playlistItemsJSON.length(); i++){
-                    if(playlistItemsJSON.getJSONObject(i).getString("name").equals(name)){
-                        playlistItemsJSON.remove(i);
+                JSONArray playlistItemsJSON = new JSONArray();
+                PlaylistModel playlistModel = new PlaylistModel(playlistModelsJSON.getJSONObject(i));
+                playlistItemsJSON = playlistModel.getJSONPlaylist();
+                for(int j = 0; j < playlistItemsJSON.length(); j++){
+                    if(playlistItemsJSON.getJSONObject(j).getString("name").equals(name)){
+
+                        playlistItemsJSON.remove(j);
+                        playlistModel.setPlaylist(playlistItemsJSON);
+                        playlistModelsJSON.put(i, playlistModel.getJSONPlaylistModel());
                     }
                 }
-                playlistModelsJSON.put(i, playlistItemsJSON);
+
             }
         }
-        sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS_NAMES, playlistModelsJSON.toString()).apply();
+        sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS, playlistModelsJSON.toString()).apply();
     }
 
 

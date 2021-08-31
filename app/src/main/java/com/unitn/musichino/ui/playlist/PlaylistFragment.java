@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PlaylistItemRecyclerViewAdapter;
+import com.unitn.musichino.adapter.PlaylistTrackAdapter;
 import com.unitn.musichino.adapter.SearchTrackAdapter;
 import com.unitn.musichino.interfaces.PlaylistToFragment;
 
@@ -83,7 +84,7 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
 
     @Override
     public void onClickChange(PlaylistModel playListModel) {
-        SearchTrackAdapter singleTrackAdapter = new SearchTrackAdapter(requireActivity(),playListModel.getPlaylist(),playListModel.getPlaylist(), 1);
+        PlaylistTrackAdapter singleTrackAdapter = new PlaylistTrackAdapter(requireActivity(),playListModel.getPlaylist(), playListModel);
         recyclerView.setAdapter(singleTrackAdapter);
     }
 }
