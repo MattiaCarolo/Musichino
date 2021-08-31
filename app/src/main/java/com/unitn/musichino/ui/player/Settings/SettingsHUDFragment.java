@@ -62,6 +62,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
     AudioModel currentlyPlaying;
     TrackConfigurationModel trackConfigurationModel;
     VolumesBarAdapter volumesBarAdapter;
+    BarEqualizerAdapter eqBarAdapter;
     Equalizer mEqualizer;
 
 
@@ -106,7 +107,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
         eqRecyclerView = view.findViewById(R.id.rv_eq);
         volumePresetButton = view.findViewById(R.id.volumePresetListButton);
         eqPresetButton = view.findViewById(R.id.eqPresetListButton);
-        mEqualizer = new Equalizer(0, simpleExoPlayer.getAudioSessionId());
+        mEqualizer = new Equalizer(1000, simpleExoPlayer.getAudioSessionId());
         simpleExoPlayer.addListener(new Player.Listener() {
             @Override
             public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
@@ -116,24 +117,27 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
                 volumesBarAdapter = new VolumesBarAdapter(simpleExoPlayer,  mediaCodecAudioRendererList);
-                BarEqualizerAdapter eqBarAdapter = new BarEqualizerAdapter(context, mEqualizer);
+                eqBarAdapter = new BarEqualizerAdapter(context, mEqualizer);
                 //TrackAdapter trackAdapter = new TrackAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 recyclerView.setAdapter(volumesBarAdapter);
                 eqRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-
                 eqRecyclerView.setAdapter(eqBarAdapter);
                 currentlyPlaying = ((PlayerActivity) context).mService.currentlyPlaying;
                 trackConfigurationModel = new TrackConfigurationModel();
                 try {
                     trackConfigurationModel = trackConfigurationModel.getTrackConfigurationFromSharedPreferences(context, currentlyPlaying.getName());
-                    Log.d("COMPARE", "conf: " +trackConfigurationModel.getTrackReference()+", current:" +currentlyPlaying.getName());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 if(!trackConfigurationModel.getTrackReference().equals( "trackReference") && trackConfigurationModel.getVolumePresetModels().size() > 0){
                     volumesBarAdapter.setVolumePreset(trackConfigurationModel.getVolumePresetModels().get(0).getValues());
+
                     Log.d("PRESETVOLUME", "Set preset volume: " + trackConfigurationModel.getVolumePresetModels().get(0).getName());
+                }
+                else if(!trackConfigurationModel.getTrackReference().equals( "trackReference") && trackConfigurationModel.getEqPresetModels().size() > 0){
+                    eqBarAdapter.setEqPreset(trackConfigurationModel.getEqPresetModels().get(0).getValues());
+                    Log.d("PRESETEQ", "Set preset eq: " + trackConfigurationModel.getEqPresetModels().get(0).getName());
                 }
                 else{
                     PresetModel defaultVolumePreset = new PresetModel("default", volumesBarAdapter.getItemCount(), true);
@@ -242,6 +246,95 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                     }
         });
 
+        eqPresetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                requireActivity().invalidateOptionsMenu();
+                PopupMenu popup = new PopupMenu(requireContext(), view);
+                MenuInflater inflater = popup.getMenuInflater();
+                Menu menu = popup.getMenu();
+                List<PresetModel> eqPresets = trackConfigurationModel.getEqPresetModels();
+                Log.d("MENUPREPARE", "Preparing list size: " + eqPresets.size());
+                for(PresetModel eqPreset : eqPresets){
+                    menu.add(eqPreset.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            eqBarAdapter.setEqPreset(eqPreset.getValues());
+                            return false;
+                        }
+                    });
+                }
+                menu.add("Add new").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        AlertDialog alertDialog;
+                        AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireActivity());
+                        TextInputEditText editText = new TextInputEditText(requireActivity());
+                        innerBuilder.setTitle("Choose a name: ")
+                                .setView(editText)
+                                .setInverseBackgroundForced(true)
+                                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String newPresetName = editText.getText().toString();
+                                        try {
+                                            PresetModel newPresetModel = new PresetModel();
+                                            Log.d("PRESET", "Created new preset name: " + newPresetName);
+                                            newPresetModel.setName(newPresetName);
+                                            newPresetModel.setValues(eqBarAdapter.getEqPreset());
+                                            trackConfigurationModel.addEqPresetModel(newPresetModel);
+                                            trackConfigurationModel.saveToSharedPreferences(requireContext());
+                                            dialogInterface.dismiss();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                        alertDialog = innerBuilder.show();/*
+                        editText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                String newPlaylistName = editText.getText().toString();
+                                Log.d("ONKEY", "Listener activated: " +newPlaylistName);
+                                try {
+                                    PlaylistModel model = playlistModel.loadFromSharedPreferencesByName(builder.getContext(), newPlaylistName);
+                                    AlertDialog dialog = alertDialog;
+                                    if(model == null && !newPlaylistName.equals("")){
+                                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                                        editText.setError(null);
+                                    }
+                                    else{
+                                        editText.setError("Unvalid playlist name");
+                                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });*/
+                        //alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        return false;
+                    }
+
+                });
+
+                popup.show();
+
+            }
+        });
+
     }
 
     @Override
@@ -259,19 +352,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
         transaction.addToBackStack(null);
         transaction.commit();
 
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(@androidx.annotation.NonNull Menu menu) {
-
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        String presetName = item.getTitle().toString();
-        return false;
     }
 
 
