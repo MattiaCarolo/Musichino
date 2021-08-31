@@ -26,6 +26,7 @@ import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.unitn.musichino.service.AudioService;
 import com.unitn.musichino.PlayerActivity;
@@ -43,6 +44,7 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
         this.context = context;
         this.mEqualizer = mEqualizer;
         numberFrequencyBands = mEqualizer.getNumberOfBands();
+        this.childViews = new ArrayList<>();
 
 //        get the level ranges to be used in setting the band level
 //        get lower limit of the range in milliBels
@@ -69,23 +71,22 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.equalizerbar, viewGroup, false);
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+        childViews.add(viewHolder);
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
+        viewHolder.seekBar.setMax(upperEqualizerBandLevel - lowerEqualizerBandLevel);
+        mEqualizer.setEnabled(true);
+        //viewHolder.seekBar.setMin(lowerEqualizerBandLevel);
         SharedPreferences properties = context.getSharedPreferences("equalizer", 0);
         viewHolder.textView.setText((mEqualizer.getCenterFreq((short)position) / 1000) + " Hz");
-        int progressBar = properties.getInt("seek_" + position, 1500);
-        if (progressBar != 1500) {
-            viewHolder.seekBar.setProgress(progressBar);
-        } else {
-            viewHolder.seekBar.setProgress(mEqualizer.getBandLevel((short)position));
-        }
         mEqualizer.setBandLevel((short)position,
-                (short) (progressBar + lowerEqualizerBandLevel));
+                (short) upperEqualizerBandLevel);
         viewHolder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -100,9 +101,6 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                properties.edit().putInt("seek_" + position, seekBar.getProgress()).apply();
-                properties.edit().putInt("position", 0).apply();
-
             }
         });
     }
@@ -113,11 +111,18 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
         return numberFrequencyBands;
     }
 
-    public void setVolumePreset(List<Integer> values){
+    public void setEqPreset(List<Integer> values){
         for(int i = 0; i < getItemCount(); i++){
-           // player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload(values.get(i)).send();
             childViews.get(i).seekBar.setProgress(values.get(i));
         }
+    }
+
+    public List<Integer> getEqPreset(){
+        List<Integer> values = new ArrayList<>();
+        for(int i= 0; i < childViews.size(); i++){
+            values.add(childViews.get(i).seekBar.getProgress());
+        }
+        return values;
     }
 
 

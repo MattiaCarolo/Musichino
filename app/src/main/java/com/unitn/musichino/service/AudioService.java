@@ -131,31 +131,7 @@ public class AudioService extends Service {
         player.addListener(new Player.Listener() {
 
 
-            @Override
-            public void onAudioSessionIdChanged(int audioSessionId) {
-               // Log.d("SESSIONID", "id changed to:" +audioSessionId);
-                SharedPreferences preferences = context.getSharedPreferences("equalizer", 0);
-                mEqualizer = new Equalizer(1000, audioSessionId);
-                mEqualizer.setEnabled(true);
-                int current = preferences.getInt("position", 0);
-                if (current == 0) {
-                    for (short seek_id = 0; seek_id < mEqualizer.getNumberOfBands(); seek_id++) {
-                        int progressBar = preferences.getInt("seek_" + seek_id, 1500);
-                        short equalizerBandIndex = (short) (seek_id);
-                        final short lowerEqualizerBandLevel = mEqualizer.getBandLevelRange()[0];
-                        Log.d("seek_" + seek_id, ":" + progressBar);
-                        if (progressBar != 1500) {
-                            mEqualizer.setBandLevel(equalizerBandIndex,
-                                    (short) (progressBar + lowerEqualizerBandLevel));
-                        } else {
-                            //First time default 1500Hz
-                            mEqualizer.setBandLevel(equalizerBandIndex,
-                                    (short) (progressBar + lowerEqualizerBandLevel));
-                        }
-                    }
-                } else {
-                    mEqualizer.usePreset((short) (current - 1));
-                }    }
+
         });
         progressiveMediaSourceFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
         List<MediaItem> mediaItems = new ArrayList<>();
