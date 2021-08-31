@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,14 +17,12 @@ import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
-import com.unitn.musichino.ui.playlist.PlaylistSelectionDialog;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdapter.ViewHolder> {
 

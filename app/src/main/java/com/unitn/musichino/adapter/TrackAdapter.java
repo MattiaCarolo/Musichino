@@ -5,16 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.SeekBar;
 
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
-import com.unitn.musichino.MultiAudioTrackSelector;
+import com.unitn.musichino.player.MultiAudioTrackSelector;
 import com.unitn.musichino.R;
 import com.unitn.musichino.interfaces.ButtonTrackClickListener;
 

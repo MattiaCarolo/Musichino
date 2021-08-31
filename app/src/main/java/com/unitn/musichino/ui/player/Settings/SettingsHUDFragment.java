@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -55,6 +56,9 @@ import java.util.List;
 public class SettingsHUDFragment extends Fragment implements ButtonTrackClickListener {
     Button volumePresetButton;
     Button eqPresetButton;
+    Button toggleButton;
+    ConstraintLayout volumeLayout;
+    ConstraintLayout eqLayout;
     RecyclerView eqRecyclerView;
     RecyclerView recyclerView;
     SimpleExoPlayer simpleExoPlayer;
@@ -64,6 +68,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
     VolumesBarAdapter volumesBarAdapter;
     BarEqualizerAdapter eqBarAdapter;
     Equalizer mEqualizer;
+    boolean isVolumeVisibile = true;
 
 
     public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList) {
@@ -96,17 +101,15 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        /*
-        btn_volumes = view.findViewById(R.id.btn_volumes);
-        btn_volumes.setOnClickListener(this);
-        ViewCompat.setTransitionName(btn_volumes, "title");
 
-         */
         Context context = requireContext();
+        volumeLayout = view.findViewById(R.id.volumeLayout);
+        eqLayout = view.findViewById(R.id.eqLayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_volumes);
         eqRecyclerView = view.findViewById(R.id.rv_eq);
         volumePresetButton = view.findViewById(R.id.volumePresetListButton);
         eqPresetButton = view.findViewById(R.id.eqPresetListButton);
+        toggleButton = view.findViewById(R.id.toggleButton);
         mEqualizer = new Equalizer(1000, simpleExoPlayer.getAudioSessionId());
         simpleExoPlayer.addListener(new Player.Listener() {
             @Override
@@ -158,6 +161,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
             }
         });
 
+
         volumePresetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,7 +171,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                 MenuInflater inflater = popup.getMenuInflater();
                 Menu menu = popup.getMenu();
                 List<PresetModel> volumePresets = trackConfigurationModel.getVolumePresetModels();
-                Log.d("MENUPREPARE", "Preparing list size: " + volumePresets.size());
                 for(PresetModel volumePreset : volumePresets){
                     menu.add(volumePreset.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
@@ -177,15 +180,15 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                         }
                     });
                 }
-                menu.add("Add new").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                menu.add(R.string.popup_add_new).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         AlertDialog alertDialog;
                         AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireActivity());
                         TextInputEditText editText = new TextInputEditText(requireActivity());
-                        innerBuilder.setTitle("Choose a name: ")
+                        innerBuilder.setTitle(R.string.popup_select_name)
                                 .setView(editText)
-                                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.popup_create, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         String newPresetName = editText.getText().toString();
@@ -255,7 +258,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                 MenuInflater inflater = popup.getMenuInflater();
                 Menu menu = popup.getMenu();
                 List<PresetModel> eqPresets = trackConfigurationModel.getEqPresetModels();
-                Log.d("MENUPREPARE", "Preparing list size: " + eqPresets.size());
                 for(PresetModel eqPreset : eqPresets){
                     menu.add(eqPreset.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
@@ -265,22 +267,21 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                         }
                     });
                 }
-                menu.add("Add new").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                menu.add(R.string.popup_add_new).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         AlertDialog alertDialog;
                         AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireActivity());
                         TextInputEditText editText = new TextInputEditText(requireActivity());
-                        innerBuilder.setTitle("Choose a name: ")
+                        innerBuilder.setTitle(R.string.popup_select_name)
                                 .setView(editText)
                                 .setInverseBackgroundForced(true)
-                                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.popup_create, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         String newPresetName = editText.getText().toString();
                                         try {
                                             PresetModel newPresetModel = new PresetModel();
-                                            Log.d("PRESET", "Created new preset name: " + newPresetName);
                                             newPresetModel.setName(newPresetName);
                                             newPresetModel.setValues(eqBarAdapter.getEqPreset());
                                             trackConfigurationModel.addEqPresetModel(newPresetModel);
@@ -332,6 +333,27 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
 
                 popup.show();
 
+            }
+        });
+
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isVolumeVisibile){
+                    volumesBarAdapter.setAllVolumesTo(100);
+                    eqBarAdapter.setAllBandsToNeutral();
+                    volumeLayout.setVisibility(View.GONE);
+                    eqLayout.setVisibility(View.VISIBLE);
+                    mEqualizer.setEnabled(true);
+                }
+                else{
+                    eqBarAdapter.setAllBandsToNeutral();
+                    mEqualizer.setEnabled(false);
+                    volumesBarAdapter.setAllVolumesTo(100);
+                    volumeLayout.setVisibility(View.VISIBLE);
+                    eqLayout.setVisibility(View.GONE);
+                }
+                isVolumeVisibile = !isVolumeVisibile;
             }
         });
 

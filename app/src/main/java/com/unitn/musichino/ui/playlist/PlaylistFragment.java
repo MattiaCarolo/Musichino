@@ -41,8 +41,7 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
     public PlaylistFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+
     public static PlaylistFragment newInstance() {
         PlaylistFragment fragment = new PlaylistFragment();
         Bundle args = new Bundle();
@@ -77,7 +76,7 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(playlistModels, this));
+            recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(this, playlistModels, this));
         }
         return view;
     }

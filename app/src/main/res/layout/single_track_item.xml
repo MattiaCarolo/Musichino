@@ -21,19 +21,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_addQueue"
+        android:id="@+id/btn_playlist_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:background="@drawable/icn_button"
         android:src="@drawable/icon___add___filled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_managePlaylist"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play_playlist"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageButton
-        android:id="@+id/btn_managePlaylist"
+        android:id="@+id/btn_play_playlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

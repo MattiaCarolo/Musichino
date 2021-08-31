@@ -1,8 +1,5 @@
 package com.unitn.musichino.adapter;
 
-import android.content.Context;
-import android.content.Intent;
-import android.media.audiofx.Equalizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,24 +7,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.PlayerMessage;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
-import com.unitn.musichino.MixMeExoPlayer;
-import com.unitn.musichino.Models.AudioModel;
-import com.unitn.musichino.MultiAudioTrackSelector;
+import com.unitn.musichino.player.MultiAudioTrackSelector;
 import com.unitn.musichino.R;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.unitn.musichino.service.AudioService;
-import com.unitn.musichino.PlayerActivity;
 
 public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.ViewHolder>{
 
@@ -73,16 +64,16 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
     @Override
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
-
+        viewHolder.seekBar.setMax(100);
         MediaCodecAudioRenderer renderer = mediaCodecAudioRendererList.get(position);
         viewHolder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-      //          if(b){
+
                     float value = i / (float)seekBar.getMax();
+                    Log.d("VOLCHANGE", "SET: " +value+ ", TO POS" +position);
                     player.createMessage(renderer).setType(C.MSG_SET_VOLUME).setPayload(value).send();
 
-          //      }
             }
 
 
@@ -127,13 +118,22 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
 
 
     public void setVolumePreset(List<Integer> values){
-        Log.d("SETVOL", "Chiild size: " +childViews.size()+", values size: " +values.size()+", media codec size: " +mediaCodecAudioRendererList.size());
+        //Log.d("SETVOL", "Chiild size: " +childViews.size()+", values size: " +values.size()+", media codec size: " +mediaCodecAudioRendererList.size());
         for(int i = 0; i < childViews.size(); i++){
-            player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload((float)values.get(i)).send();
+            float value = values.get(i) / (float)childViews.get(i).seekBar.getMax();
+            player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload(value).send();
             childViews.get(i).seekBar.setProgress(values.get(i));
         }
     }
 
+
+    public void setAllVolumesTo(int value){
+        for(int i = 0; i < childViews.size(); i++){
+            float valueFloat = value / (float)childViews.get(i).seekBar.getMax();
+            player.createMessage(mediaCodecAudioRendererList.get(i)).setType(C.MSG_SET_VOLUME).setPayload(valueFloat).send();
+            childViews.get(i).seekBar.setProgress(value);
+        }
+    }
 
     public List<Integer> getVolumePreset(){
         List<Integer> values = new ArrayList<>();

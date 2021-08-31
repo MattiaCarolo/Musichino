@@ -7,56 +7,56 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.adapter.SearchTrackAdapter;
+import com.unitn.musichino.databinding.FragmentSearchBinding;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.unitn.musichino.Models.AudioModel;
-import com.unitn.musichino.adapter.SearchTrackAdapter;
-import com.unitn.musichino.databinding.FragmentSearchBinding;
-import com.unitn.musichino.util.C;
+/*
+    Fragment di ricerca dei file audio locali con filtro.
+*/
 
-import java.util.ArrayList;
-import java.util.List;
+public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
 
-public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener{
-
-    private SearchViewModel searchViewModel;
     private FragmentSearchBinding binding;
-    private SearchView searchView;
     public static List<AudioModel> tracks = new ArrayList<>();
     RecyclerView searchRecycler;
     SearchTrackAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        searchViewModel =
-                new ViewModelProvider(this).get(SearchViewModel.class);
+        SearchViewModel searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         tracks = new ArrayList<>();
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         searchRecycler = binding.searchRecycler;
-        searchView = binding.searchView;
+        SearchView searchView = binding.searchView;
         searchView.setOnQueryTextListener(this);
-        adapter = new SearchTrackAdapter(getActivity(), tracks, null,0);
+        adapter = new SearchTrackAdapter(getActivity(), tracks, null);
         searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         searchRecycler.setAdapter(adapter);
         final Button searchButton = binding.btnSearch;
-       // getContext().getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, 0).edit().remove("playlists").remove("playlist_names").commit();
+        // getContext().getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, 0).edit().remove("playlists").remove("playlist_names").commit();
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,22 +69,16 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                             1);
                 } else {
                     tracks = getAllAudioFromDevice(requireContext());
-                    ArrayList<AudioModel> backup = new ArrayList<>();
-                    backup.addAll(tracks);
-                    adapter = new SearchTrackAdapter(getActivity(), tracks, backup, 0);
+                    ArrayList<AudioModel> backup = new ArrayList<>(tracks);
+                    adapter = new SearchTrackAdapter(getActivity(), tracks, backup);
                     searchRecycler.swapAdapter(adapter, true);
-                    Log.d("SEARCH", searchRecycler.getAdapter().getItemCount()+" items created.");
+                    //Log.d("SEARCH", Objects.requireNonNull(searchRecycler.getAdapter()).getItemCount() + " items created.");
                 }
 
 
             }
         });
-        searchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                searchButton.setText(s);
-            }
-        });
+        searchViewModel.getText().observe(getViewLifecycleOwner(), searchButton::setText);
         return root;
     }
 
@@ -94,12 +88,14 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         binding = null;
     }
 
+    /*
+        Metodo per recuperare una lista di file audio presenti nella memoria interna ed esterna del telofono.
+        Restituisce una lista di AudioModel creati da dati recuperati con context.getContentResolver tramite
+        una query di ricerca puntata a proiettare i metadati dei file audio.
+    */
     public List<AudioModel> getAllAudioFromDevice(final Context context) {
-
         final List<AudioModel> tempAudioList = new ArrayList<>();
-
         Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-       // requireActivity().grantUriPermission("com.unitn.musichino", uri, );
         String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM, MediaStore.Audio.ArtistColumns.ARTIST, MediaStore.Audio.AudioColumns.TITLE};
         Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
 
@@ -114,35 +110,35 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
                 String name = path.substring(path.lastIndexOf("/") + 1);
                 String format = name.substring(name.lastIndexOf(".") + 1);
-                if(title != null)
+                if (title != null)
                     audioModel.setName(title);
                 else
                     audioModel.setName(name);
-                if(album != null)
+                if (album != null)
                     audioModel.setAlbum(album);
-                if(artist != null)
+                if (artist != null)
                     audioModel.setArtist(artist);
                 audioModel.setPath(path);
                 audioModel.setFormat(format);
 
-                Log.d("Name :" + name, " Album :" + album);
-                Log.d("Path :" + path, " Artist :" + artist);
+                //Log.d("Name :" + name, " Album :" + album);
+                //Log.d("Path :" + path, " Artist :" + artist);
 
                 tempAudioList.add(audioModel);
             }
             c.close();
         }
-        Log.d("LIST", "total count: " + tempAudioList.size());
+        //Log.d("LIST", "total count: " + tempAudioList.size());
         return tempAudioList;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
 
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 tracks = getAllAudioFromDevice(requireContext());
-                searchRecycler.getAdapter().notifyDataSetChanged();
+                Objects.requireNonNull(searchRecycler.getAdapter()).notifyDataSetChanged();
             } else {
                 // Permission Denied
                 Toast.makeText(requireActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
@@ -157,7 +153,6 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
         return false;
     }
-
 
 
     @Override
