@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,7 @@ import com.unitn.musichino.ui.search.PlaylistSelectionDialog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +42,7 @@ import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<PlaylistItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaylistModel> playlistModels;
+    private List<PlaylistModel> playlistModels;
     private final PlaylistToFragment playlistToFragment;
     Fragment fragment;
 
@@ -47,6 +50,15 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
         playlistModels = items;
         this.playlistToFragment = playlistToFragment;
         this.fragment = fragment;
+    }
+
+    public List<PlaylistModel> getPlaylistModels(){
+        return this.playlistModels;
+    }
+
+    public void setPlaylistModels(List<PlaylistModel> playlistModels){
+        this.playlistModels = playlistModels;
+        notifyDataSetChanged();
     }
 
     @NotNull
@@ -96,10 +108,14 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
                 b.putString("name", holder.playlistModel.getName());
                 b.putString("artworkUri", holder.playlistModel.getArtworkUri());
                 newFragment.setArguments(b);
-                newFragment.show(fragment.getParentFragmentManager(), "playlist_selection");
+                newFragment.show(fragment.getParentFragmentManager(), "playlist_settings");
 
             }
         });
+        if(!holder.playlistModel.getArtworkUri().equals("artwork_uri")) {
+            holder.imageView.setImageDrawable(Drawable.createFromPath(holder.playlistModel.getArtworkUri()));
+        }
+
     }
 
     @Override

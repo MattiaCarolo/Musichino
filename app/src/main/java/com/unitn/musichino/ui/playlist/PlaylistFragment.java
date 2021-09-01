@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
@@ -72,7 +73,10 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                LinearLayoutManager linearLayoutManager= new LinearLayoutManager(context);
+                linearLayoutManager.setStackFromEnd(true);
+                linearLayoutManager.setReverseLayout(true);
+                recyclerView.setLayoutManager(linearLayoutManager);
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
@@ -86,4 +90,6 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
         PlaylistTrackAdapter singleTrackAdapter = new PlaylistTrackAdapter(requireActivity(),playListModel.getPlaylist(), playListModel);
         recyclerView.setAdapter(singleTrackAdapter);
     }
+
+
 }
