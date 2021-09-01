@@ -23,6 +23,10 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+/*
+    Adapter per le tracce di una playlist
+    All'interno hanno i metodi per aggiugnere alla queue e cancellarsi dalla playlist
+ */
 
 public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdapter.ViewHolder> {
 
@@ -89,6 +93,9 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         viewHolder.getTextView().setText(position+":" + tracks.get(position).toString());
+        /*
+            Cliccando sul N elemento della playlist la riproduzione parte dalla N posizione della playlist
+         */
         viewHolder.getTextView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +109,9 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
                 viewHolder.mView.getContext().startActivity(intent);
             }
         });
+        /*
+            Rimuove l'elemento selezionato dalla platlist
+         */
         viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

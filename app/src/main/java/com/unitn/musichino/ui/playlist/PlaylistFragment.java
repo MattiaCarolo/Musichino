@@ -29,7 +29,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * A fragment representing a list of Items.
+ * Fragment contenente le playlist e che implementa l'interfaccia PlaylistTOFragment in modo da
+ * poter comunicare con la sua recyclerview interna in modo dd poter cambiare adapter con l'onClick
+ * dericante dall'item
  */
 public class PlaylistFragment extends Fragment implements PlaylistToFragment {
 
@@ -74,12 +76,19 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
             e.printStackTrace();
         }
 
+        /*
+            Aggiunge un offset in fondo alla recyclerview in modo da evitare che il miniplayer nasconda le canzoni sottostanti
+         */
         recyclerView = view.findViewById(R.id.rv_playlists);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) 170);
         recyclerView.addItemDecoration(bottomOffsetDecoration);
         recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(this, playlistModels, this));
 
+        /*
+            miniplayer viene settato otiginariamente con visibilità = GONE in quanto deve essere
+            visibile solo se il servizio e attivo
+         */
         frameLayout = view.findViewById(R.id.play_mini);
         frameLayout.setVisibility(View.GONE);
         Fragment fragment = new BottomPlayerFragment();
@@ -90,7 +99,9 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
 
         return view;
     }
-
+    /*
+        Implementazione dell'interfaccia, onCLick cambia adpater caricando le canzoni presenti all interno della playlist
+     */
     @Override
     public void onClickChange(PlaylistModel playListModel) {
         PlaylistTrackAdapter singleTrackAdapter = new PlaylistTrackAdapter(requireActivity(),playListModel.getPlaylist(), playListModel);
@@ -100,6 +111,9 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
     @Override
     public void onResume() {
         super.onResume();
+        /*
+            Se il servizio è attivo allora visualizza il miniplayer
+         */
         if(((MixMe)requireActivity().getApplication()).is_running()){
             frameLayout.setVisibility(View.VISIBLE);
         }

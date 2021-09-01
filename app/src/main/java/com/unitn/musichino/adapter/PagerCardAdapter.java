@@ -61,6 +61,9 @@ public class PagerCardAdapter extends PagerAdapter {
         title.setText(models.get(position).getTrack() + " by " + models.get(position).getArtist());
 
         view.setOnClickListener(new View.OnClickListener() {
+            /*
+                onClick passa al player la canzone indicata dalla Card
+             */
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlayerActivity.class);

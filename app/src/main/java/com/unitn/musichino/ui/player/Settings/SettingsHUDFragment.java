@@ -2,7 +2,6 @@ package com.unitn.musichino.ui.player.Settings;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 
@@ -10,15 +9,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,11 +21,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.PopupMenu;
-import android.widget.Switch;
 
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
@@ -41,18 +34,14 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unitn.musichino.Models.AudioModel;
-import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.Models.PresetModel;
 import com.unitn.musichino.Models.TrackConfigurationModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
-import com.unitn.musichino.adapter.TrackSettingAdapter;
 import com.unitn.musichino.adapter.BarEqualizerAdapter;
 import com.unitn.musichino.adapter.VolumesBarAdapter;
-import com.unitn.musichino.interfaces.ButtonTrackClickListener;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -25,6 +25,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    Pager per le cardview di HomeFragment
+    Al sup interno hanno le info base per la visualizzazione
+ */
+
 public class DefaultPagerCardAdapter extends PagerAdapter {
     private List<CardModel> models;
     private LayoutInflater layoutInflater;
@@ -53,7 +58,6 @@ public class DefaultPagerCardAdapter extends PagerAdapter {
 
         ImageView imageView;
         TextView title;
-        RadarView radarView;
 
         imageView = view.findViewById(R.id.img_cardalbum);
         title = view.findViewById(R.id.txt_cardTitle);
@@ -69,6 +73,9 @@ public class DefaultPagerCardAdapter extends PagerAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                    onClick evoca PlayerActivity e immette la canzone rappresentata dalla card
+                 */
                 Intent intent = new Intent(context, PlayerActivity.class);
                 Bundle b = new Bundle();
                 AudioModel item = new AudioModel();

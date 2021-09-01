@@ -105,8 +105,10 @@ public class HomeFragment extends Fragment {
         try {
             PlaylistModel playlistModel = new PlaylistModel(requireContext(), C.SHARED_PLAYLISTS_LIKED);
             List<CardModel> models = new ArrayList<>();
-            for (AudioModel audioModel : playlistModel.getPlaylist()) {
-                models.add(getMetadata(audioModel.getPath()));
+            if(playlistModel.getPlaylist() != null) {
+                for (AudioModel audioModel : playlistModel.getPlaylist()) {
+                    models.add(getMetadata(audioModel.getPath()));
+                }
             }
             pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
             viewPager = root.findViewById(R.id.vp_liked);
@@ -176,8 +178,10 @@ public class HomeFragment extends Fragment {
         try {
             PlaylistModel playlistModel = new PlaylistModel(requireContext(), C.SHARED_PLAYLISTS_LIKED);
             List<CardModel> models = new ArrayList<>();
-            for (AudioModel audioModel : playlistModel.getPlaylist()) {
-                models.add(getMetadata(audioModel.getPath()));
+            if(playlistModel.getPlaylist() != null) {
+                for (AudioModel audioModel : playlistModel.getPlaylist()) {
+                    models.add(getMetadata(audioModel.getPath()));
+                }
             }
             pagerCardAdapter = new PagerCardAdapter(models, requireContext());
             viewPager = requireActivity().findViewById(R.id.vp_liked);

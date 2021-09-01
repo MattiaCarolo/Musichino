@@ -19,6 +19,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    Adapter creato per le seekbar riguardante l'equalizzatore
+ */
+
 public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapter.ViewHolder>{
 
     private Equalizer mEqualizer;
@@ -70,6 +74,9 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
     @Override
     public void onBindViewHolder(@NotNull ViewHolder viewHolder, final int position) {
         Log.d("VOLPOS", "created at pos: "+position);
+        /*
+            inizializzazione generale della barra
+         */
         viewHolder.seekBar.setMax(upperEqualizerBandLevel - lowerEqualizerBandLevel);
         SharedPreferences properties = context.getSharedPreferences("equalizer", 0);
         viewHolder.textView.setText((mEqualizer.getCenterFreq((short)position) / 1000) + " Hz");

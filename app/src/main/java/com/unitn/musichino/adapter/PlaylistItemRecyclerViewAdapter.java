@@ -27,6 +27,9 @@ import java.util.List;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+/*
+    Adapter per la recyclerView di playlist item.
+ */
 
 public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<PlaylistItemRecyclerViewAdapter.ViewHolder> {
 
@@ -62,22 +65,22 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
         holder.playlistModel = playlistModels.get(position);
         holder.mContentView.setText(playlistModels.get(position).getName());
         holder.mContentView.setOnClickListener(new View.OnClickListener() {
+            /*
+                onClick dell'item carica il contenuto della playlist in un nuovo fragment
+             */
             @Override
             public void onClick(View view) {
                 List<AudioModel> items = holder.playlistModel.getPlaylist();
-                /*
-                Intent intent = new Intent(holder.mView.getContext(), PlayerActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
-                intent.putExtra("bundle", b);
-                //holder.mView.getContext().startActivity(intent);
-                */
                 PlaylistModel playlistModel = playlistModels.get(position);
                 playlistToFragment.onClickChange(playlistModel);
 
             }
         });
         holder.btn_play.setOnClickListener(new View.OnClickListener() {
+            /*
+                onCLick genera una lista con all'interno la lista di tracce della playlist e la
+                passa al player
+             */
             @Override
             public void onClick(View view) {
                 List<AudioModel> items = holder.playlistModel.getPlaylist();
@@ -89,6 +92,9 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
             }
         });
         holder.btn_settings.setOnClickListener(new View.OnClickListener() {
+            /*
+                Invoca un dialog per settare i parametri della playlist
+             */
             @Override
             public void onClick(View view) {
                 DialogFragment newFragment = new PlaylistSettingsDialog();

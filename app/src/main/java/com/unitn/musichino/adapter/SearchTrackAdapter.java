@@ -26,7 +26,9 @@ import java.util.Locale;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
+/*
+    Adapter per le tracce ritrovate nella searchview
+ */
 public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.ViewHolder> {
 
     private List<AudioModel> tracks;
@@ -76,6 +78,9 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getTextView().setText(position + ":" + tracks.get(position).toString());
+        /*
+            Riproduce direttamente la canzone selezionata
+         */
         viewHolder.getTextView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,13 +93,16 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
                 view.getContext().startActivity(intent);
             }
         });
+        /*
+            Aggiunge la canzone selezionata alla queue di riproduzione
+         */
         viewHolder.getQueueButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MixMe mixMe = (MixMe) fragment.getApplication();
                 if (mixMe.is_running() && mixMe.getService().currentlyPlaying != null) {
                     mixMe.getService().addToQueue(tracks.get(position));
-                    Log.d("QUEUE", "setting yo queueu");
+                    Log.d("QUEUE", "Adding to queue");
                 } else {
                     Intent intent = new Intent(view.getContext(), PlayerActivity.class);
                     Bundle bundle = new Bundle();
@@ -107,6 +115,9 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
             }
         });
 
+        /*
+            Crea un dialog per aggiungere una traccia ad una playlist
+         */
         viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

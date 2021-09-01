@@ -20,6 +20,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    Adpater per le seekbar che si occupano dei volumi della traccia
+    Ad ogni traccia singola viene assegnata la corrispondente seekbar
+ */
+
 public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.ViewHolder>{
 
     public static SimpleExoPlayer player;

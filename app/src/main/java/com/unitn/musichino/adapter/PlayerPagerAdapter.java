@@ -6,6 +6,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
+/*
+    Adapter per il player
+    All'interno evoca FragmentPlayerHome, FragmentPlayerSettings e FragmentPlayerLyrics
+ */
 
 public class PlayerPagerAdapter extends FragmentStateAdapter {
 
