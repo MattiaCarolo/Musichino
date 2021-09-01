@@ -1,13 +1,16 @@
 package com.unitn.musichino;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +29,9 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.service.AudioService;
 import com.unitn.musichino.service.MixMe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BottomPlayerFragment extends Fragment {
@@ -63,13 +69,14 @@ public class BottomPlayerFragment extends Fragment {
         btn_next = root.findViewById(R.id.btn_next);
         btn_play_pause = root.findViewById(R.id.btn_play_pause);
         btn_previous = root.findViewById(R.id.btn_prev);
-        imageView = root.findViewById(R.id.iv_album);
+        imageView = (ImageView) root.findViewById(R.id.iv_album);
         textView = root.findViewById(R.id.txt_info);
         playerView = root.findViewById(R.id.video_view);
         playerView.setControllerShowTimeoutMs(-1);
         playerView.setControllerAutoShow(true);
         playerView.setControllerHideOnTouch(false);
         playerView.showController();
+
 
         if(mService != null) {
             item = mService.currentlyPlaying;
@@ -78,6 +85,25 @@ public class BottomPlayerFragment extends Fragment {
 
             simpleExoPlayer = mService.getPlayerInstance();
             playerView.setPlayer(simpleExoPlayer);
+            simpleExoPlayer.addListener(new Player.Listener() {
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                    item = mService.currentlyPlaying;
+                    textView.setText(metadata.title + " - " + metadata.albumArtist);
+                }
+
+                @Override
+                public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+                    if(metadata.artworkData != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    else{
+                        imageView.setImageResource(R.drawable.albumcover);
+                    }
+                }
+            });
         }
 
         return root;
@@ -88,6 +114,7 @@ public class BottomPlayerFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(simpleExoPlayer != null){
+
             btn_play_pause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -120,6 +147,15 @@ public class BottomPlayerFragment extends Fragment {
                     }
                 }
             });
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("hello","hello");
+                    Intent intent = new Intent(requireContext(), PlayerActivity.class);
+                    requireContext().startActivity(intent);
+                }
+            });
         }
 
     }
@@ -132,12 +168,30 @@ public class BottomPlayerFragment extends Fragment {
             mService = ((MixMe)requireActivity().getApplication()).getService();
             item = mService.currentlyPlaying;
             simpleExoPlayer = mService.getplayer();
+            simpleExoPlayer.addListener(new Player.Listener() {
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+                    item = mService.currentlyPlaying;
+                    textView.setText(item.getName() + " - " + item.getArtist());
+                }
+
+                @Override
+                public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+                    if(mediaMetadata.artworkData != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(mediaMetadata.artworkData, 0, mediaMetadata.artworkData.length);
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    else{
+                        imageView.setImageResource(R.drawable.albumcover);
+                    }
+                }
+            });
         }
 
         if(simpleExoPlayer != null){
             playerView.setPlayer(simpleExoPlayer);
             metadata = simpleExoPlayer.getMediaMetadata();
-            textView.setText(metadata.title + " - " + metadata.albumArtist);
             btn_play_pause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -177,26 +231,6 @@ public class BottomPlayerFragment extends Fragment {
             else{
                 imageView.setImageResource(R.drawable.albumcover);
             }
-
-            simpleExoPlayer.addListener(new Player.Listener() {
-
-                @Override
-                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                    item = mService.currentlyPlaying;
-                    textView.setText(metadata.title + " - " + metadata.albumArtist);
-                }
-
-                @Override
-                public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
-                    if(metadata.artworkData != null) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
-                        imageView.setImageBitmap(bitmap);
-                    }
-                    else{
-                        imageView.setImageResource(R.drawable.albumcover);
-                    }
-                }
-            });
         }
     }
 }

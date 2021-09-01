@@ -109,9 +109,9 @@ public class AudioService extends Service {
         Bundle b = intent.getBundleExtra("bundle");
         if (b != null) {
             items = b.getParcelableArrayList("items");
-        }
-        if (player == null) {
-            startPlayer();
+            if (player == null) {
+                startPlayer();
+            }
         }
         ((MixMe)this.getApplication()).set_running(true);
         ((MixMe)this.getApplication()).runningService(this);

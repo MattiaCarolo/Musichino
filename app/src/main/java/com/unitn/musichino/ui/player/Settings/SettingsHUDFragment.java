@@ -27,7 +27,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
@@ -56,7 +58,6 @@ import java.util.List;
 public class SettingsHUDFragment extends Fragment implements ButtonTrackClickListener {
     Button volumePresetButton;
     Button eqPresetButton;
-    Button toggleButton;
     ConstraintLayout volumeLayout;
     ConstraintLayout eqLayout;
     RecyclerView eqRecyclerView;
@@ -69,6 +70,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
     BarEqualizerAdapter eqBarAdapter;
     Equalizer mEqualizer;
     boolean isVolumeVisibile = true;
+    Switch aSwitch;
 
 
     public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList) {
@@ -109,7 +111,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
         eqRecyclerView = view.findViewById(R.id.rv_eq);
         volumePresetButton = view.findViewById(R.id.volumePresetListButton);
         eqPresetButton = view.findViewById(R.id.eqPresetListButton);
-        toggleButton = view.findViewById(R.id.toggleButton);
+        aSwitch = view.findViewById(R.id.switch1);
         mEqualizer = new Equalizer(1000, simpleExoPlayer.getAudioSessionId());
         simpleExoPlayer.addListener(new Player.Listener() {
             @Override
@@ -161,6 +163,25 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
             }
         });
 
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    volumesBarAdapter.setAllVolumesTo(100);
+                    eqBarAdapter.setAllBandsToNeutral();
+                    volumeLayout.setVisibility(View.GONE);
+                    eqLayout.setVisibility(View.VISIBLE);
+                    mEqualizer.setEnabled(true);
+                }
+                else{
+                    eqBarAdapter.setAllBandsToNeutral();
+                    mEqualizer.setEnabled(false);
+                    volumesBarAdapter.setAllVolumesTo(100);
+                    volumeLayout.setVisibility(View.VISIBLE);
+                    eqLayout.setVisibility(View.GONE);
+                }
+            }
+        });
 
         volumePresetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,27 +354,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
 
                 popup.show();
 
-            }
-        });
-
-        toggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isVolumeVisibile){
-                    volumesBarAdapter.setAllVolumesTo(100);
-                    eqBarAdapter.setAllBandsToNeutral();
-                    volumeLayout.setVisibility(View.GONE);
-                    eqLayout.setVisibility(View.VISIBLE);
-                    mEqualizer.setEnabled(true);
-                }
-                else{
-                    eqBarAdapter.setAllBandsToNeutral();
-                    mEqualizer.setEnabled(false);
-                    volumesBarAdapter.setAllVolumesTo(100);
-                    volumeLayout.setVisibility(View.VISIBLE);
-                    eqLayout.setVisibility(View.GONE);
-                }
-                isVolumeVisibile = !isVolumeVisibile;
             }
         });
 

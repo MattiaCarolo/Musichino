@@ -66,6 +66,8 @@ public class PagerCardAdapter extends PagerAdapter {
                 Intent intent = new Intent(context, PlayerActivity.class);
                 Bundle b = new Bundle();
                 AudioModel item = new AudioModel();
+                item.setName(models.get(position).getTrack());
+                item.setArtist(models.get(position).getArtist());
                 item.setPath(models.get(position).getFileName());
                 List<AudioModel> items = new ArrayList<>();
                 items.add(item);

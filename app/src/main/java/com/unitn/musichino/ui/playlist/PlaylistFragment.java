@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import com.unitn.musichino.BottomPlayerFragment;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PlaylistItemRecyclerViewAdapter;
 import com.unitn.musichino.adapter.PlaylistTrackAdapter;
 import com.unitn.musichino.adapter.SearchTrackAdapter;
 import com.unitn.musichino.interfaces.PlaylistToFragment;
+import com.unitn.musichino.service.MixMe;
 
 import org.json.JSONException;
 
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +37,7 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private RecyclerView recyclerView;
+    FrameLayout frameLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,6 +58,7 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -67,17 +73,18 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
             e.printStackTrace();
         }
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(this, playlistModels, this));
-        }
+        recyclerView = view.findViewById(R.id.rv_playlists);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(this, playlistModels, this));
+
+        frameLayout = view.findViewById(R.id.play_mini);
+        frameLayout.setVisibility(View.GONE);
+        Fragment fragment = new BottomPlayerFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
+        transaction.replace(R.id.play_mini, fragment);
+        transaction.commit();
+
+
         return view;
     }
 
@@ -85,5 +92,13 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
     public void onClickChange(PlaylistModel playListModel) {
         PlaylistTrackAdapter singleTrackAdapter = new PlaylistTrackAdapter(requireActivity(),playListModel.getPlaylist(), playListModel);
         recyclerView.setAdapter(singleTrackAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(((MixMe)requireActivity().getApplication()).is_running()){
+            frameLayout.setVisibility(View.VISIBLE);
+        }
     }
 }

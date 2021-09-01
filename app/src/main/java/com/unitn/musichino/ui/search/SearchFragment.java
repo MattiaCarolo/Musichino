@@ -11,11 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.unitn.musichino.BottomPlayerFragment;
 import com.unitn.musichino.Models.AudioModel;
+import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.SearchTrackAdapter;
 import com.unitn.musichino.databinding.FragmentSearchBinding;
+import com.unitn.musichino.service.MixMe;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,9 +29,12 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +49,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     public static List<AudioModel> tracks = new ArrayList<>();
     RecyclerView searchRecycler;
     SearchTrackAdapter adapter;
+    FrameLayout frameLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -79,6 +87,13 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
             }
         });
         searchViewModel.getText().observe(getViewLifecycleOwner(), searchButton::setText);
+        frameLayout = root.findViewById(R.id.play_mini);
+        frameLayout.setVisibility(View.GONE);
+        Fragment fragment = new BottomPlayerFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
+        transaction.replace(R.id.play_mini, fragment);
+        transaction.commit();
+
         return root;
     }
 
@@ -88,11 +103,19 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         binding = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(((MixMe)requireActivity().getApplication()).is_running()){
+            frameLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
     /*
-        Metodo per recuperare una lista di file audio presenti nella memoria interna ed esterna del telofono.
-        Restituisce una lista di AudioModel creati da dati recuperati con context.getContentResolver tramite
-        una query di ricerca puntata a proiettare i metadati dei file audio.
-    */
+            Metodo per recuperare una lista di file audio presenti nella memoria interna ed esterna del telofono.
+            Restituisce una lista di AudioModel creati da dati recuperati con context.getContentResolver tramite
+            una query di ricerca puntata a proiettare i metadati dei file audio.
+        */
     public List<AudioModel> getAllAudioFromDevice(final Context context) {
         final List<AudioModel> tempAudioList = new ArrayList<>();
         Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -160,4 +183,5 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         adapter.filter(newText);
         return false;
     }
+
 }
