@@ -53,7 +53,7 @@ public class AudioService extends Service {
     private List<AudioModel> items;
 
     public List<MediaCodecAudioRenderer> renderers;
-    public AudioModel currentlyPlaying;
+    public AudioModel currentlyPlaying = null;
 
 
     @Override
@@ -109,11 +109,13 @@ public class AudioService extends Service {
         Bundle b = intent.getBundleExtra("bundle");
         if (b != null) {
             items = b.getParcelableArrayList("items");
-        }
+
         if (player == null) {
             startPlayer();
         }
-        ((MixMe)this.getApplication()).set_running(true);
+
+            ((MixMe)this.getApplication()).set_running(true);
+        }
         ((MixMe)this.getApplication()).runningService(this);
         return START_STICKY;
     }
@@ -191,6 +193,12 @@ public class AudioService extends Service {
 
     public void addRenderer(MediaCodecAudioRenderer renderer) {
         renderers.add(renderer);
+    }
+
+    public void addToQueue(AudioModel audioModel) {
+        MediaItem mediaItem = MediaItem.fromUri(audioModel.getPath());
+        items.add(audioModel);
+        player.addMediaItem(mediaItem);
     }
 
 

@@ -4,6 +4,7 @@ package com.unitn.musichino.adapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
+import com.unitn.musichino.service.MixMe;
 import com.unitn.musichino.ui.search.PlaylistSelectionDialog;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,13 +36,13 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private final ImageButton button, btn_add;
+        private final ImageButton button, btn_queue;
 
         public ViewHolder(View view) {
             super(view);
             textView = (TextView) view.findViewById(R.id.txt_playlist_name);
             button = (ImageButton) view.findViewById(R.id.btn_play_playlist);
-            btn_add = (ImageButton) view.findViewById(R.id.btn_playlist_settings);
+            btn_queue = (ImageButton) view.findViewById(R.id.btn_add_queue);
         }
 
         public TextView getTextView() {
@@ -52,7 +54,7 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
         }
 
         public ImageButton getQueueButton() {
-            return button;
+            return btn_queue;
         }
     }
 
@@ -86,14 +88,22 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
                 view.getContext().startActivity(intent);
             }
         });
-        viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getQueueButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment newFragment = new PlaylistSelectionDialog();
-                Bundle b = new Bundle();
-                b.putParcelable("item", tracks.get(position));
-                newFragment.setArguments(b);
-                newFragment.show(fragment.getSupportFragmentManager(), "playlist_selection");
+                MixMe mixMe = (MixMe) fragment.getApplication();
+                if (mixMe.is_running() && mixMe.getService().currentlyPlaying != null) {
+                    mixMe.getService().addToQueue(tracks.get(position));
+                    Log.d("QUEUE", "setting yo queueu");
+                } else {
+                    Intent intent = new Intent(view.getContext(), PlayerActivity.class);
+                    Bundle bundle = new Bundle();
+                    List<AudioModel> items = new ArrayList<>();
+                    items.add(tracks.get(position));
+                    bundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
+                    intent.putExtra("bundle", bundle);
+                    view.getContext().startActivity(intent);
+                }
             }
         });
 

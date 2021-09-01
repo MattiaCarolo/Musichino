@@ -36,7 +36,7 @@
         app:layout_constraintWidth_percent="0.4" />
 
     <ImageButton
-        android:id="@+id/btn_playlist_settings"
+        android:id="@+id/btn_add_queue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
