@@ -249,7 +249,6 @@ public class PlaylistModel {
         SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
         JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
         JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
-        List<PlaylistModel> playlistModels = new ArrayList<>();
         for (int i = 0; i < playlistNamesJSON.length(); i++) {
             if (playlistNamesJSON.getString(i).equals(name)) {
                 Log.d("REMOVE", "Found name at index: " + i);
@@ -290,6 +289,7 @@ public class PlaylistModel {
         }
         sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS, playlistModelsJSON.toString()).apply();
     }
+
 
 
     @NonNull

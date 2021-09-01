@@ -25,7 +25,6 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 
-import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
@@ -51,8 +50,7 @@ import androidx.viewpager2.widget.ViewPager2;
     Completato il binding costruisce tutta la UI del player popolando i fragment tramite PlayerPageAdapter.
     I fragment usati sono FragmentPlayerHome, FragmentPlayerLyrics e FragmentPlayerSettings.
  */
-public class PlayerActivity extends AppCompatActivity
-        implements Player.EventListener {
+public class PlayerActivity extends AppCompatActivity {
 
     private PlayerView playerView;
     private SimpleExoPlayer player;
@@ -136,7 +134,7 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     public void setUI() {
-        if(b != null) {
+        if (b != null) {
             if (b.getBoolean("pld_Playlist_item")) {
                 int pos = b.getInt("pld_Position");
                 player.seekTo(pos, 0);

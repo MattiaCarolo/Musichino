@@ -16,11 +16,16 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.unitn.musichino.BottomPlayerFragment;
+import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.CardModel;
+import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PagerCardAdapter;
 import com.unitn.musichino.databinding.FragmentHomeBinding;
 import com.unitn.musichino.service.AudioService;
+import com.unitn.musichino.util.C;
+
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,13 +98,23 @@ public class HomeFragment extends Fragment {
         Log.d("models", "" + models.toString());
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
-        viewPager = root.findViewById(R.id.vp_likedlist);
+        viewPager = root.findViewById(R.id.vp_recommended);
         viewPager.setAdapter(pagerCardAdapter);
 
 
+        try {
+            PlaylistModel playlistModel = new PlaylistModel(requireContext(), C.SHARED_PLAYLISTS_LIKED);
+            List<CardModel> models = new ArrayList<>();
+            for (AudioModel audioModel : playlistModel.getPlaylist()) {
+                models.add(getMetadata(audioModel.getPath()));
+            }
+            pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
+            viewPager = root.findViewById(R.id.vp_liked);
+            viewPager.setAdapter(pagerCardAdapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        viewPager = root.findViewById(R.id.vp_recentlyplayed);
-        viewPager.setAdapter(pagerCardAdapter);
 
         Fragment fragment = new BottomPlayerFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
@@ -152,11 +167,24 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        try {
+            PlaylistModel playlistModel = new PlaylistModel(requireContext(), C.SHARED_PLAYLISTS_LIKED);
+            List<CardModel> models = new ArrayList<>();
+            for (AudioModel audioModel : playlistModel.getPlaylist()) {
+                models.add(getMetadata(audioModel.getPath()));
+            }
+            pagerCardAdapter = new PagerCardAdapter(models, requireContext());
+            viewPager = requireActivity().findViewById(R.id.vp_liked);
+            viewPager.setAdapter(pagerCardAdapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

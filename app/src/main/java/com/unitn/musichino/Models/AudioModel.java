@@ -1,9 +1,14 @@
 package com.unitn.musichino.Models;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.unitn.musichino.util.C;
+
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -145,4 +150,69 @@ public class AudioModel implements Parcelable {
         parcel.writeString(artist);
         parcel.writeString(format);
     }
+
+    public void addToLiked(Context context) throws JSONException {
+        SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
+        JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
+        JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+        boolean found = false;
+        for (int i = 0; i < playlistNamesJSON.length(); i++) {
+            if (playlistNamesJSON.getString(i).equals(C.SHARED_PLAYLISTS_LIKED)) {
+                JSONArray playlistItemsJSON = new JSONArray();
+                PlaylistModel playlistModel = new PlaylistModel(playlistModelsJSON.getJSONObject(i));
+                playlistModel.addAudioModel(this);
+                playlistModel.saveToSharedPreferences(context);
+                found = true;
+            }
+        }
+        if (!found) {
+            PlaylistModel playlistModel = new PlaylistModel();
+            playlistModel.addAudioModel(this);
+            playlistModel.setName(C.SHARED_PLAYLISTS_LIKED);
+            playlistModel.setArtworkUri(C.SHARED_PLAYLISTS_LIKED);
+            playlistModel.saveToSharedPreferences(context);
+        }
+
+    }
+
+    public void removeFromLiked(Context context) throws JSONException {
+        SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
+        JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
+        JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+        for (int i = 0; i < playlistNamesJSON.length(); i++) {
+            if (playlistNamesJSON.getString(i).equals(C.SHARED_PLAYLISTS_LIKED)) {
+                JSONArray playlistItemsJSON;
+                PlaylistModel playlistModel = new PlaylistModel(playlistModelsJSON.getJSONObject(i));
+                playlistItemsJSON = playlistModel.getJSONPlaylist();
+                for (int j = 0; j < playlistItemsJSON.length(); j++) {
+                    if (playlistItemsJSON.getJSONObject(j).getString("name").equals(this.name)) {
+                        playlistItemsJSON.remove(j);
+                        playlistModel.setPlaylist(playlistItemsJSON);
+                        playlistModelsJSON.put(i, playlistModel.getJSONPlaylistModel());
+                    }
+                }
+            }
+        }
+        sharedPlaylists.edit().putString(C.SHARED_PLAYLISTS, playlistModelsJSON.toString()).apply();
+    }
+
+    public boolean isSongLiked(Context context) throws JSONException {
+        SharedPreferences sharedPlaylists = context.getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, Context.MODE_PRIVATE);
+        JSONArray playlistModelsJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS, "[]"));
+        JSONArray playlistNamesJSON = new JSONArray(sharedPlaylists.getString(C.SHARED_PLAYLISTS_NAMES, "[]"));
+        for (int i = 0; i < playlistNamesJSON.length(); i++) {
+            if (playlistNamesJSON.getString(i).equals(C.SHARED_PLAYLISTS_LIKED)) {
+                JSONArray playlistItemsJSON = new JSONArray();
+                PlaylistModel playlistModel = new PlaylistModel(playlistModelsJSON.getJSONObject(i));
+                playlistItemsJSON = playlistModel.getJSONPlaylist();
+                for (int j = 0; j < playlistItemsJSON.length(); j++) {
+                    if (playlistItemsJSON.getJSONObject(j).getString("name").equals(this.name)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }

@@ -30,6 +30,8 @@ import com.unitn.musichino.R;
 import com.unitn.musichino.service.AudioService;
 import com.unitn.musichino.ui.search.PlaylistSelectionDialog;
 
+import org.json.JSONException;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FragmentPlayerHome#newInstance} factory method to
@@ -44,7 +46,7 @@ public class FragmentPlayerHome extends Fragment {
     private boolean mBound = false;
     private Button button;
     private Boolean _isPlaying = true;
-    private ImageButton btn_play_pause, btn_previous, btn_next, btn_shuffle, btn_addPlaylist;
+    private ImageButton btn_play_pause, btn_previous, btn_next, btn_shuffle, btn_addPlaylist, btn_likeSong;
     private ImageView artworkView;
     private DefaultTimeBar defaultTimeBar;
     AudioModel item;
@@ -81,6 +83,7 @@ public class FragmentPlayerHome extends Fragment {
         btn_play_pause = root.findViewById(R.id.btn_play_pause);
         btn_previous = root.findViewById(R.id.btn_prev);
         btn_shuffle = root.findViewById(R.id.btn_shuffle);
+        btn_likeSong = root.findViewById(R.id.btn_likeSong);
         artworkView = root.findViewById(R.id.iv_album);
         txt_artist = root.findViewById(R.id.txt_ArtistName);
         txt_trackname = root.findViewById(R.id.txt_TrackName);
@@ -192,6 +195,38 @@ public class FragmentPlayerHome extends Fragment {
                         simpleExoPlayer.setShuffleModeEnabled(true);
                         btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_on);
                     }
+                }
+            }
+        });
+
+        try {
+            if(item.isSongLiked(requireContext())){
+                btn_likeSong.setImageResource(R.drawable.icon_liked);
+                // Log.d("LIKED", "remove");
+            }else {
+                btn_likeSong.setImageResource(R.drawable.icon_not_liked);
+                // Log.d("LIKED", "add");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        btn_likeSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    if(item.isSongLiked(requireContext())){
+                        item.removeFromLiked(requireContext());
+                        btn_likeSong.setImageResource(R.drawable.icon_not_liked);
+                       // Log.d("LIKED", "remove");
+                    }else {
+                        item.addToLiked(requireContext());
+                        btn_likeSong.setImageResource(R.drawable.icon_liked);
+                       // Log.d("LIKED", "add");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });

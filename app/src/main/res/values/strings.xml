@@ -30,6 +30,7 @@ limitations under the License. -->
     <string name="action_settings">Settings</string>
     <string name="element_text">text text</string>
     <string name="recommended">Recommended by us</string>
+    <string name="playlist_liked">Liked</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_playlist">Playlist</string>
