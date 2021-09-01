@@ -56,7 +56,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsHUDFragment extends Fragment implements ButtonTrackClickListener {
+public class SettingsHUDFragment extends Fragment {
     Button volumePresetButton;
     Button eqPresetButton;
     ConstraintLayout volumeLayout;
@@ -124,7 +124,6 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
                 volumesBarAdapter = new VolumesBarAdapter(simpleExoPlayer,  mediaCodecAudioRendererList);
                 eqBarAdapter = new BarEqualizerAdapter(context, mEqualizer);
-                //TrackAdapter trackAdapter = new TrackAdapter(simpleExoPlayer,mediaCodecAudioRendererList,this);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 recyclerView.setAdapter(volumesBarAdapter);
                 eqRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -365,18 +364,5 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
     public void onStart() {
         super.onStart();
     }
-
-
-    @Override
-    public void onButtonTrackClick(int pos, Button button, MediaCodecAudioRenderer mediaCodecAudioRenderer) {
-        Fragment fragment = new VolumeFragment(pos);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction().setReorderingAllowed(true);
-        transaction.replace(R.id.hud_settings, fragment);
-        transaction.addSharedElement(button, "titolo");
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-    }
-
 
 }
