@@ -2,16 +2,11 @@ package com.unitn.musichino.adapter;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -21,21 +16,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.interfaces.PlaylistToFragment;
 import com.unitn.musichino.ui.playlist.PlaylistSettingsDialog;
-import com.unitn.musichino.ui.search.PlaylistSelectionDialog;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<PlaylistItemRecyclerViewAdapter.ViewHolder> {
 
@@ -120,8 +111,8 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
             mView = view;
             imageView = (ImageView) view.findViewById(R.id.iv_playlist_image);
             mContentView = (TextView) view.findViewById(R.id.txt_playlist_name);
-            btn_play = (ImageButton) view.findViewById(R.id.btn_play_playlist);
-            btn_settings = (ImageButton) view.findViewById(R.id.btn_playlist_settings);
+            btn_play = (ImageButton) view.findViewById(R.id.btn_add_playlist);
+            btn_settings = (ImageButton) view.findViewById(R.id.btn_add_queue);
         }
 
         @Override

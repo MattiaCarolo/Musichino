@@ -45,8 +45,8 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
             int index;
             mView = view;
             textView = (TextView) view.findViewById(R.id.txt_playlist_name);
-            button = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
-            btn_queue = (ImageButton) view.findViewById(R.id.btn_addQueue);
+            button = (ImageButton) view.findViewById(R.id.btn_add_playlist);
+            btn_queue = (ImageButton) view.findViewById(R.id.btn_add_queue);
             btn_queue.setVisibility(View.GONE);
             button.setImageResource(R.drawable.icon_remove);
         }

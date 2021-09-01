@@ -10,25 +10,39 @@
             android:id="@+id/volumeLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="visible"
+            android:visibility="gone"
+            android:background="@drawable/rv_border"
             app:layout_constraintBottom_toTopOf="@+id/toggleButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:animateLayoutChanges="true"
             app:layout_constraintTop_toTopOf="parent">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/volumePresetListButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/title_shape"
+                    android:backgroundTint="@color/purple_mid_gradient"
                     android:text="Presets"
+                    android:textColor="@color/white"
+                    android:drawableStart="@drawable/icon_arrow_drop_down_filled"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="26dip"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.065"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.4" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_volumes"
+                    android:padding="@dimen/standard_12"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    app:layout_constraintHeight_percent="0.85"
+                    app:layout_constraintWidth_percent="0.95"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -42,30 +56,53 @@
             android:id="@+id/eqLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:animateLayoutChanges="true"
+            android:visibility="visible"
+            android:background="@drawable/rv_border"
+            android:padding="@dimen/standard_12"
             app:layout_constraintBottom_toTopOf="@+id/toggleButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/eqPresetListButton"
-                    android:layout_width="187dp"
+                    android:layout_width="0dp"
                     android:layout_height="43dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/title_shape"
+                    android:backgroundTint="@color/purple_mid_gradient"
+                    android:drawableStart="@drawable/icon_arrow_drop_down_filled"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="26dip"
                     android:text="ROBBE"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.4" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_eq"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    app:layout_constraintHeight_percent="0.85"
+                    app:layout_constraintWidth_percent="0.95"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/eqPresetListButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ToggleButton
+            android:id="@+id/flashlightButton"
+            android:layout_width="200dp"
+            style="@style/Button"
+            android:layout_marginBottom="20dp"
+            android:onClick="onToggleClicked"
+            android:text="ToggleButton"
+            android:textOn="Light ON"
+            android:textOff="Light OFF" />
 
         <Button
             android:id="@+id/toggleButton"

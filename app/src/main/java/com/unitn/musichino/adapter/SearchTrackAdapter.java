@@ -39,8 +39,8 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
         public ViewHolder(View view) {
             super(view);
             textView = (TextView) view.findViewById(R.id.txt_playlist_name);
-            button = (ImageButton) view.findViewById(R.id.btn_play_playlist);
-            btn_add = (ImageButton) view.findViewById(R.id.btn_managePlaylist);
+            button = (ImageButton) view.findViewById(R.id.btn_add_playlist);
+            btn_add = (ImageButton) view.findViewById(R.id.btn_add_queue);
         }
 
         public TextView getTextView() {
@@ -48,6 +48,10 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
         }
 
         public ImageButton getButton() {
+            return button;
+        }
+
+        public ImageButton getQueueButton() {
             return button;
         }
     }
@@ -82,6 +86,17 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
                 view.getContext().startActivity(intent);
             }
         });
+        viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment newFragment = new PlaylistSelectionDialog();
+                Bundle b = new Bundle();
+                b.putParcelable("item", tracks.get(position));
+                newFragment.setArguments(b);
+                newFragment.show(fragment.getSupportFragmentManager(), "playlist_selection");
+            }
+        });
+
         viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

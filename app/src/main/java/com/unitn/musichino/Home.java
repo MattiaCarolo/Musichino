@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.AttributeSet;
 import android.view.Menu;
+import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.unitn.musichino.databinding.ActivityHomeBinding;
 import com.unitn.musichino.service.AudioService;
+import com.unitn.musichino.service.MixMe;
+
+import org.jetbrains.annotations.NotNull;
 
 public class Home extends AppCompatActivity {
 
@@ -70,10 +77,14 @@ public class Home extends AppCompatActivity {
         }
     };
 
+    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = new Intent(this, AudioService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    public View onCreateView(@NonNull @NotNull String name, @NonNull @NotNull Context context, @NonNull @NotNull AttributeSet attrs) {
+        if(((MixMe)this.getApplication()).is_running()){
+            Intent intent = new Intent(this, AudioService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
+        return super.onCreateView(name, context, attrs);
     }
 }

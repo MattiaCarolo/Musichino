@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.service.AudioService;
+import com.unitn.musichino.service.MixMe;
 
 
 public class BottomPlayerFragment extends Fragment {
@@ -75,7 +76,7 @@ public class BottomPlayerFragment extends Fragment {
 
             textView.setText(item.getName() + " - " + item.getArtist());
 
-            simpleExoPlayer = mService.getplayerInstance();
+            simpleExoPlayer = mService.getPlayerInstance();
             playerView.setPlayer(simpleExoPlayer);
         }
 
@@ -127,9 +128,8 @@ public class BottomPlayerFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        mService = ((Home) getActivity()).mService;
-
-        if(mService != null) {
+        if(((MixMe)requireActivity().getApplication()).is_running()){
+            mService = ((MixMe)requireActivity().getApplication()).getService();
             item = mService.currentlyPlaying;
             simpleExoPlayer = mService.getplayer();
         }

@@ -50,7 +50,6 @@ public class FragmentPlayerHome extends Fragment {
     AudioModel item;
     TextView txt_trackname, txt_artist;
     Bundle b;
-    BarVisualizer barVisualizer;
 
     public FragmentPlayerHome() {
         // Required empty public constructor
@@ -93,10 +92,6 @@ public class FragmentPlayerHome extends Fragment {
                 btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_off);
             }
         }
-
-
-
-        barVisualizer = root.findViewById(R.id.bar);
 
         item = mService.currentlyPlaying;
 
@@ -201,5 +196,10 @@ public class FragmentPlayerHome extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }
