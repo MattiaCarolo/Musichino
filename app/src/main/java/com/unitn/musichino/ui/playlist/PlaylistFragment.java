@@ -1,6 +1,7 @@
 package com.unitn.musichino.ui.playlist;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +76,8 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
 
         recyclerView = view.findViewById(R.id.rv_playlists);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        BottomOffsetDecoration bottomOffsetDecoration = new BottomOffsetDecoration((int) 170);
+        recyclerView.addItemDecoration(bottomOffsetDecoration);
         recyclerView.setAdapter(new PlaylistItemRecyclerViewAdapter(this, playlistModels, this));
 
         frameLayout = view.findViewById(R.id.play_mini);
@@ -99,6 +102,27 @@ public class PlaylistFragment extends Fragment implements PlaylistToFragment {
         super.onResume();
         if(((MixMe)requireActivity().getApplication()).is_running()){
             frameLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    static class BottomOffsetDecoration extends RecyclerView.ItemDecoration {
+        private int mBottomOffset;
+
+        public BottomOffsetDecoration(int bottomOffset) {
+            mBottomOffset = bottomOffset;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+            int dataSize = state.getItemCount();
+            int position = parent.getChildAdapterPosition(view);
+            if (dataSize > 0 && position == dataSize - 1) {
+                outRect.set(0, 0, 0, mBottomOffset);
+            } else {
+                outRect.set(0, 0, 0, 0);
+            }
+
         }
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -191,6 +192,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                 PopupMenu popup = new PopupMenu(requireContext(), view);
                 MenuInflater inflater = popup.getMenuInflater();
                 Menu menu = popup.getMenu();
+
                 List<PresetModel> volumePresets = trackConfigurationModel.getVolumePresetModels();
                 for(PresetModel volumePreset : volumePresets){
                     menu.add(volumePreset.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -205,7 +207,7 @@ public class SettingsHUDFragment extends Fragment implements ButtonTrackClickLis
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         AlertDialog alertDialog;
-                        AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireActivity());
+                        AlertDialog.Builder innerBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
                         TextInputEditText editText = new TextInputEditText(requireActivity());
                         innerBuilder.setTitle(R.string.popup_select_name)
                                 .setView(editText)
