@@ -64,7 +64,7 @@ public class SettingsHUDFragment extends Fragment {
     SwitchMaterial aSwitch;
 
 
-    public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList) {
+    public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer> mediaCodecAudioRendererList) {
         // Required empty public constructor
         this.simpleExoPlayer = simpleExoPlayer;
         this.mediaCodecAudioRendererList = mediaCodecAudioRendererList;
@@ -112,7 +112,7 @@ public class SettingsHUDFragment extends Fragment {
 
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                volumesBarAdapter = new VolumesBarAdapter(simpleExoPlayer,  mediaCodecAudioRendererList);
+                volumesBarAdapter = new VolumesBarAdapter(simpleExoPlayer, mediaCodecAudioRendererList);
                 eqBarAdapter = new BarEqualizerAdapter(context, mEqualizer);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 recyclerView.setAdapter(volumesBarAdapter);
@@ -125,16 +125,14 @@ public class SettingsHUDFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(!trackConfigurationModel.getTrackReference().equals( "trackReference") && trackConfigurationModel.getVolumePresetModels().size() > 0){
+                if (!trackConfigurationModel.getTrackReference().equals("trackReference") && trackConfigurationModel.getVolumePresetModels().size() > 0) {
                     volumesBarAdapter.setVolumePreset(trackConfigurationModel.getVolumePresetModels().get(0).getValues());
 
                     Log.d("PRESETVOLUME", "Set preset volume: " + trackConfigurationModel.getVolumePresetModels().get(0).getName());
-                }
-                else if(!trackConfigurationModel.getTrackReference().equals( "trackReference") && trackConfigurationModel.getEqPresetModels().size() > 0){
+                } else if (!trackConfigurationModel.getTrackReference().equals("trackReference") && trackConfigurationModel.getEqPresetModels().size() > 0) {
                     eqBarAdapter.setEqPreset(trackConfigurationModel.getEqPresetModels().get(0).getValues());
                     Log.d("PRESETEQ", "Set preset eq: " + trackConfigurationModel.getEqPresetModels().get(0).getName());
-                }
-                else{
+                } else {
                     PresetModel defaultVolumePreset = new PresetModel("default", volumesBarAdapter.getItemCount(), true);
                     PresetModel defaultEqPreset = new PresetModel("default", eqBarAdapter.getItemCount(), false);
                     List<PresetModel> volumeList = new ArrayList<>();
@@ -156,15 +154,14 @@ public class SettingsHUDFragment extends Fragment {
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     volumesBarAdapter.setAllVolumesTo(100);
                     eqBarAdapter.setAllBandsToNeutral();
                     volumeLayout.setVisibility(View.GONE);
                     eqLayout.setVisibility(View.VISIBLE);
                     mEqualizer.setEnabled(true);
                     aSwitch.setText(R.string.equalizer);
-                }
-                else{
+                } else {
                     eqBarAdapter.setAllBandsToNeutral();
                     mEqualizer.setEnabled(false);
                     volumesBarAdapter.setAllVolumesTo(100);
@@ -178,14 +175,11 @@ public class SettingsHUDFragment extends Fragment {
         volumePresetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 requireActivity().invalidateOptionsMenu();
                 PopupMenu popup = new PopupMenu(requireContext(), view);
-                MenuInflater inflater = popup.getMenuInflater();
                 Menu menu = popup.getMenu();
-
                 List<PresetModel> volumePresets = trackConfigurationModel.getVolumePresetModels();
-                for(PresetModel volumePreset : volumePresets){
+                for (PresetModel volumePreset : volumePresets) {
                     menu.add(volumePreset.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
@@ -257,10 +251,8 @@ public class SettingsHUDFragment extends Fragment {
                     }
 
                 });
-
-                        popup.show();
-
-                    }
+                popup.show();
+            }
         });
 
         eqPresetButton.setOnClickListener(new View.OnClickListener() {
@@ -269,10 +261,9 @@ public class SettingsHUDFragment extends Fragment {
 
                 requireActivity().invalidateOptionsMenu();
                 PopupMenu popup = new PopupMenu(requireContext(), view);
-                MenuInflater inflater = popup.getMenuInflater();
                 Menu menu = popup.getMenu();
                 List<PresetModel> eqPresets = trackConfigurationModel.getEqPresetModels();
-                for(PresetModel eqPreset : eqPresets){
+                for (PresetModel eqPreset : eqPresets) {
                     menu.add(eqPreset.getName()).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {

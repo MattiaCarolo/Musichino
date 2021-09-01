@@ -52,4 +52,5 @@ limitations under the License. -->
     <string name="equalizer">Equalizer</string>
     <string name="volume">Volume</string>
     <string name="presets">Presets</string>
+    <string name="no_lyrics">No lyrics available</string>
 </resources>
