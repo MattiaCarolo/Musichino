@@ -49,4 +49,7 @@ limitations under the License. -->
     <string name="popup_select_name">Select preset:</string>
     <string name="popup_create">Create</string>
     <string name="popup_add_new">Add new</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="volume">Volume</string>
+    <string name="presets">Presets</string>
 </resources>

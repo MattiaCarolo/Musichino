@@ -38,6 +38,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.MediaCodecAudioRenderer;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.PlaylistModel;
@@ -71,7 +72,7 @@ public class SettingsHUDFragment extends Fragment {
     BarEqualizerAdapter eqBarAdapter;
     Equalizer mEqualizer;
     boolean isVolumeVisibile = true;
-    Switch aSwitch;
+    SwitchMaterial aSwitch;
 
 
     public SettingsHUDFragment(SimpleExoPlayer simpleExoPlayer, List<MediaCodecAudioRenderer>mediaCodecAudioRendererList) {
@@ -172,6 +173,7 @@ public class SettingsHUDFragment extends Fragment {
                     volumeLayout.setVisibility(View.GONE);
                     eqLayout.setVisibility(View.VISIBLE);
                     mEqualizer.setEnabled(true);
+                    aSwitch.setText(R.string.equalizer);
                 }
                 else{
                     eqBarAdapter.setAllBandsToNeutral();
@@ -179,6 +181,7 @@ public class SettingsHUDFragment extends Fragment {
                     volumesBarAdapter.setAllVolumesTo(100);
                     volumeLayout.setVisibility(View.VISIBLE);
                     eqLayout.setVisibility(View.GONE);
+                    aSwitch.setText(R.string.volume);
                 }
             }
         });

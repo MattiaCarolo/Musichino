@@ -12,15 +12,17 @@
         android:id="@+id/iv_album"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:adjustViewBounds="true"
         android:background="@drawable/title_shape"
         android:backgroundTint="@color/transparent"
-        android:adjustViewBounds="true"
         android:foreground="@drawable/song_gradient"
         android:scaleType="centerCrop"
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/video_view"
-        app:layout_constraintWidth_percent="0.7" />
+        app:layout_constraintWidth_percent="0.7"
+
+        />
 
     <ImageButton
         android:id="@+id/btn_play_pause"
@@ -87,6 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintWidth_percent="0.8" />
+        app:layout_constraintWidth_percent="0.8"
+        app:use_artwork="false"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
