@@ -82,7 +82,7 @@ public class PlaylistSelectionDialog extends DialogFragment {
                         else{
                             // create new playlist
                             AlertDialog alertDialog;
-                            AlertDialog.Builder innerBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
+                            AlertDialog.Builder innerBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), android.R.style.Theme_Material_Dialog_Alert));
                             TextInputEditText editText = new TextInputEditText(requireActivity());
                             innerBuilder.setTitle("Choose a name: ")
                                     .setView(editText)

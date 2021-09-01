@@ -6,17 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.player.Settings.FragmentPlayerSettings">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/volumeLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
-            android:background="@drawable/rv_border"
-            app:layout_constraintBottom_toTopOf="@+id/toggleButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:animateLayoutChanges="true"
-            app:layout_constraintTop_toTopOf="parent">
+            android:background="@drawable/rv_border"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/switch1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.9"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/volumePresetListButton"
@@ -25,11 +29,11 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/title_shape"
                     android:backgroundTint="@color/purple_mid_gradient"
-                    android:text="Presets"
-                    android:textColor="@color/white"
                     android:drawableStart="@drawable/icon_arrow_drop_down_filled"
                     android:paddingLeft="10dip"
                     android:paddingRight="26dip"
+                    android:text="Presets"
+                    android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.065"
                     app:layout_constraintStart_toStartOf="parent"
@@ -38,15 +42,15 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_volumes"
-                    android:padding="@dimen/standard_12"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:layout_constraintHeight_percent="0.85"
-                    app:layout_constraintWidth_percent="0.95"
+                    android:padding="@dimen/standard_12"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.85"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/volumePresetListButton">
+                    app:layout_constraintTop_toBottomOf="@+id/volumePresetListButton"
+                    app:layout_constraintWidth_percent="0.95">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
@@ -57,17 +61,19 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:animateLayoutChanges="true"
-            android:visibility="visible"
             android:background="@drawable/rv_border"
             android:padding="@dimen/standard_12"
-            app:layout_constraintBottom_toTopOf="@+id/toggleButton"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/switch1"
+            app:layout_constraintHeight_percent="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/eqPresetListButton"
                     android:layout_width="0dp"
-                    android:layout_height="43dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:background="@drawable/title_shape"
                     android:backgroundTint="@color/purple_mid_gradient"
@@ -86,23 +92,34 @@
                     android:id="@+id/rv_eq"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:layout_constraintHeight_percent="0.85"
-                    app:layout_constraintWidth_percent="0.95"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.85"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/eqPresetListButton" />
+                    app:layout_constraintTop_toBottomOf="@+id/eqPresetListButton"
+                    app:layout_constraintWidth_percent="0.95" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-        <Button
-            android:id="@+id/toggleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Toggle"
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="123dp"
+            android:layout_height="44dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/title_shape"
+            android:backgroundTint="@color/purple_mid_gradient"
+            android:padding="@dimen/standard_12"
+            android:text="Volume"
+            android:textColor="@color/white"
+            android:textOff="Volume"
+            android:textOn="Equalizer"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:thumb="@drawable/volume_thumb_rev"
+            android:track="@drawable/volume_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHeight_percent="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

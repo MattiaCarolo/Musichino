@@ -30,6 +30,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,9 +54,9 @@ public class PlaylistSettingsDialog extends DialogFragment {
         Context context = requireContext();
         playlistName = b.getString("name");
         playlistArtworkUri = b.getString("artworkUri");
-        RecyclerView recyclerView = getParentFragment().getView().findViewById(R.id.list);
+        RecyclerView recyclerView = getParentFragment().getView().findViewById(R.id.rv_playlists);
         AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireContext());
-        editText = new TextInputEditText(requireContext());
+        editText = new TextInputEditText(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         playlistArtwork = new ImageView(requireContext());
         if (playlistArtworkUri.equals("artwork_uri") || playlistArtworkUri.equals("assets:///default_cover.jpg")) {
             playlistArtwork.setImageResource(R.drawable.albumcover);

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/purple_mid_gradient</item>
+        <item name="android:textColorAlertDialogListItem">@color/white</item>
+        <item name="android:titleTextColor">@color/white</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="textColorAlertDialogListItem">@color/white</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+</resources>
