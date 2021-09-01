@@ -53,7 +53,7 @@ public class AudioService extends Service {
     private List<AudioModel> items;
 
     public List<MediaCodecAudioRenderer> renderers;
-    public AudioModel currentlyPlaying;
+    public AudioModel currentlyPlaying = null;
 
 
     @Override
@@ -191,6 +191,12 @@ public class AudioService extends Service {
 
     public void addRenderer(MediaCodecAudioRenderer renderer) {
         renderers.add(renderer);
+    }
+
+    public void addToQueue(AudioModel audioModel) {
+        MediaItem mediaItem = MediaItem.fromUri(audioModel.getPath());
+        items.add(audioModel);
+        player.addMediaItem(mediaItem);
     }
 
 

@@ -6,8 +6,8 @@ import com.unitn.musichino.databinding.AppBarHomeBinding;
 
 public class MixMe extends Application {
 
-    private boolean _running;
-    private AudioService audioService;
+    private boolean _running = false;
+    private AudioService audioService = null;
 
     public boolean is_running() {
         return _running;

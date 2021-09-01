@@ -54,7 +54,7 @@ public class PlaylistSelectionDialog extends DialogFragment {
         Bundle b = getArguments();
         AudioModel item = b.getParcelable("item");
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_singlechoice);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_item);
         PlaylistModel playlistModel = new PlaylistModel();
         List<String> playlistNames = new ArrayList<>();
         try {

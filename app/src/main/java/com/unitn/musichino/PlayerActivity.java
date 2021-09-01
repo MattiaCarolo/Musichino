@@ -70,7 +70,7 @@ public class PlayerActivity extends AppCompatActivity
             mService = binder.getService();
             mBound = true;
             initializePlayer();
-            if (mService.currentlyPlaying != null) {
+            if (mService.currentlyPlaying != null && items != null) {
                 //Log.d("onServiceConnected", "Currently playing: " + mService.currentlyPlaying.getPath());
                 if (items.size() > 0)
                     mService.changeSong(items);
@@ -91,7 +91,6 @@ public class PlayerActivity extends AppCompatActivity
         setContentView(R.layout.activity_player);
         playerView = findViewById(R.id.video_view);
         b = getIntent().getBundleExtra("bundle");
-
         intent = new Intent(this, AudioService.class);
         if (b != null) {
             items = new ArrayList<>();
@@ -100,6 +99,7 @@ public class PlayerActivity extends AppCompatActivity
             serviceBundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
             intent.putExtra("bundle", serviceBundle);
         }
+
         try {
             Util.startForegroundService(this, intent);
         } catch (Exception ex) {
@@ -111,6 +111,7 @@ public class PlayerActivity extends AppCompatActivity
         playerView.showController();
         playerView.setControllerHideOnTouch(false);
         playerView.setControllerShowTimeoutMs(-1);
+
 
         viewPager = findViewById(R.id.pgr_MediaPlayer);
     }
@@ -135,9 +136,11 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     public void setUI() {
-        if(b.getBoolean("pld_Playlist_item")){
-            int pos = b.getInt("pld_Position");
-            player.seekTo(pos,0);
+        if(b != null) {
+            if (b.getBoolean("pld_Playlist_item")) {
+                int pos = b.getInt("pld_Position");
+                player.seekTo(pos, 0);
+            }
         }
         Objects.requireNonNull(playerView.getSubtitleView()).setVisibility(View.INVISIBLE);
         List<Fragment> fragments = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.unitn.musichino.ui.playlist;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,24 +9,33 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
+import com.unitn.musichino.adapter.PlaylistItemRecyclerViewAdapter;
 
 import org.json.JSONException;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.app.ActivityCompat.startActivityForResult;
@@ -35,7 +45,10 @@ public class PlaylistSettingsDialog extends DialogFragment {
     String playlistName;
     String playlistArtworkUri;
     ImageView playlistArtwork;
-
+    Bitmap bitmap;
+    String overwrite = "overwrite";
+    TextInputEditText editText;
+    AlertDialog alertDialog;
 
 
     @NonNull
@@ -44,14 +57,12 @@ public class PlaylistSettingsDialog extends DialogFragment {
         Bundle b = getArguments();
         playlistName = b.getString("name");
         playlistArtworkUri = b.getString("artworkUri");
-
-        AlertDialog alertDialog;
+        RecyclerView recyclerView = getParentFragment().getView().findViewById(R.id.list);
         AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireContext());
-        TextInputEditText editText = new TextInputEditText(requireContext());
+        editText = new TextInputEditText(requireContext());
         playlistArtwork = new ImageView(requireContext());
-        if (playlistArtworkUri.equals("artworkUri") || playlistArtworkUri.equals("assets:///default_cover.jpg")) {
+        if (playlistArtworkUri.equals("artwork_uri") || playlistArtworkUri.equals("assets:///default_cover.jpg")) {
             playlistArtwork.setImageResource(R.drawable.albumcover);
-            Log.d("ARTWORK", "max h: " +playlistArtwork.getMaxHeight()+" max w: " +playlistArtwork.getMaxWidth());
         } else {
             playlistArtwork.setImageDrawable(Drawable.createFromPath(playlistArtworkUri));
         }
@@ -69,21 +80,33 @@ public class PlaylistSettingsDialog extends DialogFragment {
 
             }
         });
+        LinearLayout linearLayout = new LinearLayout(requireContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(playlistArtwork);
+        linearLayout.addView(nameView);
+        linearLayout.addView(editText);
         innerBuilder.setTitle("Customize playlist")
-                .setView(playlistArtwork)
-                .setView(nameView)
-                .setView(editText)
+                .setView(linearLayout)
                 .setPositiveButton("Change", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         PlaylistModel newPlaylistModel = new PlaylistModel();
                         try {
+                            if (!playlistArtworkUri.equals("artwork_uri")) {
+                                FileOutputStream fileOutputStream = requireContext().openFileOutput(editText.getText().toString(), Context.MODE_PRIVATE);
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                                fileOutputStream.close();
+                                playlistArtworkUri = requireActivity().getFilesDir().getPath() + "/" + editText.getText().toString();
+                            }
                             newPlaylistModel = newPlaylistModel.loadFromSharedPreferencesByName(requireContext(), playlistName);
                             newPlaylistModel.removePlaylistModelFromSharedPreferences(requireContext(), playlistName);
                             newPlaylistModel.setName(editText.getText().toString());
                             newPlaylistModel.setArtworkUri(playlistArtworkUri);
                             newPlaylistModel.saveToSharedPreferences(requireContext());
-                        } catch (JSONException e) {
+                            List<PlaylistModel> playlistModels = newPlaylistModel.getPlaylistModelsFromSharedPreferences(requireContext());
+                            ((PlaylistItemRecyclerViewAdapter)recyclerView.getAdapter()).setPlaylistModels(playlistModels);
+                            dialogInterface.dismiss();
+                        } catch (JSONException | IOException e) {
                             e.printStackTrace();
                         }
 
@@ -95,7 +118,39 @@ public class PlaylistSettingsDialog extends DialogFragment {
                         dialogInterface.dismiss();
                     }
                 });
-        return innerBuilder.create();
+        alertDialog = innerBuilder.show();
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String newPlaylistName = editText.getText().toString();
+                try {
+                    PlaylistModel model = new PlaylistModel();
+                    model = model.loadFromSharedPreferencesByName(requireContext(), newPlaylistName);
+                    AlertDialog dialog = alertDialog;
+                    if ((model == null && !newPlaylistName.equals("")) || newPlaylistName.equals(overwrite)) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        editText.setError(null);
+                    } else {
+                        editText.setError("Unvalid playlist name");
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        return alertDialog;
     }
 
     @Override
@@ -104,7 +159,16 @@ public class PlaylistSettingsDialog extends DialogFragment {
 
         if (requestCode == 1 && resultCode == RESULT_OK && i != null) {
             playlistArtworkUri = i.getData().toString();
-            playlistArtwork.setImageDrawable(Drawable.createFromPath(playlistArtworkUri));
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), Uri.parse(playlistArtworkUri));
+                overwrite = playlistName;
+                editText.setError(null);
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                playlistArtwork.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
         }
     }

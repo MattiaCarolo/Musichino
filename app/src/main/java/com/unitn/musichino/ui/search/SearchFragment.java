@@ -20,6 +20,7 @@ import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.SearchTrackAdapter;
 import com.unitn.musichino.databinding.FragmentSearchBinding;
 import com.unitn.musichino.service.MixMe;
+import com.unitn.musichino.util.C;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -64,7 +65,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         searchRecycler.setAdapter(adapter);
         final Button searchButton = binding.btnSearch;
-        // getContext().getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, 0).edit().remove("playlists").remove("playlist_names").commit();
+        //getContext().getSharedPreferences(C.SHARED_PREFERENCES_PLAYLIST, 0).edit().remove("playlists").remove("playlist_names").commit();
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,5 +184,4 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         adapter.filter(newText);
         return false;
     }
-
 }
