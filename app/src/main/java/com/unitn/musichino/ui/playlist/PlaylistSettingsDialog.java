@@ -11,25 +11,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.unitn.musichino.Models.AudioModel;
 import com.unitn.musichino.Models.PlaylistModel;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PlaylistItemRecyclerViewAdapter;
 
 import org.json.JSONException;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +34,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_OK;
-import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 public class PlaylistSettingsDialog extends DialogFragment {
 
@@ -55,6 +50,7 @@ public class PlaylistSettingsDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Bundle b = getArguments();
+        Context context = requireContext();
         playlistName = b.getString("name");
         playlistArtworkUri = b.getString("artworkUri");
         RecyclerView recyclerView = getParentFragment().getView().findViewById(R.id.list);
@@ -104,7 +100,7 @@ public class PlaylistSettingsDialog extends DialogFragment {
                             newPlaylistModel.setArtworkUri(playlistArtworkUri);
                             newPlaylistModel.saveToSharedPreferences(requireContext());
                             List<PlaylistModel> playlistModels = newPlaylistModel.getPlaylistModelsFromSharedPreferences(requireContext());
-                            ((PlaylistItemRecyclerViewAdapter)recyclerView.getAdapter()).setPlaylistModels(playlistModels);
+                            ((PlaylistItemRecyclerViewAdapter) recyclerView.getAdapter()).setPlaylistModels(playlistModels);
                             dialogInterface.dismiss();
                         } catch (JSONException | IOException e) {
                             e.printStackTrace();
@@ -116,6 +112,36 @@ public class PlaylistSettingsDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                    }
+                })
+                .setNeutralButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(requireContext());
+                        confirmDialog.setTitle("Are you sure?")
+                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        PlaylistModel tmpPlaylistModel = new PlaylistModel();
+                                        try {
+                                            tmpPlaylistModel.removePlaylistModelFromSharedPreferences(context, playlistName);
+                                            List<PlaylistModel> playlistModels = tmpPlaylistModel.getPlaylistModelsFromSharedPreferences(context);
+                                            ((PlaylistItemRecyclerViewAdapter) recyclerView.getAdapter()).setPlaylistModels(playlistModels);
+                                            dialogInterface.dismiss();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                })
+                                .show();
+
+
                     }
                 });
         alertDialog = innerBuilder.show();
@@ -150,6 +176,7 @@ public class PlaylistSettingsDialog extends DialogFragment {
             }
         });
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
         return alertDialog;
     }
 

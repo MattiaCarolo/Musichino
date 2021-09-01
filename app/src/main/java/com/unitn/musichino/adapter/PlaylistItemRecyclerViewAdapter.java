@@ -1,9 +1,5 @@
 package com.unitn.musichino.adapter;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,11 +17,16 @@ import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
 import com.unitn.musichino.interfaces.PlaylistToFragment;
 import com.unitn.musichino.ui.playlist.PlaylistSettingsDialog;
+import com.unitn.musichino.util.C;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<PlaylistItemRecyclerViewAdapter.ViewHolder> {
 
@@ -39,11 +40,11 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
         this.fragment = fragment;
     }
 
-    public List<PlaylistModel> getPlaylistModels(){
+    public List<PlaylistModel> getPlaylistModels() {
         return this.playlistModels;
     }
 
-    public void setPlaylistModels(List<PlaylistModel> playlistModels){
+    public void setPlaylistModels(List<PlaylistModel> playlistModels) {
         this.playlistModels = playlistModels;
         notifyDataSetChanged();
     }
@@ -76,7 +77,7 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
 
             }
         });
-        holder.btn_play.setOnClickListener(new View.OnClickListener(){
+        holder.btn_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<AudioModel> items = holder.playlistModel.getPlaylist();
@@ -99,7 +100,14 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
 
             }
         });
-        if(!holder.playlistModel.getArtworkUri().equals("artwork_uri")) {
+        if (holder.playlistModel.getName().equals(C.SHARED_PLAYLISTS_LIKED)) {
+            holder.btn_settings.setVisibility(View.GONE);
+        }
+        if (holder.playlistModel.getArtworkUri().equals("artwork_uri")) {
+            holder.imageView.setImageResource(R.drawable.royalblood_cover);
+        } else if (holder.playlistModel.getArtworkUri().equals(C.SHARED_PLAYLISTS_LIKED)) {
+            holder.imageView.setImageResource(R.drawable.icon_liked);
+        } else {
             holder.imageView.setImageDrawable(Drawable.createFromPath(holder.playlistModel.getArtworkUri()));
         }
 
@@ -132,7 +140,6 @@ public class PlaylistItemRecyclerViewAdapter extends RecyclerView.Adapter<Playli
             return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
-
 
 
 }
