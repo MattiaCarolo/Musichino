@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.DialogFragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,7 +53,7 @@ public class PlaylistSelectionDialog extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         Bundle b = getArguments();
         AudioModel item = b.getParcelable("item");
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_singlechoice);
         PlaylistModel playlistModel = new PlaylistModel();
         List<String> playlistNames = new ArrayList<>();
@@ -81,7 +82,7 @@ public class PlaylistSelectionDialog extends DialogFragment {
                         else{
                             // create new playlist
                             AlertDialog alertDialog;
-                            AlertDialog.Builder innerBuilder = new AlertDialog.Builder(requireActivity());
+                            AlertDialog.Builder innerBuilder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AlertDialogCustom));
                             TextInputEditText editText = new TextInputEditText(requireActivity());
                             innerBuilder.setTitle("Choose a name: ")
                                     .setView(editText)

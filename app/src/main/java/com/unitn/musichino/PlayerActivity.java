@@ -61,6 +61,7 @@ public class PlayerActivity extends AppCompatActivity
     private Intent intent;
     private boolean mBound = false;
     List<AudioModel> items;
+    private Bundle b;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -89,7 +90,7 @@ public class PlayerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
         playerView = findViewById(R.id.video_view);
-        Bundle b = getIntent().getBundleExtra("bundle");
+        b = getIntent().getBundleExtra("bundle");
         if (b != null) {
             items = new ArrayList<>();
             items = b.getParcelableArrayList("items");
@@ -134,6 +135,10 @@ public class PlayerActivity extends AppCompatActivity
     }
 
     public void setUI() {
+        if(b.getBoolean("pld_Playlist_item")){
+            int pos = b.getInt("pld_Position");
+            player.seekTo(pos,0);
+        }
         Objects.requireNonNull(playerView.getSubtitleView()).setVisibility(View.INVISIBLE);
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(Fragment.instantiate(this, FragmentPlayerSettings.class.getName()));

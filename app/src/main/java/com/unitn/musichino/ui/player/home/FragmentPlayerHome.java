@@ -49,20 +49,16 @@ public class FragmentPlayerHome extends Fragment {
     private DefaultTimeBar defaultTimeBar;
     AudioModel item;
     TextView txt_trackname, txt_artist;
+    Bundle b;
 
     public FragmentPlayerHome() {
         // Required empty public constructor
     }
+    public FragmentPlayerHome(Bundle b) {
+        // Required empty public constructor
+        this.b = b;
+    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentPlayerHome.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FragmentPlayerHome newInstance(String param1, String param2) {
         FragmentPlayerHome fragment = new FragmentPlayerHome();
         return fragment;
@@ -89,10 +85,15 @@ public class FragmentPlayerHome extends Fragment {
         txt_artist = root.findViewById(R.id.txt_ArtistName);
         txt_trackname = root.findViewById(R.id.txt_TrackName);
 
-        item = mService.currentlyPlaying;
+        if(simpleExoPlayer != null){
+            if(simpleExoPlayer.getShuffleModeEnabled()) {
+                btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_on);
+            }else{
+                btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_off);
+            }
+        }
 
-     //   txt_trackname.setText(item.getName());
-     //   txt_artist.setText(item.getArtist());
+        item = mService.currentlyPlaying;
 
         simpleExoPlayer.addListener(new Player.Listener() {
 
@@ -108,6 +109,9 @@ public class FragmentPlayerHome extends Fragment {
                 if(mediaMetadata.artworkData != null) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(mediaMetadata.artworkData, 0, mediaMetadata.artworkData.length);
                     artworkView.setImageBitmap(bitmap);
+                    txt_trackname.setText(mediaMetadata.title);
+                    txt_artist.setText(mediaMetadata.albumArtist);
+
                 }
                 else{
                     artworkView.setImageResource(R.drawable.albumcover);
@@ -121,6 +125,11 @@ public class FragmentPlayerHome extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        MediaMetadata metadata = simpleExoPlayer.getMediaMetadata();
+        item = mService.currentlyPlaying;
+        txt_trackname.setText(metadata.title);
+        txt_artist.setText(metadata.albumArtist);
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,5 +180,26 @@ public class FragmentPlayerHome extends Fragment {
             }
         });
 
+        btn_shuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(simpleExoPlayer != null){
+                    if(simpleExoPlayer.getShuffleModeEnabled()){
+                        simpleExoPlayer.setShuffleModeEnabled(false);
+                        btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_off);
+                    }
+                    else {
+                        simpleExoPlayer.setShuffleModeEnabled(true);
+                        btn_shuffle.setImageResource(R.drawable.exo_controls_shuffle_on);
+                    }
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

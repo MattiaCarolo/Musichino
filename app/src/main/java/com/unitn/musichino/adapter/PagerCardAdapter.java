@@ -53,15 +53,12 @@ public class PagerCardAdapter extends PagerAdapter {
 
         ImageView imageView;
         TextView title;
-        RadarView radarView;
 
         imageView = view.findViewById(R.id.img_cardalbum);
         title = view.findViewById(R.id.txt_cardTitle);
-        radarView = view.findViewById(R.id.rdr_cardradar);
 
-        imageView.setImageResource(models.get(position).getAlbum_logo());
+        imageView.setImageBitmap(models.get(position).getAlbum_logo());
         title.setText(models.get(position).getTrack() + " by " + models.get(position).getArtist());
-        radarView.setData(models.get(position).getRadarHolder());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +70,8 @@ public class PagerCardAdapter extends PagerAdapter {
                 List<AudioModel> items = new ArrayList<>();
                 items.add(item);
                 b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
+                b.putString("trackname",models.get(position).getTrack());
+                b.putString("artist",models.get(position).getArtist());
                 intent.putExtra("bundle", b);
                 context.startActivity(intent);
 

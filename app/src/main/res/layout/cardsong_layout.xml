@@ -2,27 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Home">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cardElevation="5dp"
+        android:layout_margin="10dp"
         app:cardCornerRadius="20dp"
-        android:layout_margin="2dp"
         app:cardBackgroundColor="@color/black"
         app:cardMaxElevation="12dp"
         app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true"
         android:backgroundTint="#6D0D2C"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/card_background"
             android:backgroundTintMode="src_over"
             android:orientation="vertical">
 
@@ -30,8 +28,8 @@
                 android:id="@+id/img_cardalbum"
                 android:translationZ="-3dp"
                 android:scaleType="centerCrop"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:elevation="5dp"
                 android:foreground="@drawable/song_gradient"
@@ -53,24 +51,15 @@
                 android:autoSizeTextType="uniform"
                 android:paddingLeft="10dp"
                 android:text="Typhoons by Royal Blood"
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:translationZ="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.15"
-
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent="0.8" />
-
-            <com.ultramegasoft.radarchart.RadarView
-                android:id="@+id/rdr_cardradar"
-                android:layout_width="127dp"
-                android:layout_height="115dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="34dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/txt_cardTitle" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

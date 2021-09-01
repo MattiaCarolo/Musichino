@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="50dp"
+    android:layout_width="55dp"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="">
 
     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
         android:id="@+id/verticalSeekBarWrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.9"
+        app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045">
 
+        <!-- Rotation: CW90 or CW270 -->
         <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
             android:id="@+id/mySeekBar"
             android:layout_width="0dp"
@@ -24,7 +27,7 @@
             android:progressDrawable="@drawable/volume_bar"
             android:splitTrack="false"
             android:thumb="@drawable/volume_thumb"
-            app:seekBarRotation="CW270" /> <!-- Rotation: CW90 or CW270 -->
+            app:seekBarRotation="CW270" />
     </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
     <TextView
@@ -33,9 +36,11 @@
         android:layout_height="wrap_content"
         android:text="120hz"
         android:textColor="@color/purple_light_gradient"
+        android:ellipsize="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/verticalSeekBarWrapper" />
+        app:layout_constraintTop_toBottomOf="@+id/verticalSeekBarWrapper"
+        app:layout_constraintVertical_bias="0.176" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

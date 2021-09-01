@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/icn_button"
-        android:src="@drawable/icon_shuffle"
+        android:src="@drawable/exo_controls_shuffle_off"
         app:layout_constraintBottom_toTopOf="@+id/gdl_help_btn"
         app:layout_constraintStart_toStartOf="@+id/iv_album"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,10 +41,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/icn_button"
-        android:src="@drawable/icon_outline_menu"
+        android:src="@drawable/icon_add_playlist"
         app:layout_constraintBottom_toTopOf="@+id/gdl_help_btn"
         app:layout_constraintEnd_toEndOf="@+id/iv_album"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.gauravk.audiovisualizer.visualizer.BarVisualizer
+        android:id="@+id/bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:avColor="@color/av_dark_blue"
+        app:avDensity="0.8"
+        app:avSpeed="normal"
+        app:avType="fill"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1" />
 
     <ImageView
         android:id="@+id/iv_album"
@@ -89,6 +101,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.615" />
 
+
     <ImageButton
         android:id="@+id/btn_play_pause"
         android:layout_width="0dp"
@@ -101,9 +114,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.919"
+        app:layout_constraintVertical_bias="0.864"
         app:layout_constraintWidth_percent="0.2" />
-
 
     <ImageButton
         android:id="@+id/btn_prev"

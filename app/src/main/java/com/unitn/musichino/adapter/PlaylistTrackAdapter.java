@@ -36,20 +36,26 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private final ImageButton button;
+        private final ImageButton button,btn_queue;
+        private final View mView;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
             int index;
+            mView = view;
             textView = (TextView) view.findViewById(R.id.txt_playlist_name);
-            button = (ImageButton) view.findViewById(R.id.btn_play_playlist);
+            button = (ImageButton) view.findViewById(R.id.btn_add_playlist);
+            btn_queue = (ImageButton) view.findViewById(R.id.btn_add_queue);
+            btn_queue.setVisibility(View.GONE);
+            button.setImageResource(R.drawable.icon_remove);
         }
 
         public TextView getTextView() {
             return textView;
         }
         public ImageButton getButton(){return button;}
+        public ImageButton getQueue(){return button;}
     }
 
 
@@ -86,13 +92,14 @@ public class PlaylistTrackAdapter extends RecyclerView.Adapter<PlaylistTrackAdap
         viewHolder.getTextView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), PlayerActivity.class);
-                Bundle bundle = new Bundle();
-                List<AudioModel> items = new ArrayList<>();
-                items.add(tracks.get(position));
-                bundle.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
-                intent.putExtra("bundle", bundle);
-                view.getContext().startActivity(intent);
+                List<AudioModel> items = playlistModel.getPlaylist();
+                Intent intent = new Intent(viewHolder.mView.getContext(), PlayerActivity.class);
+                Bundle b = new Bundle();
+                b.putParcelableArrayList("items", (ArrayList<? extends Parcelable>) items);
+                b.putBoolean("pld_Playlist_item",true);
+                b.putInt("pld_Position", position);
+                intent.putExtra("bundle", b);
+                viewHolder.mView.getContext().startActivity(intent);
             }
         });
         viewHolder.getButton().setOnClickListener(new View.OnClickListener() {

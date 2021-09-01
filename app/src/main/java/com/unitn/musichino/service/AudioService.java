@@ -65,6 +65,7 @@ public class AudioService extends Service {
     @Override
     public void onDestroy() {
         releasePlayer();
+        ((MixMe)this.getApplication()).set_running(false);
         super.onDestroy();
     }
 
@@ -90,6 +91,14 @@ public class AudioService extends Service {
         return player;
     }
 
+    public SimpleExoPlayer getplayer() {
+        return player;
+    }
+
+    public AudioModel Playing_Now() {
+        return currentlyPlaying;
+    }
+
     /*
         Quando viene eseguito il bind con il servizio
         si tenta di recuperare gli item da impostare al player dall'intent
@@ -104,6 +113,8 @@ public class AudioService extends Service {
         if (player == null) {
             startPlayer();
         }
+        ((MixMe)this.getApplication()).set_running(true);
+        ((MixMe)this.getApplication()).runningService(this);
         return START_STICKY;
     }
 

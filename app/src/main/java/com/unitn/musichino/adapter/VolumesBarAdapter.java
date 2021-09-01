@@ -126,6 +126,7 @@ public class VolumesBarAdapter extends RecyclerView.Adapter<VolumesBarAdapter.Vi
         }
     }
 
+
     public void setAllVolumesTo(int value){
         for(int i = 0; i < childViews.size(); i++){
             float valueFloat = value / (float)childViews.get(i).seekBar.getMax();

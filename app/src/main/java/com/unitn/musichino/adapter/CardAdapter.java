@@ -26,17 +26,6 @@ import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter {
 
-    @NonNull
-    private ArrayList<RadarHolder> mData = new ArrayList<RadarHolder>() {
-        {
-            add(new RadarHolder("Guitar", 3));
-            add(new RadarHolder("Bass", 4));
-            add(new RadarHolder("Drums", 4));
-            add(new RadarHolder("Voice", 4));
-            add(new RadarHolder("SFX", 2));
-        }
-    };
-
     private List<CardModel> models;
     private LayoutInflater layoutInflater;
     private Context context;
@@ -54,11 +43,6 @@ public class CardAdapter extends RecyclerView.Adapter {
         View view = layoutInflater.inflate(R.layout.cardsong_layout,container,false);
 
         TextView title;
-        RadarView radarView;
-
-        radarView = view.findViewById(R.id.rdr_cardradar);
-        radarView.setData(mData);
-        radarView.setInteractive(false);
         title = view.findViewById(R.id.txt_cardTitle);
         title.setText(models.get(position).getArtist() + " by " + models.get(position).getArtist());
 
