@@ -34,7 +34,9 @@ import androidx.annotation.Nullable;
 /*
     Classe principale della gestione della logica del player ExoPlayer tramite utilizzo di Service.
     Contiene tutte le variabili collegate alla riproduzione del player ed incapsula le informazioni
-    delle tracce in riproduzione e della playlist in corso.
+    delle tracce in riproduzione e della playlist in corso. Riceve tutti gli input direttamente dagli intent
+    di PlayerActivity, a parte addToQueue(), che viene richiamata esternamente in caso non ci sia bisogno di evocare
+    l'intera activity.
 */
 
 public class AudioService extends Service {
@@ -194,6 +196,10 @@ public class AudioService extends Service {
     public void addRenderer(MediaCodecAudioRenderer renderer) {
         renderers.add(renderer);
     }
+    /*
+        Metodo che aggiunge alla coda un AudioModel.
+        Viene richiamato esternamente senza accedere alla PlayerActivity
+    */
 
     public void addToQueue(AudioModel audioModel) {
         MediaItem mediaItem = MediaItem.fromUri(audioModel.getPath());
