@@ -7,12 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.drm.UnsupportedDrmException;
+import com.google.android.exoplayer2.source.TrackGroup;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.unitn.musichino.PlayerActivity;
 import com.unitn.musichino.R;
@@ -84,10 +88,10 @@ public class FragmentPlayerLyrics extends Fragment {
             }
 
             /*
-                In caso l'utente muova la seekbar della canzone, per evitare inconsistenze
-                con la visualizzazione delle lyrics, viene pulita pastCues contenente le lyrics passate
-                e svuotata subtitleView. Stesso in caso venga cambiata canzone.
-             */
+                            In caso l'utente muova la seekbar della canzone, per evitare inconsistenze
+                            con la visualizzazione delle lyrics, viene pulita pastCues contenente le lyrics passate
+                            e svuotata subtitleView. Stesso in caso venga cambiata canzone.
+                         */
             @Override
             public void onPositionDiscontinuity(Player.PositionInfo oldPosition, Player.PositionInfo newPosition, int reason) {
 

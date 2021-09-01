@@ -36,7 +36,7 @@ import java.util.List;
 
 public class BottomPlayerFragment extends Fragment {
 
-    ImageButton btn_next,btn_previous,btn_play_pause;
+    ImageButton btn_next, btn_previous, btn_play_pause;
     ImageView imageView;
     PlayerView playerView;
     AudioService mService;
@@ -78,7 +78,7 @@ public class BottomPlayerFragment extends Fragment {
         playerView.showController();
 
 
-        if(mService != null) {
+        if (mService != null) {
             item = mService.currentlyPlaying;
 
             textView.setText(item.getName() + " - " + item.getArtist());
@@ -95,11 +95,10 @@ public class BottomPlayerFragment extends Fragment {
 
                 @Override
                 public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
-                    if(metadata.artworkData != null) {
+                    if (metadata.artworkData != null) {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
                         imageView.setImageBitmap(bitmap);
-                    }
-                    else{
+                    } else {
                         imageView.setImageResource(R.drawable.albumcover);
                     }
                 }
@@ -113,16 +112,16 @@ public class BottomPlayerFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(simpleExoPlayer != null){
+        if (simpleExoPlayer != null) {
 
             btn_play_pause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(_isPlaying) {
+                    if (_isPlaying) {
                         simpleExoPlayer.setPlayWhenReady(false);
                         _isPlaying = !_isPlaying;
                         btn_play_pause.setImageResource(R.drawable.exo_controls_play);
-                    }else{
+                    } else {
                         simpleExoPlayer.setPlayWhenReady(true);
                         _isPlaying = !_isPlaying;
                         btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
@@ -133,7 +132,7 @@ public class BottomPlayerFragment extends Fragment {
             btn_previous.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()){
+                    if (simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()) {
                         simpleExoPlayer.seekToPreviousWindow();
                     }
                 }
@@ -142,20 +141,13 @@ public class BottomPlayerFragment extends Fragment {
             btn_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()){
+                    if (simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()) {
                         simpleExoPlayer.seekToNextWindow();
                     }
                 }
             });
+            imageView.setClickable(true);
 
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("hello","hello");
-                    Intent intent = new Intent(requireContext(), PlayerActivity.class);
-                    requireContext().startActivity(intent);
-                }
-            });
         }
 
     }
@@ -164,8 +156,9 @@ public class BottomPlayerFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if(((MixMe)requireActivity().getApplication()).is_running()){
-            mService = ((MixMe)requireActivity().getApplication()).getService();
+
+        if (((MixMe) requireActivity().getApplication()).is_running()) {
+            mService = ((MixMe) requireActivity().getApplication()).getService();
             item = mService.currentlyPlaying;
             simpleExoPlayer = mService.getplayer();
             simpleExoPlayer.addListener(new Player.Listener() {
@@ -178,28 +171,48 @@ public class BottomPlayerFragment extends Fragment {
 
                 @Override
                 public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
-                    if(mediaMetadata.artworkData != null) {
+                    if (mediaMetadata.artworkData != null) {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(mediaMetadata.artworkData, 0, mediaMetadata.artworkData.length);
                         imageView.setImageBitmap(bitmap);
-                    }
-                    else{
+
+                        textView.setText(item.getName() + " - " + item.getArtist());
+                    } else {
                         imageView.setImageResource(R.drawable.albumcover);
                     }
                 }
             });
         }
 
-        if(simpleExoPlayer != null){
+        if (simpleExoPlayer != null) {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(requireContext(), PlayerActivity.class);
+                    requireContext().startActivity(intent);
+                }
+            });
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(requireContext(), PlayerActivity.class);
+                    requireContext().startActivity(intent);
+                }
+            });
             playerView.setPlayer(simpleExoPlayer);
             metadata = simpleExoPlayer.getMediaMetadata();
+            textView.setText(String.format("%s - %s", metadata.title, metadata.albumArtist));
+            if (!simpleExoPlayer.isPlaying()) {
+                _isPlaying = false;
+                btn_play_pause.setImageResource(R.drawable.exo_controls_play);
+            }
             btn_play_pause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(_isPlaying) {
+                    if (_isPlaying) {
                         simpleExoPlayer.setPlayWhenReady(false);
                         _isPlaying = !_isPlaying;
                         btn_play_pause.setImageResource(R.drawable.exo_controls_play);
-                    }else{
+                    } else {
                         simpleExoPlayer.setPlayWhenReady(true);
                         _isPlaying = !_isPlaying;
                         btn_play_pause.setImageResource(R.drawable.exo_controls_pause);
@@ -210,8 +223,10 @@ public class BottomPlayerFragment extends Fragment {
             btn_previous.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()){
+                    if (simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()) {
                         simpleExoPlayer.seekToPreviousWindow();
+                    } else if (simpleExoPlayer != null && !simpleExoPlayer.hasPreviousWindow()) {
+                            simpleExoPlayer.seekToPrevious();
                     }
                 }
             });
@@ -219,18 +234,18 @@ public class BottomPlayerFragment extends Fragment {
             btn_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()){
+                    if (simpleExoPlayer != null && simpleExoPlayer.hasNextWindow()) {
                         simpleExoPlayer.seekToNextWindow();
                     }
                 }
             });
-            if(metadata.artworkData != null) {
+            if (metadata.artworkData != null) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
                 imageView.setImageBitmap(bitmap);
-            }
-            else{
+            } else {
                 imageView.setImageResource(R.drawable.albumcover);
             }
+
         }
     }
 }

@@ -118,7 +118,7 @@ public class BarEqualizerAdapter extends RecyclerView.Adapter<BarEqualizerAdapte
         short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
         for(int i= 0; i < childViews.size(); i++){
             childViews.get(i).seekBar.setProgress(upperEqualizerBandLevel);
-            mEqualizer.setBandLevel((short)i, (short)upperEqualizerBandLevel);
+            mEqualizer.setBandLevel((short)i, (short)0);
         }
     }
 

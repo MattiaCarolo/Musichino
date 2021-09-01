@@ -133,6 +133,10 @@ public class FragmentPlayerHome extends Fragment {
         item = mService.currentlyPlaying;
         txt_trackname.setText(metadata.title);
         txt_artist.setText(metadata.albumArtist);
+        if(metadata.artworkData != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
+            artworkView.setImageBitmap(bitmap);
+        }
 
         btn_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +160,8 @@ public class FragmentPlayerHome extends Fragment {
             public void onClick(View v) {
                 if(simpleExoPlayer != null && simpleExoPlayer.hasPreviousWindow()){
                     simpleExoPlayer.seekToPreviousWindow();
+                }else if (simpleExoPlayer != null && !simpleExoPlayer.hasPreviousWindow()) {
+                    simpleExoPlayer.seekToPrevious();
                 }
             }
         });

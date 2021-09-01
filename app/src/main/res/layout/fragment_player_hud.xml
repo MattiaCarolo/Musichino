@@ -32,7 +32,7 @@
                     android:drawableStart="@drawable/icon_arrow_drop_down_filled"
                     android:paddingLeft="10dip"
                     android:paddingRight="26dip"
-                    android:text="Presets"
+                    android:text="@string/presets"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.065"
@@ -80,7 +80,7 @@
                     android:drawableStart="@drawable/icon_arrow_drop_down_filled"
                     android:paddingLeft="10dip"
                     android:paddingRight="26dip"
-                    android:text="ROBBE"
+                    android:text="@string/presets"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -100,7 +100,7 @@
                     app:layout_constraintWidth_percent="0.95" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch1"
             android:layout_width="123dp"
             android:layout_height="44dp"
@@ -108,10 +108,10 @@
             android:background="@drawable/title_shape"
             android:backgroundTint="@color/purple_mid_gradient"
             android:padding="@dimen/standard_12"
-            android:text="Volume"
             android:textColor="@color/white"
-            android:textOff="Volume"
-            android:textOn="Equalizer"
+            android:text="@string/volume"
+            android:textOff="@string/volume"
+            android:textOn="@string/equalizer"
             android:textSize="15sp"
             android:textStyle="bold"
             android:thumb="@drawable/volume_thumb_rev"
