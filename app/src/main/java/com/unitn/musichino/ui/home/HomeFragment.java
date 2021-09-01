@@ -12,22 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.MediaMetadata;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.unitn.musichino.BottomPlayerFragment;
-import com.unitn.musichino.Home;
 import com.unitn.musichino.Models.CardModel;
 import com.unitn.musichino.R;
 import com.unitn.musichino.adapter.PagerCardAdapter;
@@ -39,6 +27,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -48,15 +45,12 @@ public class HomeFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private PagerCardAdapter pagerCardAdapter;
     private ViewPager viewPager;
-    private String CHANGE = "asset:///output2.mp4";
     private String CHANGE1 = "asset:///Example_Electro.m4a";
     private String CHANGE2 = "asset:///Example_Logan.m4a";
     private String CHANGE3 = "asset:///Example_Rock.m4a";
-    private String CHANGE4 = "asset:///relaxingMusic.mp4";
+    private String CHANGE4 = "asset:///relaxingMusic.mp3";
     private MediaItem mediaItem;
     private MediaMetadata metadata;
-    private FloatingActionMenu player_menu;
-    private FloatingActionButton fab1, fab2, fab3;
     private SimpleExoPlayer simpleExoPlayer;
     private AudioService mService;
 
@@ -69,7 +63,7 @@ public class HomeFragment extends Fragment {
                 Configuration.SCREENLAYOUT_SIZE_MASK;
 
         String toastMsg;
-        switch(screenSize) {
+        switch (screenSize) {
             case Configuration.SCREENLAYOUT_SIZE_LARGE:
                 toastMsg = "Large screen";
                 break;
@@ -82,7 +76,7 @@ public class HomeFragment extends Fragment {
             default:
                 toastMsg = "Screen size is neither large, normal or small";
         }
-        Log.d("size",toastMsg);
+        Log.d("size", toastMsg);
 
 
         homeViewModel =
@@ -96,7 +90,6 @@ public class HomeFragment extends Fragment {
         models.add(getMetadata(CHANGE2));
         models.add(getMetadata(CHANGE3));
         models.add(getMetadata(CHANGE4));
-        models.add(getMetadata(CHANGE));
         Log.d("models", "" + models.toString());
         pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
 
@@ -105,20 +98,6 @@ public class HomeFragment extends Fragment {
 
 
 
-        mediaItem = MediaItem.fromUri(CHANGE);
-        metadata = mediaItem.mediaMetadata;
-        if(mediaItem != null){
-            Log.d("dio",mediaItem.mediaMetadata.albumArtist + "");
-        }
-        metadata = mediaItem.mediaMetadata;
-        if(metadata.artworkData != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(metadata.artworkData, 0, metadata.artworkData.length);
-            models = new ArrayList<>();
-            models.add(new CardModel("Royal Blood", "Typhoon", CHANGE,bitmap));
-            models.add(new CardModel("Enrico Papi", "La mamma", CHANGE,bitmap));
-            models.add(new CardModel("Bambini autistici", "Lodiamo gesu cristo", CHANGE,bitmap));
-            pagerCardAdapter = new PagerCardAdapter(models, root.getContext());
-        }
         viewPager = root.findViewById(R.id.vp_recentlyplayed);
         viewPager.setAdapter(pagerCardAdapter);
 
@@ -137,7 +116,7 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    private CardModel getMetadata (String path) {
+    private CardModel getMetadata(String path) {
         Uri uri = Uri.parse(path);
         String artist, title;
         Bitmap picture;
@@ -146,7 +125,7 @@ public class HomeFragment extends Fragment {
         final AssetFileDescriptor afd;
         try {
             afd = requireContext().getAssets().openFd(uri.getLastPathSegment());
-            metaRetriever.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(),afd.getLength());
+            metaRetriever.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -167,7 +146,7 @@ public class HomeFragment extends Fragment {
             picture = null;
         }
 
-        return new CardModel(title,artist,path,picture);
+        return new CardModel(title, artist, path, picture);
     }
 
     @Override

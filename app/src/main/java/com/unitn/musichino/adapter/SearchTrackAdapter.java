@@ -39,8 +39,8 @@ public class SearchTrackAdapter extends RecyclerView.Adapter<SearchTrackAdapter.
         public ViewHolder(View view) {
             super(view);
             textView = (TextView) view.findViewById(R.id.txt_playlist_name);
-            button = (ImageButton) view.findViewById(R.id.btn_add_playlist);
-            btn_add = (ImageButton) view.findViewById(R.id.btn_add_queue);
+            button = (ImageButton) view.findViewById(R.id.btn_play_playlist);
+            btn_add = (ImageButton) view.findViewById(R.id.btn_playlist_settings);
         }
 
         public TextView getTextView() {
