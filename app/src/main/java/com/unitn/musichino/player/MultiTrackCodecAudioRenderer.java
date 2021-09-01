@@ -27,6 +27,7 @@ public class MultiTrackCodecAudioRenderer extends MediaCodecAudioRenderer {
         super(context, mediaCodecSelector, eventHandler, eventListener, audioCapabilities, audioProcessors);
         this.index = index;
     }
+
     @Override
     public MediaClock getMediaClock() {
         if (index == 0) {

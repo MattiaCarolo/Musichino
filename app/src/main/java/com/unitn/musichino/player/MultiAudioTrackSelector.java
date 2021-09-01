@@ -29,13 +29,15 @@ import androidx.annotation.NonNull;
 */
 public class MultiAudioTrackSelector extends TrackSelector {
     public int audioRendererCount;
+    public int textRendererCount;
 
 
     /*
         Piu' nello specifico, vengono analizzati il RendererCapabilities[] contenente le informazioni riguardanti i renderer di ExoPlayer
         ed il TrackGroupArray che descrive le tracce trovate nel file. Per ogni TrackGroup viene identificato il tipo in modo da
         assegnare il renderer di tipo compatibile. Ogni volta che viene selezionato un trackGroup di tipo audio viene incrementata la
-        variabile audioRendererCount, usata esternamente per determinare l'effettivo numero di tracce audio attive.
+        variabile audioRendererCount, usata esternamente per determinare l'effettivo numero di tracce audio attive. Viene usata in modo
+        analogo la variabile textRendererCount.
     */
     @Override
     public @NonNull
@@ -43,6 +45,7 @@ public class MultiAudioTrackSelector extends TrackSelector {
 
         int rendererCount = rendererCapabilities.length;
         audioRendererCount = 0;
+        textRendererCount = 0;
 
         ExoTrackSelection[] rendererTrackSelections = new ExoTrackSelection[rendererCount];
         // Log.i("SELECTOR", "RendererCount: " + rendererCount + ", TrackGroupsCount: " + trackGroups.length);
@@ -76,6 +79,7 @@ public class MultiAudioTrackSelector extends TrackSelector {
                         rendererTrackSelections[rendererIndex] = new FixedTrackSelection(trackGroup, 0, C.TRACK_TYPE_TEXT);
                         // Log.d("TRACKTYPE", "Text renderer selected, renderer index: " +rendererIndex+", group index: " +groupIndex);
                         groupIndex++;
+                        textRendererCount++;
                     }
                     break;
                 case C.TRACK_TYPE_METADATA:

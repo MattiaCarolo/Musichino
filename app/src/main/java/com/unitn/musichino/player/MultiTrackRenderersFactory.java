@@ -25,7 +25,6 @@ import java.util.ArrayList;
 public class MultiTrackRenderersFactory extends DefaultRenderersFactory {
     private int audioTrackCnt;
     private AudioService playerService;
-    MediaCodecSelector selector;
 
     public MultiTrackRenderersFactory(int count, Context context, AudioService playerService) {
         super(context);
